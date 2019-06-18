@@ -3,5 +3,5 @@
 ## install
 
 ```bash
-pip3 install -p requirements.txt
+pip3 install -r requirements.txt
 ```
