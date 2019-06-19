@@ -17,7 +17,7 @@ def main(config):
     plt.semilogx(config['lambda'] * 1e9, y)
     plt.xlabel('Wavelength[nm]')
     plt.ylabel('Drop Port Power [dB]')
-    plt.title('{} order MRR (same perimeter)'.format(config['L'].size))
+    plt.title('{} order MRR'.format(config['L'].size))
     plt.axis([None, None, None, 5])
     plt.grid()
     plt.show()
