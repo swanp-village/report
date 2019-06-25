@@ -7,13 +7,13 @@ class MRR:
         self,
         eta: float,
         n: float,
-        a: List[float],
+        alpha: float,
         K: List[float],
         L: List[float]
     ):
         self.eta = eta
         self.n = n
-        self.a = a
+        self.a = np.exp(- alpha * L)
         self.K = K
         self.L = L
 

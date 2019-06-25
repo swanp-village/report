@@ -9,7 +9,7 @@ def main(config):
     mrr = MRR(
         config['eta'],
         config['n'],
-        config['a'],
+        config['alpha'],
         config['K'],
         config['L']
     )
