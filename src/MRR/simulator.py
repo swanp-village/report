@@ -46,5 +46,12 @@ class MRR:
     def _D(self, l: float):
         return 1 / self._M(l)[0, 0]
 
+    def print_parameters(self):
+        print('eta:', self.eta)
+        print('n:', self.n)
+        print('a:', self.a)
+        print('K:', self.K)
+        print('L:', self.L)
+
     def simulate(self, l: float):
         return self._D(l)

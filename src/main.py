@@ -1,9 +1,17 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from MRR import MRR
+from MRR.simulator import MRR
 from importlib import import_module
 import argparse
+from scipy.signal import argrelmax
 
+
+eps = 0.0001
+
+def equals(y1, y2):
+    if abs(y1 - y2) > eps:
+        return True
+    return False
 
 def main(config):
     mrr = MRR(
@@ -13,8 +21,21 @@ def main(config):
         config['K'],
         config['L']
     )
-    y = 20 * np.log10(np.abs(mrr.simulate(config['lambda'])))
-    plt.semilogx(config['lambda'] * 1e9, y)
+    mrr.print_parameters()
+    x = config['lambda']
+    _y = 20 * np.log10(np.abs(mrr.simulate(x)))
+    y = _y.reshape(_y.size)
+
+    # maxid = argrelmax(y, order=10)[0]
+    # print(y[maxid])
+    # plt.plot(x[maxid] * 1e9, y[maxid], "ro")
+    # sorted_maxid_index = y[maxid].argsort()[::-1]
+    # loss1_id = maxid[sorted_maxid_index[0]]
+    # plt.plot(x[loss1_id] * 1e9, y[loss1_id], 'bo')
+    # loss2_id = maxid[sorted_maxid_index[1]]
+    # plt.plot(x[loss2_id] * 1e9, y[loss2_id], 'go')
+
+    plt.semilogx(x * 1e9, y)
     plt.xlabel('Wavelength[nm]')
     plt.ylabel('Drop Port Power [dB]')
     plt.title('{} order MRR'.format(config['L'].size))
