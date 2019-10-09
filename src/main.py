@@ -1,6 +1,5 @@
-import matplotlib.pyplot as plt
-import numpy as np
 from MRR.simulator import MRR
+from MRR.gragh import plot
 from importlib import import_module
 import argparse
 from scipy.signal import argrelmax
@@ -13,6 +12,7 @@ def equals(y1, y2):
         return True
     return False
 
+
 def main(config):
     mrr = MRR(
         config['eta'],
@@ -23,8 +23,9 @@ def main(config):
     )
     mrr.print_parameters()
     x = config['lambda']
-    _y = 20 * np.log10(np.abs(mrr.simulate(x)))
-    y = _y.reshape(_y.size)
+    y = mrr.simulate(x)
+    title = '{} order MRR'.format(config['L'].size)
+    plot(x, y, title)
 
     # maxid = argrelmax(y, order=10)[0]
     # print(y[maxid])
@@ -34,14 +35,6 @@ def main(config):
     # plt.plot(x[loss1_id] * 1e9, y[loss1_id], 'bo')
     # loss2_id = maxid[sorted_maxid_index[1]]
     # plt.plot(x[loss2_id] * 1e9, y[loss2_id], 'go')
-
-    plt.semilogx(x * 1e9, y)
-    plt.xlabel('Wavelength[nm]')
-    plt.ylabel('Drop Port Power [dB]')
-    plt.title('{} order MRR'.format(config['L'].size))
-    plt.axis([None, None, None, 5])
-    plt.grid()
-    plt.show()
 
 
 if __name__ == '__main__':

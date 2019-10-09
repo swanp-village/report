@@ -54,4 +54,5 @@ class MRR:
         print('L:', self.L)
 
     def simulate(self, l: float):
-        return self._D(l)
+        y = 20 * np.log10(np.abs(self._D(l)))
+        return y.reshape(y.size)
