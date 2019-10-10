@@ -1,10 +1,10 @@
 import matplotlib.pyplot as plt
 
-def plot(x, y, title):
-    plt.semilogx(x * 1e9, y)
-    plt.xlabel('Wavelength[nm]')
-    plt.ylabel('Drop Port Power [dB]')
-    plt.title(title)
-    plt.axis([None, None, None, 5])
-    plt.grid()
+def plot(x, y, title, img_path='img/out.png'):
+    fig, ax = plt.subplots()
+    ax.semilogx(x * 1e9, y)
+    ax.set(xlabel='Wavelength[nm]', ylabel='Drop Port Power [dB]', title=title)
+    ax.axis([None, None, None, 5])
+    ax.grid()
+    fig.savefig(img_path)
     plt.show()
