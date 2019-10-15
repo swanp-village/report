@@ -1,7 +1,9 @@
 import numpy as np
 
 
-def find_ring_length(resonant_wavelength, max_N=1000):
-    lst = np.arange(0, max_N + 1) * resonant_wavelength
+def find_ring_length(resonant_wavelength, n, max_N=1000):
+    N = np.arange(1, max_N)
+    ring_length_list = N * resonant_wavelength / 3.3938
+    FSR_list = resonant_wavelength / N
 
-    return lst
+    return N, ring_length_list, FSR_list
