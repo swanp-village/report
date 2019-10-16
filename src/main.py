@@ -2,15 +2,9 @@ from MRR.simulator import MRR
 from MRR.gragh import plot
 from importlib import import_module
 import argparse
-from scipy.signal import argrelmax
-
-
-eps = 0.0001
-
-def equals(y1, y2):
-    if abs(y1 - y2) > eps:
-        return True
-    return False
+from MRR.reward import shape_factor, a
+from MRR.ring import find_ring_length
+from util.math import lcm, gcd
 
 
 def main(config):
@@ -25,7 +19,14 @@ def main(config):
     x = config['lambda']
     y = mrr.simulate(x)
     title = '{} order MRR'.format(config['L'].size)
-    plot(x, y, title)
+    minid, _ = a(x, y)
+    print(x[minid])
+    print(y[minid])
+    N, ring_length_list, FSR_list = find_ring_length(1550e-9, config['n'])
+    # shape_factor(x, y)
+    print(gcd(0.5, 0.2))
+    # plot(x, y, title)
+
 
     # maxid = argrelmax(y, order=10)[0]
     # print(y[maxid])
