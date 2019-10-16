@@ -3,8 +3,7 @@ from MRR.gragh import plot
 from importlib import import_module
 import argparse
 from MRR.reward import shape_factor, a
-from MRR.ring import find_ring_length
-from util.math import lcm, gcd
+from MRR.ring import calculate_practical_FSR, find_ring_length
 
 
 def main(config):
@@ -24,8 +23,9 @@ def main(config):
     print(y[minid])
     N, ring_length_list, FSR_list = find_ring_length(1550e-9, config['n'])
     # shape_factor(x, y)
-    print(gcd(0.5, 0.2))
-    # plot(x, y, title)
+    print(ring_length_list[500], ring_length_list[700])
+    print(calculate_practical_FSR([FSR_list[700], FSR_list[500]]))
+    plot(x, y, title)
 
 
     # maxid = argrelmax(y, order=10)[0]
