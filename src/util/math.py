@@ -16,12 +16,12 @@ def equals(x: float, y: float, eps: float) -> bool:
 
 
 def calc_machine_eps(x: float) -> float:
-    return 10 ** (np.floor(np.log10(x)) - 2)
+    return 10 ** (np.floor(np.log10(x)))
 
 
 def _gcd(x: float, y: float, eps: float) -> float:
     """
-        x < y
+        x > y
     """
     if equals(y, 0, eps):
         return x
