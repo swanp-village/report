@@ -15,7 +15,7 @@ def equals(x: float, y: float, eps: float) -> bool:
     return np.abs(x - y) < eps
 
 
-def calc_machine_eps(x: float) -> float:
+def calc_eps(x: float) -> float:
     return 10 ** (np.floor(np.log10(x)))
 
 
@@ -31,6 +31,6 @@ def _gcd(x: float, y: float, eps: float) -> float:
 
 def _lcm(x: float, y: float) -> float:
     if x > y:
-        return x * y / _gcd(y, x, calc_machine_eps(y))
+        return x * y / _gcd(y, x, calc_eps(y))
     else:
-        return y * x / _gcd(x, y, calc_machine_eps(x))
+        return y * x / _gcd(x, y, calc_eps(x))
