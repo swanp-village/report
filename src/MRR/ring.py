@@ -1,5 +1,5 @@
 import numpy as np
-from util.math import lcm
+from .math import lcm
 
 
 def find_ring_length(resonant_wavelength, n, max_N=1000):
@@ -8,7 +8,6 @@ def find_ring_length(resonant_wavelength, n, max_N=1000):
     FSR_list = resonant_wavelength / N
 
     return N, ring_length_list, FSR_list
-
 
 
 def calculate_practical_FSR(FSR_list):

@@ -24,6 +24,7 @@ pip3 install -r requirements.txt
 `-c`オプションは`src/config/`にあるpythonファイルを指定する．
 
 ```bash
+cd src
 python main.py -c two_same_2
 ```
 
@@ -35,3 +36,10 @@ python main.py -c two_same_2
 jupyter notebook
 ```
 基本的に`notebook/`でファイルを作成する．
+
+## テスト
+
+```bash
+cd src
+python -m unittest discover -s __tests__
+```

@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 
+
 def plot(x, y, title, img_path='img/out.png'):
     fig, ax = plt.subplots()
     ax.semilogx(x * 1e9, y)
