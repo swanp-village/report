@@ -2,15 +2,6 @@ from scipy.signal import argrelmin, argrelmax
 import numpy as np
 
 
-eps = 0.0001
-
-
-def equals(y1, y2):
-    if abs(y1 - y2) > eps:
-        return True
-    return False
-
-
 def shape_factor(x, y):
     print('shape factor')
     maxid = argrelmax(y, order=10)
