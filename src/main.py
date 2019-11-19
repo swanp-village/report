@@ -2,9 +2,7 @@ from MRR.simulator import MRR
 from MRR.gragh import plot
 from importlib import import_module
 import argparse
-from MRR.reward import shape_factor, a
 from MRR.ring import calculate_practical_FSR, find_ring_length
-from MRR.math import _gcd
 import numpy as np
 
 
@@ -14,7 +12,7 @@ def main(config):
     _, ring_length_list, FSR_list = find_ring_length(center_wavelength, n)
     L = np.array([ring_length_list[300], ring_length_list[500], ring_length_list[700]])
     FSR = calculate_practical_FSR([FSR_list[300], FSR_list[500], FSR_list[700]])
-    K = [0.5, 0.5, 0.5, 0.5]
+    K = [0.3, 0.4, 0.6, 0.7]
     mrr = MRR(
         config['eta'],
         n,
