@@ -4,7 +4,7 @@ from MRR.ring import calculate_practical_FSR, find_ring_length
 
 class Test(unittest.TestCase):
     def test_find_ring_length(self):
-        n = 3.398
+        n = 3.3938
         resonant_wavelength = 1550e-9
         N, ring_length_list, FSR_list = find_ring_length(resonant_wavelength, n)
         actual = len(N)
@@ -12,7 +12,7 @@ class Test(unittest.TestCase):
         self.assertEqual(actual, expect)
 
     def test_calculate_practical_FSR(self):
-        n = 3.398
+        n = 3.3938
         resonant_wavelength = 1550e-9
         N, ring_length_list, FSR_list = find_ring_length(resonant_wavelength, n)
 
@@ -51,6 +51,16 @@ class Test(unittest.TestCase):
             actual = calculate_practical_FSR([FSR_list[350], FSR_list[558]])
             expect = 2.38461538461539e-08
             self.assertEqual(actual, expect)
+
+        with self.subTest(
+            N=[N[500], N[700], N[900]],
+            ring_length_list=[ring_length_list[500], ring_length_list[700], ring_length_list[900]],
+            FSR_list=[FSR_list[500], FSR_list[700], FSR_list[900]]
+        ):
+            actual = calculate_practical_FSR([FSR_list[500], FSR_list[700], FSR_list[900]])
+            expect = 2.38461538461539e-08
+            self.assertEqual(actual, expect)
+
 
 if __name__ == '__main__':
     unittest.main()
