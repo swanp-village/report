@@ -2,17 +2,18 @@ from MRR.simulator import MRR
 from MRR.gragh import plot
 from importlib import import_module
 import argparse
-from MRR.ring import calculate_practical_FSR, find_ring_length
+from MRR.ring import calculate_practical_FSR, find_ring_length, init_K
 import numpy as np
 
 
 def main(config):
     center_wavelength = config['center_wavelength']
+    number_of_rings = config['number_of_rings']
     n = config['n']
     _, ring_length_list, FSR_list = find_ring_length(center_wavelength, n)
     L = np.array([ring_length_list[300], ring_length_list[500], ring_length_list[700]])
     FSR = calculate_practical_FSR([FSR_list[300], FSR_list[500], FSR_list[700]])
-    K = [0.3, 0.4, 0.6, 0.7]
+    K = init_K(number_of_rings)
     mrr = MRR(
         config['eta'],
         n,

@@ -1,5 +1,7 @@
 import numpy as np
+from typing import List
 from .math import lcm
+
 
 
 def find_ring_length(resonant_wavelength: float, n: float, max_N=1000):
@@ -10,5 +12,9 @@ def find_ring_length(resonant_wavelength: float, n: float, max_N=1000):
     return N, ring_length_list, FSR_list
 
 
-def calculate_practical_FSR(FSR_list):
+def init_K(number_of_rings: int):
+    return np.full(number_of_rings + 1, 0.5)
+
+
+def calculate_practical_FSR(FSR_list: List[float]):
     return lcm(FSR_list)
