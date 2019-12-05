@@ -2,6 +2,7 @@ from MRR.simulator import MRR
 from MRR.gragh import plot
 from importlib import import_module
 import argparse
+from MRR.reward import calculate_pass_band
 from MRR.ring import calculate_practical_FSR, find_ring_length, init_K
 import numpy as np
 
@@ -9,10 +10,13 @@ import numpy as np
 def main(config):
     center_wavelength = config['center_wavelength']
     number_of_rings = config['number_of_rings']
+    max_loss_in_pass_band = config['max_loss_in_pass_band']
     n = config['n']
     _, ring_length_list, FSR_list = find_ring_length(center_wavelength, n)
-    L = np.array([ring_length_list[300], ring_length_list[500], ring_length_list[700]])
-    FSR = calculate_practical_FSR([FSR_list[300], FSR_list[500], FSR_list[700]])
+    index = [513, 747, 953]
+    L = np.array(ring_length_list[index])
+    FSR = calculate_practical_FSR(FSR_list[index])
+    print(FSR)
     K = init_K(number_of_rings)
     mrr = MRR(
         config['eta'],
@@ -22,8 +26,10 @@ def main(config):
         L
     )
     mrr.print_parameters()
-    x = np.arange(center_wavelength - FSR / 2, center_wavelength + FSR / 2, 1e-12)
+    half_FSR = np.ceil(FSR * 4 / 1e-12) * 1e-12
+    x = np.arange(center_wavelength - half_FSR, center_wavelength + half_FSR, 1e-12)
     y = mrr.simulate(x)
+    print(calculate_pass_band(x, y, max_loss_in_pass_band))
     title = '{} order MRR'.format(L.size)
     plot(x, y, title)
 

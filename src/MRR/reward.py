@@ -30,3 +30,19 @@ def a(x, y):
     #     return minid, diff_average_list[minid]
     # else:
     #     a(minid, diff_average_list[minid])
+
+
+def calculate_pass_band(x, y, max_loss: float):
+    lst = np.array([])
+    for i in np.arange(0, x.size - 1):
+        if y[i] <= max_loss and y[i + 1] > max_loss:
+            lst = np.append(lst, x[i])
+        elif y[i] >= max_loss and y[i + 1] < max_loss and lst.size > 0:
+            lst = np.append(lst, x[i])
+
+    if lst.size % 2 == 1:
+        lst = lst[:-1]
+
+    lst = np.reshape(lst, [lst.size // 2, 2])
+
+    return lst
