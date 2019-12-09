@@ -3,11 +3,17 @@ from typing import List
 from .math import lcm
 
 
+def calculate_x(center_wavelength: float, FSR: float):
+    return np.hstack((
+        np.arange(center_wavelength - FSR / 2, center_wavelength, 1e-12),
+        np.arange(center_wavelength, center_wavelength + FSR / 2, 1e-12)
+    ))
 
-def find_ring_length(resonant_wavelength: float, n: float, max_N=1000):
+
+def find_ring_length(center_wavelength: float, n: float, max_N=1000):
     N = np.arange(1, max_N)
-    ring_length_list = N * resonant_wavelength / n
-    FSR_list = resonant_wavelength / N
+    ring_length_list = N * center_wavelength / n
+    FSR_list = center_wavelength / N
 
     return N, ring_length_list, FSR_list
 
