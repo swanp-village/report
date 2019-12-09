@@ -1,12 +1,8 @@
-from scipy.signal import argrelmin, argrelmax
 from typing import List
-import copy
 import numpy as np
 
 
 def calculate_pass_band_range(x: List[float], y: List[float], max_loss: float) -> List[List[float]]:
-    # x = copy.deepcopy(_x)
-    # y = copy.deepcopy(_y)
     pass_band_range = np.array([])
     for i in np.arange(0, x.size - 1):
         if y[i] <= max_loss and y[i + 1] > max_loss:
