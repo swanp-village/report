@@ -32,6 +32,7 @@ def main(config):
         title = '{} order MRR'.format(L.size)
         plot(x, y, title)
 
+
 def train(config):
     center_wavelength = config['center_wavelength']
     number_of_rings = config['number_of_rings']
