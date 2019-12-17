@@ -13,7 +13,6 @@ def is_zero(x: float, y: float) -> bool:
 
 
 def lcm(xs: List[float]) -> float:
-    print(xs)
     return reduce(_lcm, xs)
 
 
