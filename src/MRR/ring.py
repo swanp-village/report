@@ -1,6 +1,7 @@
 import numpy as np
 from typing import List
 from .math import lcm
+from random import randrange, random
 
 
 def calculate_x(center_wavelength: float, FSR: float):
@@ -10,7 +11,7 @@ def calculate_x(center_wavelength: float, FSR: float):
     ))
 
 
-def find_ring_length(center_wavelength: float, n: float, max_N=1000):
+def find_ring_length(center_wavelength: float, n: float, max_N):
     N = np.arange(1, max_N)
     ring_length_list = N * center_wavelength / n
     FSR_list = center_wavelength / N
@@ -18,8 +19,18 @@ def find_ring_length(center_wavelength: float, n: float, max_N=1000):
     return N, ring_length_list, FSR_list
 
 
+def init_N(number_of_rings: int, max_N: int):
+    return np.array([
+        randrange(1, max_N - 1)
+        for _ in range(number_of_rings)
+    ])
+
+
 def init_K(number_of_rings: int):
-    return np.full(number_of_rings + 1, 0.5)
+    return np.array([
+        random()
+        for _ in range(number_of_rings + 1)
+    ])
 
 
 def calculate_practical_FSR(FSR_list: List[float]):

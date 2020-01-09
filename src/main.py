@@ -2,18 +2,18 @@ from MRR.simulator import MRR
 from MRR.gragh import plot
 from importlib import import_module
 import argparse
-from MRR.reward import evaluate_pass_band
-from random import randrange
-from MRR.ring import calculate_x, calculate_practical_FSR, find_ring_length, init_K
+from MRR.reward import evaluate_pass_band, evaluate_ring_combination
+from MRR.ring import calculate_x, calculate_practical_FSR, find_ring_length, init_K, init_N
 
 
 def main(config):
     center_wavelength = config['center_wavelength']
     number_of_rings = config['number_of_rings']
     max_loss_in_pass_band = config['max_loss_in_pass_band']
+    max_N = config['max_N']
     n = config['n']
-    _, ring_length_list, FSR_list = find_ring_length(center_wavelength, n)
-    index = [200, 202]
+    _, ring_length_list, FSR_list = find_ring_length(center_wavelength, n, max_N)
+    index = [39, 831]
     L = ring_length_list[index]
     FSR = calculate_practical_FSR(FSR_list[index])
     K = init_K(number_of_rings)
@@ -27,29 +27,36 @@ def main(config):
     x = calculate_x(center_wavelength, FSR)
     y = mrr.simulate(x)
     result = evaluate_pass_band(x, y, center_wavelength, max_loss_in_pass_band)
-    if result:
-        mrr.print_parameters()
-        title = '{} order MRR'.format(L.size)
-        plot(x, y, title)
+    # if result:
+    mrr.print_parameters()
+    title = '{} order MRR'.format(L.size)
+    plot(x, y, title)
 
 
 def train(config):
+    number_of_episodes = config['number_of_episodes']
     center_wavelength = config['center_wavelength']
     number_of_rings = config['number_of_rings']
+    max_N = config['max_N']
     max_loss_in_pass_band = config['max_loss_in_pass_band']
     n = config['n']
-    _, ring_length_list, FSR_list = find_ring_length(center_wavelength, n)
-    for _ in range(1000):
-        index = [randrange(0, 999), randrange(0, 999)]
+    _, ring_length_list, FSR_list = find_ring_length(center_wavelength, n, max_N)
+    for m in range(number_of_episodes):
+        print('episode {}'.format(m + 1))
+        # index = init_N(number_of_rings, max_N)
+        index = [500, 1000]
         L = ring_length_list[index]
         FSR = calculate_practical_FSR(FSR_list[index])
+        if not evaluate_ring_combination(L, FSR_list[index], FSR):
+            return
         K = init_K(number_of_rings)
+        print(K)
         mrr = MRR(
             config['eta'],
             n,
             config['alpha'],
             K,
-            L
+            ring_length_list[index]
         )
         x = calculate_x(center_wavelength, FSR)
         y = mrr.simulate(x)
@@ -93,4 +100,4 @@ if __name__ == '__main__':
         except:
             parser.print_help()
         else:
-            main(config)
+            train(config)

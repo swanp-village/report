@@ -49,3 +49,10 @@ def evaluate_pass_band(x, y, center_wavelength, max_loss):
     else:
         print('failed')
         return False
+
+
+def evaluate_ring_combination(L, FSR_list, practical_FSR):
+    print(L)
+    print(FSR_list)
+    print(practical_FSR)
+    return True
