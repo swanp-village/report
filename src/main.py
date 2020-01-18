@@ -3,7 +3,7 @@ from MRR.gragh import plot
 from importlib import import_module
 import argparse
 from MRR.reward import evaluate_pass_band, evaluate_ring_combination
-from MRR.ring import calculate_x, calculate_practical_FSR, find_ring_length, init_K, init_N
+from MRR.ring import calculate_x, calculate_practical_FSR, find_ring_length, init_K, init_N, calculate_ring_length, calculate_FSR
 
 
 def main(config):
@@ -12,7 +12,7 @@ def main(config):
     max_loss_in_pass_band = config['max_loss_in_pass_band']
     max_N = config['max_N']
     n = config['n']
-    _, ring_length_list, FSR_list = find_ring_length(center_wavelength, n, max_N)
+    ring_length_list, FSR_list = find_ring_length(center_wavelength, n, max_N)
     index = [39, 831]
     L = ring_length_list[index]
     FSR = calculate_practical_FSR(FSR_list[index])
@@ -37,18 +37,20 @@ def train(config):
     number_of_episodes = config['number_of_episodes']
     center_wavelength = config['center_wavelength']
     number_of_rings = config['number_of_rings']
-    max_N = config['max_N']
     max_loss_in_pass_band = config['max_loss_in_pass_band']
+    required_FSR = config['FSR']
     n = config['n']
-    _, ring_length_list, FSR_list = find_ring_length(center_wavelength, n, max_N)
+
+    N = init_N(number_of_rings, required_FSR, center_wavelength)
+    L = calculate_ring_length(N, center_wavelength, n)
+    FSR_list = calculate_FSR(N, center_wavelength)
+    FSR = calculate_practical_FSR(FSR_list)
+    if not evaluate_ring_combination(L, FSR_list, FSR):
+        return
+
     for m in range(number_of_episodes):
         print('episode {}'.format(m + 1))
-        # index = init_N(number_of_rings, max_N)
-        index = [500, 1000]
-        L = ring_length_list[index]
-        FSR = calculate_practical_FSR(FSR_list[index])
-        if not evaluate_ring_combination(L, FSR_list[index], FSR):
-            return
+
         K = init_K(number_of_rings)
         print(K)
         mrr = MRR(
@@ -56,12 +58,13 @@ def train(config):
             n,
             config['alpha'],
             K,
-            ring_length_list[index]
+            L
         )
         x = calculate_x(center_wavelength, FSR)
         y = mrr.simulate(x)
         result = evaluate_pass_band(x, y, center_wavelength, max_loss_in_pass_band)
-        if result:
+        if result > 0:
+            print(result)
             mrr.print_parameters()
             title = '{} order MRR'.format(L.size)
             plot(x, y, title)
