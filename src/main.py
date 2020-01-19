@@ -54,10 +54,10 @@ def train(config):
         print('episode {}'.format(m + 1))
         K = init_K(number_of_rings)
         action = init_action(number_of_rings)
-        print(action)
 
         for t in range(number_of_steps):
             print('step {}'.format(t + 1))
+            print(K)
             q = []
             for a in action:
                 if np.all(np.where((K + a > 0) & (K + a < 1), True, False)):
@@ -73,14 +73,28 @@ def train(config):
                     result = evaluate_pass_band(x, y, center_wavelength, max_loss_in_pass_band)
                     if result > 0:
                         print(result)
-                        mrr.print_parameters()
+                        # mrr.print_parameters()
                         # title = '{} order MRR'.format(L.size)
                         # plot(x, y, title)
                 else:
                     result = 0
                 q.append(result)
-            print(q)
-            print(max(q))
+            if np.max(q) == 0 or np.argmax(q) == 0:
+                break
+            else:
+                K = K + action[np.argmax(q)]
+        mrr = MRR(
+            config['eta'],
+            n,
+            config['alpha'],
+            K,
+            L
+        )
+        x = calculate_x(center_wavelength, FSR)
+        y = mrr.simulate(x)
+        mrr.print_parameters()
+        title = '{} order MRR'.format(L.size)
+        plot(x, y, title)
 
 
 def simulate(config):

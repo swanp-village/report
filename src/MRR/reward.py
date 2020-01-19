@@ -64,7 +64,7 @@ def evaluate_ring_combination(L, FSR_list, practical_FSR):
 def init_action(number_of_rings):
     I = np.eye(number_of_rings + 1)
     base = np.matrix([-0.1, -0.05, 0.05, 0.1])
-    action = []
+    action = [np.zeros(number_of_rings + 1).tolist()]
     for i in range(number_of_rings + 1):
         a_i = base.T * I[i]
         action.extend(a_i.tolist())
