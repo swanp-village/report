@@ -2,7 +2,8 @@ from MRR.simulator import MRR
 from MRR.gragh import plot
 from importlib import import_module
 import argparse
-from MRR.reward import evaluate_pass_band, evaluate_ring_combination
+import numpy as np
+from MRR.reward import evaluate_pass_band, evaluate_ring_combination, init_action
 from MRR.ring import calculate_x, calculate_practical_FSR, find_ring_length, init_K, init_N, calculate_ring_length, calculate_FSR
 
 
@@ -35,6 +36,7 @@ def main(config):
 
 def train(config):
     number_of_episodes = config['number_of_episodes']
+    number_of_steps = config['number_of_steps']
     center_wavelength = config['center_wavelength']
     number_of_rings = config['number_of_rings']
     max_loss_in_pass_band = config['max_loss_in_pass_band']
@@ -50,24 +52,35 @@ def train(config):
 
     for m in range(number_of_episodes):
         print('episode {}'.format(m + 1))
-
         K = init_K(number_of_rings)
-        print(K)
-        mrr = MRR(
-            config['eta'],
-            n,
-            config['alpha'],
-            K,
-            L
-        )
-        x = calculate_x(center_wavelength, FSR)
-        y = mrr.simulate(x)
-        result = evaluate_pass_band(x, y, center_wavelength, max_loss_in_pass_band)
-        if result > 0:
-            print(result)
-            mrr.print_parameters()
-            title = '{} order MRR'.format(L.size)
-            plot(x, y, title)
+        action = init_action(number_of_rings)
+        print(action)
+
+        for t in range(number_of_steps):
+            print('step {}'.format(t + 1))
+            q = []
+            for a in action:
+                if np.all(np.where((K + a > 0) & (K + a < 1), True, False)):
+                    mrr = MRR(
+                        config['eta'],
+                        n,
+                        config['alpha'],
+                        K + a,
+                        L
+                    )
+                    x = calculate_x(center_wavelength, FSR)
+                    y = mrr.simulate(x)
+                    result = evaluate_pass_band(x, y, center_wavelength, max_loss_in_pass_band)
+                    if result > 0:
+                        print(result)
+                        mrr.print_parameters()
+                        # title = '{} order MRR'.format(L.size)
+                        # plot(x, y, title)
+                else:
+                    result = 0
+                q.append(result)
+            print(q)
+            print(max(q))
 
 
 def simulate(config):
