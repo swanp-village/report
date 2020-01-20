@@ -17,6 +17,7 @@ def train(config):
     center_wavelength = config['center_wavelength']
     number_of_rings = config['number_of_rings']
     max_loss_in_pass_band = config['max_loss_in_pass_band']
+    required_loss_in_stop_band = config['required_loss_in_stop_band']
     required_FSR = config['FSR']
     n = config['n']
 
@@ -54,7 +55,7 @@ def train(config):
                         center_wavelength,
                         number_of_rings,
                         max_loss_in_pass_band,
-                        -15
+                        required_loss_in_stop_band
                     )
                     result = reward.evaluate_band()
                     if result > 0:
@@ -84,7 +85,7 @@ def train(config):
             center_wavelength,
             number_of_rings,
             max_loss_in_pass_band,
-            -15
+            required_loss_in_stop_band
         )
         result = reward.evaluate_band()
         if result > 0:

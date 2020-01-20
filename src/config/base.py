@@ -5,7 +5,9 @@ config = {
     'number_of_rings': 2,  # リング次数
     'center_wavelength': 1550e-9,  # 中心波長
     'FSR': 200e-9,
+
     'max_loss_in_pass_band': -5,
+    'required_loss_in_stop_band': -15,
 
     'number_of_episodes': 10,
     'number_of_steps': 10,
