@@ -4,11 +4,12 @@ from importlib import import_module
 import argparse
 import numpy as np
 from MRR.reward import Reward, evaluate_ring_combination, init_action
-from MRR.ring import calculate_x, calculate_practical_FSR, find_ring_length, init_K, init_N, calculate_ring_length, calculate_FSR
+from MRR.ring import calculate_x, calculate_practical_FSR, init_K, init_N, calculate_ring_length, calculate_FSR
 
 
 def main(config):
     pass
+
 
 def train(config):
     number_of_episodes = config['number_of_episodes']
