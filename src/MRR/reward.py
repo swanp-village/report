@@ -2,7 +2,7 @@ from typing import List
 import numpy as np
 
 
-def calculate_pass_band_range(x: List[float], y: List[float], max_loss: float) -> List[List[float]]:
+def calculate_pass_band_range(x, y, max_loss):
     pass_band_range = np.array([], dtype=np.int)
     start = 0
     end = x.size - 1
@@ -38,19 +38,72 @@ def get_pass_band(x, y, pass_band_range, center_wavelength):
     return pass_band, cross_talk
 
 
-def evaluate_pass_band(x, y, center_wavelength, max_loss):
-    pass_band_range = calculate_pass_band_range(x, y, max_loss)
+def evaluate_pass_band(x, y, start, end, distance, loss):
+    a = abs(
+        loss * (
+            x[end] - x[start]
+        )
+    )
+    b = abs(
+        sum(
+            loss - y[start:end]
+        ) * distance
+    )
+
+    return b / a
+
+
+def evaluate_stop_band(x, y, start, end, distance, loss, bottom):
+    c = abs(
+        (bottom - loss) * (
+            (x[start] - x[0]) + (x[-1] - x[end])
+        )
+    )
+
+    y1 = np.where(
+        y[0:start] > bottom,
+        loss - y[0:start],
+        loss - bottom
+    )
+    y1 = np.where(
+        y1 > 0,
+        y1,
+        0
+    )
+    y2 = np.where(
+        y[end:-1] > bottom,
+        loss - y[end:-1],
+        loss - bottom
+    )
+    y2 = np.where(
+        y2 > 0,
+        y2,
+        0
+    )
+    d = abs(
+        (
+            sum(y1) + sum(y2)
+        ) * distance
+    )
+
+    return d / c
+
+
+def evaluate_band(x, y, center_wavelength, loss):
+    pass_band_range = calculate_pass_band_range(x, y, loss)
     pass_band, cross_talk = get_pass_band(x, y, pass_band_range, center_wavelength)
-    if pass_band.shape[0] == 1 and cross_talk.shape[0] < 1:
+    # if pass_band.shape[0] == 1 and cross_talk.shape[0] < 1:
+    if pass_band.shape[0] == 1:
         start = pass_band[0][0]
         end = pass_band[0][1]
         distance = x[start] - x[start + 1]
-        a = abs(max_loss * (x[end] - x[start]))
-        b = abs(sum(max_loss - y[start:end]) * distance)
+        bottom = -15
         print('ok')
-        return b / a
+
+        return evaluate_pass_band(x, y, start, end, distance, loss) + evaluate_stop_band(x, y, start, end, distance, loss, bottom)
     else:
         print('failed')
+
         return 0
 
 
