@@ -1,7 +1,8 @@
 import numpy as np
+from random import uniform
 
 
-def evaluate_ring_combination(L, FSR_list, practical_FSR):
+def evaluate_ring_combination(required_FSR, L, FSR_list, practical_FSR):
     print(L)
     print(FSR_list)
     print(practical_FSR)
@@ -10,11 +11,18 @@ def evaluate_ring_combination(L, FSR_list, practical_FSR):
 
 def init_action(number_of_rings):
     I = np.eye(number_of_rings + 1)
-    base = np.matrix([-0.1, -0.05, 0.05, 0.1])
+    base = np.matrix([-0.3, -0.1, -0.05, -0.01, 0.3, 0.1, 0.05, 0.01])
     action = [np.zeros(number_of_rings + 1).tolist()]
     for i in range(number_of_rings + 1):
         a_i = base.T * I[i]
         action.extend(a_i.tolist())
+    action.extend([
+        [
+            uniform(-1, 1)
+            for _ in range(number_of_rings + 1)
+        ]
+        for _ in range(5)
+    ])
 
     return action
 
@@ -38,36 +46,36 @@ class Reward:
         self.bottom = bottom
 
     def calculate_pass_band_range(self):
-        pass_band_range = np.array([], dtype=np.int)
+        pass_band_range = []
         start = 0
         end = self.x.size - 1
-        for i in np.arange(start, end):
+        for i in range(start, end):
             if self.y[i] <= self.loss and self.y[i + 1] > self.loss:  # increase
-                pass_band_range = np.append(pass_band_range, i)
+                pass_band_range.append(i)
             elif self.y[i] >= self.loss and self.y[i + 1] < self.loss:  # decrease
-                if pass_band_range.size > 0:
-                    pass_band_range = np.append(pass_band_range, i)
+                if len(pass_band_range) > 0:
+                    pass_band_range.append(i)
                 else:
-                    pass_band_range = np.append(pass_band_range, [start, i])
+                    pass_band_range.extend([start, i])
 
-        if pass_band_range.size % 2 == 1:
-            pass_band_range = np.append(pass_band_range, end)
+        if len(pass_band_range) % 2 == 1:
+            pass_band_range.append(end)
 
-        pass_band_range = np.reshape(pass_band_range, [pass_band_range.size // 2, 2])
+        pass_band_range = np.reshape(pass_band_range, [len(pass_band_range) // 2, 2])
 
         return pass_band_range
 
     def get_pass_band(self):
-        pass_band = np.array([], dtype=np.int)
-        cross_talk = np.array([], dtype=np.int)
+        pass_band = []
+        cross_talk = []
         for start, end in self.calculate_pass_band_range():
             if self.center_wavelength >= self.x[start] and self.center_wavelength <= self.x[end]:
-                pass_band = np.append(pass_band, [start, end])
+                pass_band.extend([start, end])
             else:
-                cross_talk = np.append(cross_talk, [start, end])
+                cross_talk.extend([start, end])
 
-        pass_band = np.reshape(pass_band, [pass_band.size // 2, 2])
-        cross_talk = np.reshape(cross_talk, [cross_talk.size // 2, 2])
+        pass_band = np.reshape(pass_band, [len(pass_band) // 2, 2])
+        cross_talk = np.reshape(cross_talk, [len(cross_talk) // 2, 2])
 
         return pass_band, cross_talk
 
@@ -77,12 +85,13 @@ class Reward:
         if pass_band.shape[0] == 1:
             start = pass_band[0][0]
             end = pass_band[0][1]
-            print('ok')
-
-            return self.evaluate_pass_band(start, end) + self.evaluate_stop_band(start, end)
+            number_of_cross_talk = cross_talk.shape[0]
+            return (
+                self.evaluate_pass_band(start, end) +
+                self.evaluate_stop_band(start, end) +
+                self.evaluate_cross_talk(number_of_cross_talk)
+            )
         else:
-            print('failed')
-
             return 0
 
     def evaluate_pass_band(self, start, end):
@@ -133,3 +142,6 @@ class Reward:
         )
 
         return d / c
+
+    def evaluate_cross_talk(self, number_of_cross_talk):
+        return number_of_cross_talk * -0.1

@@ -16,6 +16,10 @@ def calculate_ring_length(N, center_wavelength, n):
     return N * center_wavelength / n
 
 
+def calculate_min_N(min_ring_length, center_wavelength, n):
+    return min_ring_length * n / center_wavelength
+
+
 def calculate_FSR(N, center_wavelength):
     return center_wavelength / N
 
@@ -34,31 +38,34 @@ def calculate_practical_FSR(FSR_list: List[float]):
 
 
 def init_N(
-    number_of_rings: int,
-    required_FSR: float,
-    center_wavelength: int
+    number_of_rings,
+    required_FSR,
+    center_wavelength,
+    min_N
 ):
-    ratio = np.array(sample(range(2, 20), number_of_rings))
-    base = randrange(100, 200)
-    N = ratio * base
+    rand_start = 1
+    rand_end = 3
+    ratio = 1 / np.array(sample(range(2, 20), number_of_rings))
+    N_0 = randrange(100, 200)
+    N = ratio * N_0
+    min_N_0 = min_N / min(ratio) + rand_end
     i = 0
-    while i < 10000:
+    while i < 1500:
         i = i + 1
-        N = ratio * base
+        N = ratio * N_0
         FSR_list = calculate_FSR(N, center_wavelength)
         practical_FSR = calculate_practical_FSR(FSR_list)
         if practical_FSR > required_FSR:
             if i > 1000:
                 break
-            base = base + randrange(1, 3)
+            N_0 = N_0 + randrange(rand_start, rand_end)
         else:
-            if base > 3:
-                base = base - randrange(1, 3)
+            if N_0 > min_N_0:
+                N_0 = N_0 - randrange(rand_start, rand_end)
             else:
-                base = base + randrange(10, 20)
+                N_0 = N_0 + randrange(10, 20)
 
-    N = ratio * base
-    print(N)
+    N = ratio * N_0
     return N
 
 
