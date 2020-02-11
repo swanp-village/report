@@ -45,7 +45,8 @@ def init_N(
 ):
     rand_start = 1
     rand_end = 3
-    ratio = 1 / np.array(sample(range(2, 20), number_of_rings))
+    ratio = np.array(sample(range(2, 20), number_of_rings))
+    ratio = (np.lcm.reduce(ratio) / ratio).astype(int)
     N_0 = randrange(100, 200)
     N = ratio * N_0
     min_N_0 = min_N / min(ratio) + rand_end

@@ -5,10 +5,14 @@ import argparse
 import numpy as np
 from MRR.reward import Reward, init_action
 from MRR.ring import calculate_x, calculate_practical_FSR, init_K, init_N, calculate_ring_length, calculate_FSR, calculate_min_N
+from MRR.model import Model
+from random import seed
 
 
 def main(config):
-    pass
+    seed(1)
+    model = Model(config)
+    model.train()
 
 
 def train(config):
@@ -107,8 +111,7 @@ def train(config):
     if result > 0:
         print(result)
         mrr.print_parameters()
-        title = '{} order MRR'.format(L.size)
-        plot(x, y, title)
+        plot(x, y, L.size)
 
 
 def simulate(config):
@@ -122,8 +125,7 @@ def simulate(config):
     mrr.print_parameters()
     x = config['lambda']
     y = mrr.simulate(x)
-    title = '{} order MRR'.format(config['L'].size)
-    plot(x, y, title)
+    plot(x, y, config['L'].size)
 
 
 if __name__ == '__main__':
@@ -143,4 +145,4 @@ if __name__ == '__main__':
         except:
             parser.print_help()
         else:
-            train(config)
+            main(config)
