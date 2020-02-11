@@ -9,12 +9,12 @@ def evaluate_ring_combination(required_FSR, L, FSR_list, practical_FSR):
     return True
 
 
-def init_action(number_of_rings):
-    I = np.eye(number_of_rings + 1)
-    base = np.matrix([-0.3, -0.1, -0.05, -0.01, 0.3, 0.1, 0.05, 0.01])
+def generate_action(number_of_rings):
     action = [np.zeros(number_of_rings + 1).tolist()]
+    I = np.eye(number_of_rings + 1)
+    v = np.matrix([-0.3, -0.1, -0.05, -0.01, 0.3, 0.1, 0.05, 0.01])
     for i in range(number_of_rings + 1):
-        a_i = base.T * I[i]
+        a_i = v.T * I[i]
         action.extend(a_i.tolist())
     action.extend([
         [

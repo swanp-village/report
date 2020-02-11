@@ -1,7 +1,7 @@
 import numpy as np
 from MRR.simulator import MRR
 from MRR.gragh import plot
-from MRR.reward import Reward, init_action
+from MRR.reward import Reward, generate_action
 from MRR.ring import calculate_x, calculate_practical_FSR, calculate_ring_length, init_K, init_N, calculate_FSR, calculate_min_N
 from multiprocessing import Pool
 
@@ -54,7 +54,7 @@ class Model:
             for m_K in range(self.number_of_episodes_in_K):
                 print('episode {}-{}'.format(m_L + 1, m_K + 1))
                 self.K = init_K(self.number_of_rings)
-                action = init_action(self.number_of_rings)
+                action = generate_action(self.number_of_rings)
 
                 for t in range(self.number_of_steps):
                     print('step {}'.format(t + 1))
