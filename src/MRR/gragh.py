@@ -1,8 +1,9 @@
 import matplotlib.pyplot as plt
+from matplotlib import rc
 
 
-def plot(x, y, number_of_rings, img_path='img/out.png'):
-    print(number_of_rings == 2)
+def plot(x, y, number_of_rings, img_path='img/out.pdf'):
+    rc('text', usetex=True)
     if number_of_rings == 1:
         title = '{}st order MRR'.format(number_of_rings)
     elif number_of_rings == 2:

@@ -66,9 +66,9 @@ class Model:
                     else:
                         self.K = self.K + action[np.argmax(Q)]
                 _K_list.append(self.K.tolist())
-                _Q_list.append(Q[np.argmax(Q)])
+                _Q_list.append(np.max(Q))
             self.L_list.append(L)
-            self.Q_list.append(_Q_list[np.argmax(_Q_list)])
+            self.Q_list.append(np.max(_Q_list))
             self.K_list.append(_K_list[np.argmax(_Q_list)])
         mrr = MRR(
             self.eta,
