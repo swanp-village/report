@@ -2,9 +2,6 @@ from MRR.simulator import MRR
 from MRR.gragh import plot
 from importlib import import_module
 import argparse
-import numpy as np
-from MRR.reward import Reward, init_action
-from MRR.ring import calculate_x, calculate_practical_FSR, init_K, init_N, calculate_ring_length, calculate_FSR, calculate_min_N
 from MRR.model import Model
 from random import seed
 

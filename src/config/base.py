@@ -11,7 +11,7 @@ config = {
     'required_loss_in_stop_band': -20,
     '3db_band': 1e-9,
 
-    'number_of_episodes_in_L': 100,
-    'number_of_episodes_in_K': 100,
+    'number_of_episodes_in_L': 50,
+    'number_of_episodes_in_K': 50,
     'number_of_steps': 100,
 }

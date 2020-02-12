@@ -104,7 +104,6 @@ class Model:
             )
             x = calculate_x(self.center_wavelength, self.FSR)
             y = mrr.simulate(x)
-
             reward = Reward(
                 x,
                 y,

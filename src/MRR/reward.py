@@ -1,12 +1,6 @@
 import numpy as np
 from random import uniform
-
-
-def evaluate_ring_combination(required_FSR, L, FSR_list, practical_FSR):
-    print(L)
-    print(FSR_list)
-    print(practical_FSR)
-    return True
+from time import time
 
 
 def generate_action(number_of_rings):
@@ -49,19 +43,16 @@ class Reward:
         pass_band_range = []
         start = 0
         end = self.x.size - 1
-        for i in range(start, end):
-            if self.y[i] <= self.loss and self.y[i + 1] > self.loss:  # increase
-                pass_band_range.append(i)
-            elif self.y[i] >= self.loss and self.y[i + 1] < self.loss:  # decrease
-                if len(pass_band_range) > 0:
-                    pass_band_range.append(i)
-                else:
-                    pass_band_range.extend([start, i])
-
-        if len(pass_band_range) % 2 == 1:
-            pass_band_range.append(end)
-
-        pass_band_range = np.reshape(pass_band_range, [len(pass_band_range) // 2, 2])
+        a = np.where(self.y <= self.loss, True, False)
+        b = np.append(a[1:], a[-1])
+        pass_band_range = np.where(np.logical_xor(a, b))[0]
+        if pass_band_range.size == 0:
+            return pass_band_range
+        if not a[pass_band_range][0]:
+            pass_band_range = np.append(start, pass_band_range)
+        if a[pass_band_range][-1]:
+            pass_band_range = np.append(pass_band_range, end)
+        pass_band_range = np.reshape(pass_band_range, [pass_band_range.size // 2, 2])
 
         return pass_band_range
 
