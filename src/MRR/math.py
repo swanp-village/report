@@ -1,4 +1,3 @@
-from math import isclose
 from typing import List
 import numpy as np
 from functools import reduce

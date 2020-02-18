@@ -1,7 +1,6 @@
 import numpy as np
 from typing import List
 from .math import lcm
-from math import isclose
 from random import randrange, random, sample
 
 

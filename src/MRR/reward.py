@@ -1,6 +1,5 @@
 import numpy as np
 from random import uniform
-from time import time
 
 
 def generate_action(number_of_rings):
@@ -52,7 +51,10 @@ class Reward:
             pass_band_range = np.append(start, pass_band_range)
         if a[pass_band_range][-1]:
             pass_band_range = np.append(pass_band_range, end)
-        pass_band_range = np.reshape(pass_band_range, [pass_band_range.size // 2, 2])
+        pass_band_range = np.reshape(
+            pass_band_range,
+            [pass_band_range.size // 2, 2]
+        )
 
         return pass_band_range
 
@@ -60,7 +62,10 @@ class Reward:
         pass_band = []
         cross_talk = []
         for start, end in self.calculate_pass_band_range():
-            if self.center_wavelength >= self.x[start] and self.center_wavelength <= self.x[end]:
+            if (
+                self.center_wavelength >= self.x[start]
+                and self.center_wavelength <= self.x[end]
+            ):
                 pass_band.extend([start, end])
             else:
                 cross_talk.extend([start, end])
@@ -72,7 +77,6 @@ class Reward:
 
     def evaluate_band(self):
         pass_band, cross_talk = self.get_pass_band()
-        # if pass_band.shape[0] == 1 and cross_talk.shape[0] < 1:
         if pass_band.shape[0] == 1:
             start = pass_band[0][0]
             end = pass_band[0][1]

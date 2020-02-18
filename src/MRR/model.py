@@ -2,7 +2,15 @@ import numpy as np
 from MRR.simulator import MRR
 from MRR.gragh import plot
 from MRR.reward import Reward, generate_action
-from MRR.ring import calculate_x, calculate_practical_FSR, calculate_ring_length, init_K, init_N, calculate_FSR, calculate_min_N
+from MRR.ring import (
+    calculate_x,
+    calculate_practical_FSR,
+    calculate_ring_length,
+    init_K,
+    init_N,
+    calculate_FSR,
+    calculate_min_N
+)
 from multiprocessing import Pool
 
 
@@ -35,7 +43,12 @@ class Model:
     def train(self):
         for m_L in range(self.number_of_episodes_in_L):
             for i in range(100):
-                N = init_N(self.number_of_rings, self.required_FSR, self.center_wavelength, self.min_N)
+                N = init_N(
+                    self.number_of_rings,
+                    self.required_FSR,
+                    self.center_wavelength,
+                    self.min_N
+                )
                 L = calculate_ring_length(N, self.center_wavelength, self.n)
                 FSR_list = calculate_FSR(N, self.center_wavelength)
                 FSR = calculate_practical_FSR(FSR_list)

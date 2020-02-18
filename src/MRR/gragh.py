@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 from matplotlib import rc
 from matplotlib.ticker import FuncFormatter
 
+
 @FuncFormatter
 def formatter(x, pos):
     return "%d" % x

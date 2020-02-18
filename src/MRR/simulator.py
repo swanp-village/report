@@ -1,15 +1,14 @@
 import numpy as np
-from typing import List
 
 
 class MRR:
     def __init__(
         self,
-        eta: float,
-        n: float,
-        alpha: float,
-        K: List[float],
-        L: List[float]
+        eta,
+        n,
+        alpha,
+        K,
+        L
     ):
         self.eta = eta
         self.n = n
@@ -17,22 +16,22 @@ class MRR:
         self.K = K
         self.L = L
 
-    def _C(self, K_k: float):
+    def _C(self, K_k):
         return 1 / (-1j * self.eta * np.sqrt(K_k)) * np.matrix([
             [1, - self.eta * np.sqrt(self.eta - K_k)],
             [np.sqrt(self.eta - K_k) * self.eta, - self.eta ** 2]
         ])
 
-    def _R(self, a_k: float, L_k: float, l: float):
+    def _R(self, a_k, L_k, l):
         return np.matrix([
             [np.exp(1j * np.pi * L_k * self.n / l) / np.sqrt(a_k), 0],
             [0, np.exp(-1j * np.pi * L_k * self.n / l) * np.sqrt(a_k)]
         ])
 
-    def _reverse(self, arr: List):
+    def _reverse(self, arr):
         return arr[::-1]
 
-    def _M(self, l: float):
+    def _M(self, l):
         product = 1
         for _K, _a, _L in zip(
             self._reverse(self.K[1:]),
@@ -43,7 +42,7 @@ class MRR:
         product = product * self._C(self.K[0])
         return product
 
-    def _D(self, l: float):
+    def _D(self, l):
         return 1 / self._M(l)[0, 0]
 
     def print_parameters(self):
@@ -53,6 +52,6 @@ class MRR:
         print('K:', self.K)
         print('L:', self.L)
 
-    def simulate(self, l: float):
+    def simulate(self, l):
         y = 20 * np.log10(np.abs(self._D(l)))
         return y.reshape(y.size)

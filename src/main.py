@@ -32,7 +32,9 @@ if __name__ == '__main__':
     args = vars(parser.parse_args())
     if args['config']:
         try:
-            config = import_module('config.simulate.{}'.format(args['config'])).config
+            config = import_module(
+                'config.simulate.{}'.format(args['config'])
+            ).config
         except:
             parser.print_help()
         else:
