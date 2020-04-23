@@ -5,7 +5,7 @@ from matplotlib.ticker import FuncFormatter
 
 @FuncFormatter
 def formatter(x, pos):
-    return "%d" % x
+    return "%.1f" % x
 
 
 def plot(x, y, number_of_rings, img_path='img/out.pdf'):
@@ -19,7 +19,7 @@ def plot(x, y, number_of_rings, img_path='img/out.pdf'):
         title = '{}rd order MRR'.format(number_of_rings)
     else:
         title = '{}th order MRR'.format(number_of_rings)
-    fig, ax = plt.subplots()
+    fig, ax = plt.subplots(figsize=(8, 6))
     ax.semilogx(x * 1e9, y)
     ax.set(
         xlabel='Wavelength[nm]',
@@ -29,6 +29,7 @@ def plot(x, y, number_of_rings, img_path='img/out.pdf'):
     ax.axis([None, None, None, 5])
     ax.xaxis.set_major_formatter(formatter)
     ax.xaxis.set_minor_formatter(formatter)
+    ax.set_ylim([-60, 0])
     ax.grid(which='both')
     fig.savefig(img_path)
     plt.show()

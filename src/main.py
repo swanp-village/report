@@ -4,6 +4,7 @@ from importlib import import_module
 import argparse
 from MRR.model import Model
 from random import seed
+from MRR.reward import Reward
 from MRR.ring import calculate_N, calculate_practical_FSR, calculate_FSR, calculate_x
 import csv
 
@@ -32,6 +33,25 @@ def simulate(config):
         )
         x = calculate_x(config['center_wavelength'], FSR)
     y = mrr.simulate(x)
+    if 'max_loss_in_pass_band' in config:
+        max_loss_in_pass_band = config['max_loss_in_pass_band']
+    else:
+        max_loss_in_pass_band = -10
+    if 'required_loss_in_stop_band' in config:
+        required_loss_in_stop_band = config['required_loss_in_stop_band']
+    else:
+        required_loss_in_stop_band = -20
+
+    reward = Reward(
+        x,
+        y,
+        config['center_wavelength'],
+        len(config['L']),
+        max_loss_in_pass_band,
+        required_loss_in_stop_band
+    )
+    result = reward.evaluate_band()
+    print(result)
     plot(x, y, config['L'].size)
     with open('img/out.tsv', 'w') as tsvfile:
         tsv_writer = csv.writer(tsvfile, delimiter='\t')
