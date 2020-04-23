@@ -5,7 +5,7 @@ from functools import reduce
 
 def is_zero(x: float, y: float) -> bool:
     """
-        x > y
+        x > y > 0
     """
     result = x / y - np.floor(x / y)
     return result < 0.01
@@ -23,7 +23,9 @@ def _gcd(x: float, y: float) -> float:
     """
         x > y
     """
-    if is_zero(x, y):
+    if y == 0:
+        return x
+    elif is_zero(x, y):
         return y
     else:
         return _gcd(y, mod(x, y))

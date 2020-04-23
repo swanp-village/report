@@ -23,6 +23,10 @@ def calculate_FSR(N, center_wavelength):
     return center_wavelength / N
 
 
+def calculate_N(L, center_wavelength, n):
+    return L * n / center_wavelength
+
+
 def find_ring_length(center_wavelength, n, max_N):
     N = np.arange(max_N)
     N[0] = 1

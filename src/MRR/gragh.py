@@ -10,6 +10,7 @@ def formatter(x, pos):
 
 def plot(x, y, number_of_rings, img_path='img/out.pdf'):
     rc('text', usetex=True)
+    rc('font', size=16)
     if number_of_rings == 1:
         title = '{}st order MRR'.format(number_of_rings)
     elif number_of_rings == 2:
