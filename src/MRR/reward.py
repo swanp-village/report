@@ -27,22 +27,24 @@ class Reward:
         y,
         center_wavelength,
         number_of_rings,
-        loss,
-        bottom
+        max_loss_in_pass_band,
+        required_loss_in_stop_band,
+        length_of_3db_band
     ):
         self.x = x
         self.y = y
         self.distance = x[1] - x[0]
         self.center_wavelength = center_wavelength
         self.number_of_rings = number_of_rings
-        self.loss = loss
-        self.bottom = bottom
+        self.max_loss_in_pass_band = max_loss_in_pass_band
+        self.required_loss_in_stop_band = required_loss_in_stop_band
+        self.length_of_3db_band = length_of_3db_band
 
     def calculate_pass_band_range(self):
         pass_band_range = []
         start = 0
         end = self.x.size - 1
-        a = np.where(self.y <= self.loss, True, False)
+        a = np.where(self.y <= self.max_loss_in_pass_band, True, False)
         b = np.append(a[1:], a[-1])
         pass_band_range = np.where(np.logical_xor(a, b))[0]
         if pass_band_range.size == 0:
@@ -82,22 +84,37 @@ class Reward:
             end = pass_band[0][1]
             number_of_cross_talk = cross_talk.shape[0]
             return (
-                self.evaluate_pass_band(start, end) +
-                self.evaluate_stop_band(start, end) +
-                self.evaluate_cross_talk(number_of_cross_talk)
+                (
+                    self.evaluate_pass_band(start, end) +
+                    self.evaluate_stop_band(start, end) +
+                    self.evaluate_3db_band(start, end)
+                ) * self.evaluate_cross_talk(number_of_cross_talk)
             )
         else:
             return 0
 
+    def evaluate_3db_band(self, start, end):
+        border = np.max(self.y) - 3
+        a = np.where(self.y[start:end] <= border, True, False)
+        b = np.append(a[1:], a[-1])
+        index = np.where(np.logical_xor(a, b))[0]
+        if index.size == 0:
+            return 0
+        distance = self.distance * (index[-1] - index[0])
+        if distance > self.length_of_3db_band:
+            return 1
+        else:
+            return distance / self.length_of_3db_band
+
     def evaluate_pass_band(self, start, end):
         a = abs(
-            self.loss * (
+            self.max_loss_in_pass_band * (
                 self.x[end] - self.x[start]
             )
         )
         b = abs(
             sum(
-                self.loss - self.y[start:end]
+                self.max_loss_in_pass_band - self.y[start:end]
             ) * self.distance
         )
 

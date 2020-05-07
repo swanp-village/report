@@ -41,6 +41,10 @@ def simulate(config):
         required_loss_in_stop_band = config['required_loss_in_stop_band']
     else:
         required_loss_in_stop_band = -20
+    if 'length_of_3db_band' in config:
+        length_of_3db_band = config['length_of_3db_band']
+    else:
+        length_of_3db_band = 1e-9
 
     reward = Reward(
         x,
@@ -48,7 +52,8 @@ def simulate(config):
         config['center_wavelength'],
         len(config['L']),
         max_loss_in_pass_band,
-        required_loss_in_stop_band
+        required_loss_in_stop_band,
+        length_of_3db_band
     )
     result = reward.evaluate_band()
     print(result)

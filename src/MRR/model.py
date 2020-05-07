@@ -27,6 +27,7 @@ class Model:
         self.min_ring_length = config['min_ring_length']
         self.max_loss_in_pass_band = config['max_loss_in_pass_band']
         self.required_loss_in_stop_band = config['required_loss_in_stop_band']
+        self.length_of_3db_band = config['length_of_3db_band']
         self.required_FSR = config['FSR']
         self.alpha = config['alpha']
         self.n = config['n']
@@ -74,6 +75,7 @@ class Model:
                     print(self.K)
                     with Pool(10) as p:
                         Q = p.map(self.calc_Q, action)
+                    print(np.max(Q))
                     if np.max(Q) <= 0 or np.argmax(Q) == 0:
                         break
                     else:
@@ -99,6 +101,7 @@ class Model:
             self.number_of_rings,
             self.max_loss_in_pass_band,
             self.required_loss_in_stop_band
+            self.length_of_3db_band
         )
         result = reward.evaluate_band()
         if result > 0:
@@ -124,6 +127,7 @@ class Model:
                 self.number_of_rings,
                 self.max_loss_in_pass_band,
                 self.required_loss_in_stop_band
+                self.required_loss_in_stop_band,
             )
             result = reward.evaluate_band()
         else:
