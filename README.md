@@ -1,14 +1,19 @@
 # MRR
 
-## 仮想環境
+## OS
 
-### 作成
+recommend for using Linux / macOS
+
+## 仮想環境 / virtual env
+ref: https://docs.python.org/3/library/venv.html
+
+### 作成 / make
 
 ```bash
 python3 -m venv .
 ```
 
-### 有効化
+### 有効化 / activate
 
 ```bash
 . bin/activate
@@ -19,9 +24,20 @@ python3 -m venv .
 ```bash
 pip3 install -r requirements.txt
 ```
-## 実行
+## 実行 / execute
 
-`-c`オプションは`src/config/`にあるpythonファイルを指定する．
+### 最適化 / optimize
+
+configuration file: `src/config/base.py`
+
+```bash
+cd src
+python main.py
+```
+
+### シミュレーション / simulate
+
+`-c`オプションは`src/config/simulate`にあるpythonファイルを指定する．
 
 ```bash
 cd src
