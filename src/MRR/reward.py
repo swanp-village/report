@@ -100,11 +100,8 @@ class Reward:
         index = np.where(np.logical_xor(a, b))[0]
         if index.size == 0:
             return 0
-        distance = self.distance * (index[-1] - index[0])
-        if distance > self.length_of_3db_band:
-            return 1
-        else:
-            return distance / self.length_of_3db_band
+        distance = abs(self.distance * (index[-1] - index[0]))
+        return distance / self.length_of_3db_band
 
     def evaluate_pass_band(self, start, end):
         a = abs(
@@ -122,15 +119,15 @@ class Reward:
 
     def evaluate_stop_band(self, start, end):
         c = abs(
-            (self.bottom - self.loss) * (
+            (self.required_loss_in_stop_band - self.max_loss_in_pass_band) * (
                 (self.x[start] - self.x[0]) + (self.x[-1] - self.x[end])
             )
         )
 
         y1 = np.where(
-            self.y[0:start] > self.bottom,
-            self.loss - self.y[0:start],
-            self.loss - self.bottom
+            self.y[0:start] > self.required_loss_in_stop_band,
+            self.max_loss_in_pass_band - self.y[0:start],
+            self.max_loss_in_pass_band - self.required_loss_in_stop_band
         )
         y1 = np.where(
             y1 > 0,
@@ -138,9 +135,9 @@ class Reward:
             0
         )
         y2 = np.where(
-            self.y[end:-1] > self.bottom,
-            self.loss - self.y[end:-1],
-            self.loss - self.bottom
+            self.y[end:-1] > self.required_loss_in_stop_band,
+            self.max_loss_in_pass_band - self.y[end:-1],
+            self.max_loss_in_pass_band - self.required_loss_in_stop_band
         )
         y2 = np.where(
             y2 > 0,
@@ -156,4 +153,6 @@ class Reward:
         return d / c
 
     def evaluate_cross_talk(self, number_of_cross_talk):
-        return number_of_cross_talk * -0.1
+        if number_of_cross_talk > 0:
+            return 0.8
+        return 1
