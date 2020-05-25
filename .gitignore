@@ -128,4 +128,5 @@ include/
 share/
 etc/
 pyvenv.cfg
-img/out.png
+src/img
+src/result
