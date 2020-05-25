@@ -1,8 +1,17 @@
 # MRR
 
+## Need to install
+
+[Python 3](https://www.python.org/downloads/)
+Git
+
 ## OS
 
 recommend for using Linux / macOS
+
+## Download this repository
+
+git clone https://github.com/nimiusrd/MRR.git
 
 ## 仮想環境 / virtual env
 ref: https://docs.python.org/3/library/venv.html
