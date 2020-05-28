@@ -15,6 +15,13 @@ recommend for using Linux / macOS
 git clone https://github.com/nimiusrd/MRR.git
 ```
 
+## Update this repository
+
+```bash
+git fetch origin master
+git merge
+```
+
 ## 仮想環境 / virtual env
 ref: https://docs.python.org/3/library/venv.html
 
@@ -32,7 +39,7 @@ Run this command before execution.
 . bin/activate
 ```
 
-## install modules
+## Install modules
 
 This program uses numpy, matplotlib, and so on.
 Need to install modules from pip.
