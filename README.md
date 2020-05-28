@@ -19,7 +19,7 @@ git clone https://github.com/nimiusrd/MRR.git
 
 ```bash
 git fetch origin master
-git merge
+git merge origin master
 ```
 
 ## 仮想環境 / virtual env
