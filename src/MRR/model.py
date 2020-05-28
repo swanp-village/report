@@ -13,6 +13,7 @@ from MRR.ring import (
     calculate_N
 )
 from multiprocessing import Pool
+from MRR.logger import Logger
 
 
 class Model:
@@ -20,6 +21,8 @@ class Model:
         self,
         config
     ):
+        self.logger = Logger()
+        self.logger.save_config(config)
         self.number_of_episodes_in_L = config['number_of_episodes_in_L']
         self.number_of_episodes_in_K = config['number_of_episodes_in_K']
         self.number_of_steps = config['number_of_steps']
@@ -111,7 +114,7 @@ class Model:
         if result > 0:
             print(result)
             mrr.print_parameters()
-            plot(x, y, L.size)
+            plot(x, y, L.size, self.logger.generate_image_path())
 
     def calc_Q(self, a):
         if np.all(np.where((self.K + a > 0) & (self.K + a < 1), True, False)):

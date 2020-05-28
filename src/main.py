@@ -5,8 +5,13 @@ import argparse
 from MRR.model import Model
 from random import seed
 from MRR.reward import Reward
-from MRR.ring import calculate_N, calculate_practical_FSR, calculate_FSR, calculate_x
-import csv
+from MRR.ring import (
+    calculate_N,
+    calculate_practical_FSR,
+    calculate_FSR,
+    calculate_x
+)
+from MRR.logger import Logger
 
 
 def main(config):
@@ -16,6 +21,7 @@ def main(config):
 
 
 def simulate(config):
+    logger = Logger()
     mrr = MRR(
         config['eta'],
         config['n'],
@@ -32,24 +38,16 @@ def simulate(config):
             calculate_FSR(N, config['center_wavelength'])
         )
         x = calculate_x(config['center_wavelength'], FSR)
-    y = mrr.simulate(x)
-    if 'max_loss_in_pass_band' in config:
-        max_loss_in_pass_band = config['max_loss_in_pass_band']
-    else:
-        max_loss_in_pass_band = -10
-    if 'required_loss_in_stop_band' in config:
-        required_loss_in_stop_band = config['required_loss_in_stop_band']
-    else:
-        required_loss_in_stop_band = -20
-    if 'length_of_3db_band' in config:
-        length_of_3db_band = config['length_of_3db_band']
-    else:
-        length_of_3db_band = 1e-9
 
+    y = mrr.simulate(x)
+    max_loss_in_pass_band = config.get('max_loss_in_pass_band', -10)
+    required_loss_in_stop_band = config.get('required_loss_in_stop_band', -20)
+    length_of_3db_band = config.get('length_of_3db_band', 1e-9)
+    center_wavelength = config.get('center_wavelength', 1550e-9)
     reward = Reward(
         x,
         y,
-        config['center_wavelength'],
+        center_wavelength,
         len(config['L']),
         max_loss_in_pass_band,
         required_loss_in_stop_band,
@@ -57,11 +55,8 @@ def simulate(config):
     )
     result = reward.evaluate_band()
     print(result)
-    plot(x, y, config['L'].size)
-    with open('img/out.tsv', 'w') as tsvfile:
-        tsv_writer = csv.writer(tsvfile, delimiter='\t')
-        tsv_writer.writerows(zip(x.tolist(), y.tolist()))
-
+    plot(x, y, config['L'].size, logger.generate_image_path())
+    logger.save_data_as_csv(x, y)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

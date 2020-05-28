@@ -129,4 +129,4 @@ share/
 etc/
 pyvenv.cfg
 src/img
-src/result
+result
