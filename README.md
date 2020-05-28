@@ -11,7 +11,9 @@ recommend for using Linux / macOS
 
 ## Download this repository
 
+```bash
 git clone https://github.com/nimiusrd/MRR.git
+```
 
 ## 仮想環境 / virtual env
 ref: https://docs.python.org/3/library/venv.html
