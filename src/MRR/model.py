@@ -47,17 +47,14 @@ class Model:
 
     def train(self):
         for m_L in range(self.number_of_episodes_in_L):
-            # for i in range(100):
-            for i in range(1):
-                # N = init_N(
-                #     self.number_of_rings,
-                #     self.required_FSR,
-                #     self.center_wavelength,
-                #     self.min_N
-                # )
-                L = np.array([0.00018269] * self.number_of_rings)
-                N = calculate_N(L, self.center_wavelength, self.n)
-                # L = calculate_ring_length(N, self.center_wavelength, self.n)
+            for i in range(100):
+                N = init_N(
+                    self.number_of_rings,
+                    self.required_FSR,
+                    self.center_wavelength,
+                    self.min_N
+                )
+                L = calculate_ring_length(N, self.center_wavelength, self.n)
                 FSR_list = calculate_FSR(N, self.center_wavelength)
                 FSR = calculate_practical_FSR(FSR_list)
                 if FSR > self.required_FSR:
