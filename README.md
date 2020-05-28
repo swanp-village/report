@@ -3,7 +3,7 @@
 ## Need to install
 
 [Python 3](https://www.python.org/downloads/)
-Git
+[Git](https://git-scm.com/)
 
 ## OS
 
