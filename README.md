@@ -20,6 +20,8 @@ ref: https://docs.python.org/3/library/venv.html
 
 ### 作成 / make
 
+Run this command before execution.
+
 ```bash
 python3 -m venv .
 ```
@@ -30,7 +32,10 @@ python3 -m venv .
 . bin/activate
 ```
 
-## install
+## install modules
+
+This program uses numpy, matplotlib, and so on.
+Need to install modules from pip.
 
 ```bash
 pip3 install -r requirements.txt
