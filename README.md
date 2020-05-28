@@ -20,13 +20,13 @@ ref: https://docs.python.org/3/library/venv.html
 
 ### 作成 / make
 
-Run this command before execution.
-
 ```bash
 python3 -m venv .
 ```
 
 ### 有効化 / activate
+
+Run this command before execution.
 
 ```bash
 . bin/activate
