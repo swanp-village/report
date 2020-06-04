@@ -12,6 +12,6 @@ config = {
     'length_of_3db_band': 1e-9,
 
     'number_of_episodes_in_L': 1,
-    'number_of_episodes_in_K': 10,
+    'number_of_episodes_in_K': 50,
     'number_of_steps': 1000,
 }
