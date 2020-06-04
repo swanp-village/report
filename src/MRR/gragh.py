@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 from matplotlib import rc
 from matplotlib.ticker import FuncFormatter
+import numpy as np
 
 
 @FuncFormatter
@@ -8,7 +9,12 @@ def formatter(x, pos):
     return "%.1f" % x
 
 
-def plot(x, y, number_of_rings, img_path='img/out.pdf'):
+def plot(xs, ys, number_of_rings, img_path='img/out.pdf'):
+    xs = np.array(xs)
+    ys = np.array(ys)
+    if xs.ndim == 1:
+        xs = np.array([xs])
+        ys = np.array([ys])
     rc('text', usetex=True)
     rc('font', size=16)
     if number_of_rings == 1:
@@ -20,7 +26,8 @@ def plot(x, y, number_of_rings, img_path='img/out.pdf'):
     else:
         title = '{}th order MRR'.format(number_of_rings)
     fig, ax = plt.subplots(figsize=(8, 6))
-    ax.semilogx(x * 1e9, y)
+    for i in range(xs.shape[0]):
+        ax.semilogx(xs[i] * 1e9, ys[i])
     ax.set(
         xlabel='Wavelength[nm]',
         ylabel='Drop Port Power [dB]',

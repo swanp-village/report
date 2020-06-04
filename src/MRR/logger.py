@@ -16,11 +16,11 @@ class Logger:
         src = json.dumps(config, indent=4)
         self.target.joinpath('config.json').write_text(src)
 
-    def generate_image_path(self):
-        return self.target.joinpath('out.pdf')
+    def generate_image_path(self, name='out'):
+        return self.target.joinpath('{}.pdf'.format(name))
 
-    def save_data_as_csv(self, x, y):
-        path = self.target.joinpath('out.csv')
+    def save_data_as_csv(self, x, y, name='out'):
+        path = self.target.joinpath('{}.csv'.format(name))
         with open(path, 'w') as tsvfile:
             tsv_writer = csv.writer(tsvfile, delimiter='\t')
             tsv_writer.writerows(zip(x.tolist(), y.tolist()))

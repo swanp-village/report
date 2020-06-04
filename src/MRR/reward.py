@@ -100,7 +100,9 @@ class Reward:
         index = np.where(np.logical_xor(a, b))[0]
         if index.size == 0:
             return 0
-        distance = abs(self.distance * (index[-1] - index[0]))
+        distance = self.distance * (index[-1] - index[0])
+        if distance > self.length_of_3db_band:
+            return (2 * self.length_of_3db_band - distance) / self.length_of_3db_band
         return distance / self.length_of_3db_band
 
     def evaluate_pass_band(self, start, end):
