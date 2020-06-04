@@ -12,6 +12,8 @@ from MRR.ring import (
     calculate_x
 )
 from MRR.logger import Logger
+from copy import deepcopy
+import numpy as np
 
 
 def main(config):
@@ -20,57 +22,66 @@ def main(config):
     model.train()
 
 
-def simulate(config):
+def simulate(config_list):
     logger = Logger()
-    mrr = MRR(
-        config['eta'],
-        config['n'],
-        config['alpha'],
-        config['K'],
-        config['L']
-    )
-    mrr.print_parameters()
-    if 'lambda' in config:
-        x = config['lambda']
-    else:
-        N = calculate_N(config['L'], config['center_wavelength'], config['n'])
-        FSR = calculate_practical_FSR(
-            calculate_FSR(N, config['center_wavelength'])
-        )
-        x = calculate_x(config['center_wavelength'], FSR)
+    xs = []
+    ys = []
 
-    y = mrr.simulate(x)
-    max_loss_in_pass_band = config.get('max_loss_in_pass_band', -10)
-    required_loss_in_stop_band = config.get('required_loss_in_stop_band', -20)
-    length_of_3db_band = config.get('length_of_3db_band', 1e-9)
-    center_wavelength = config.get('center_wavelength', 1550e-9)
-    reward = Reward(
-        x,
-        y,
-        center_wavelength,
-        len(config['L']),
-        max_loss_in_pass_band,
-        required_loss_in_stop_band,
-        length_of_3db_band
-    )
-    result = reward.evaluate_band()
-    print(result)
-    plot(x, y, config['L'].size, logger.generate_image_path())
-    logger.save_data_as_csv(x, y)
+    for config in config_list:
+        mrr = MRR(
+            config['eta'],
+            config['n'],
+            config['alpha'],
+            config['K'],
+            config['L']
+        )
+        mrr.print_parameters()
+        if 'lambda' in config:
+            x = config['lambda']
+        else:
+            N = calculate_N(config['L'], config['center_wavelength'], config['n'])
+            FSR = calculate_practical_FSR(
+                calculate_FSR(N, config['center_wavelength'])
+            )
+            x = calculate_x(config['center_wavelength'], FSR)
+
+        y = mrr.simulate(x)
+        max_loss_in_pass_band = config.get('max_loss_in_pass_band', -10)
+        required_loss_in_stop_band = config.get('required_loss_in_stop_band', -20)
+        length_of_3db_band = config.get('length_of_3db_band', 1e-9)
+        center_wavelength = config.get('center_wavelength', 1550e-9)
+        reward = Reward(
+            x,
+            y,
+            center_wavelength,
+            len(config['L']),
+            max_loss_in_pass_band,
+            required_loss_in_stop_band,
+            length_of_3db_band
+        )
+        result = reward.evaluate_band()
+        print(result)
+        logger.save_data_as_csv(x, y, config['name'])
+        xs.append(deepcopy(x))
+        ys.append(deepcopy(y))
+    plot(xs, ys, config['L'].size, logger.generate_image_path(config['name']))
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('-c', '--config', help='config file path')
+    parser.add_argument('-c', '--config', help='config file path', nargs='*')
     args = vars(parser.parse_args())
     if args['config']:
         try:
-            config = import_module(
-                'config.simulate.{}'.format(args['config'])
-            ).config
+            config_list = []
+            for c in args['config']:
+                config = import_module('config.simulate.{}'.format(c)).config
+                config['name'] = c
+                config_list.append(config)
         except:
             parser.print_help()
         else:
-            simulate(config)
+            simulate(config_list)
     else:
         try:
             config = import_module('config.base').config
