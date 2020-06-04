@@ -20,7 +20,7 @@ class Logger:
         return self.target.joinpath('{}.pdf'.format(name))
 
     def save_data_as_csv(self, x, y, name='out'):
-        path = self.target.joinpath('{}.csv'.format(name))
+        path = self.target.joinpath('{}.tsv'.format(name))
         with open(path, 'w') as tsvfile:
             tsv_writer = csv.writer(tsvfile, delimiter='\t')
             tsv_writer.writerows(zip(x.tolist(), y.tolist()))
