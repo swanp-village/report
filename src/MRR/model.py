@@ -2,16 +2,7 @@ import numpy as np
 from MRR.simulator import MRR
 from MRR.gragh import plot
 from MRR.reward import Reward, generate_action
-from MRR.ring import (
-    calculate_x,
-    calculate_practical_FSR,
-    calculate_ring_length,
-    init_K,
-    init_N,
-    calculate_FSR,
-    calculate_min_N,
-    calculate_N
-)
+from MRR.ring import Ring
 from multiprocessing import Pool
 from MRR.logger import Logger
 
@@ -28,19 +19,20 @@ class Model:
         self.number_of_steps = config['number_of_steps']
         self.center_wavelength = config['center_wavelength']
         self.number_of_rings = config['number_of_rings']
-        self.min_ring_length = config['min_ring_length']
         self.max_loss_in_pass_band = config['max_loss_in_pass_band']
         self.required_loss_in_stop_band = config['required_loss_in_stop_band']
         self.length_of_3db_band = config['length_of_3db_band']
         self.required_FSR = config['FSR']
         self.alpha = config['alpha']
-        self.n = config['n']
         self.eta = config['eta']
-        self.min_N = calculate_min_N(
-            self.min_ring_length,
-            self.center_wavelength,
-            self.n
-        )
+        self.n_eq = config['n_eq']
+        self.ring = Ring({
+            'center_wavelength': config['center_wavelength'],
+            'min_ring_length': config['min_ring_length'],
+            'number_of_rings': config['number_of_rings'],
+            'n_eff': config['n_eff'],
+            'n_eq': self.n_eq
+        })
         self.L_list = []
         self.K_list = []
         self.Q_list = []
@@ -48,15 +40,11 @@ class Model:
     def train(self):
         for m_L in range(self.number_of_episodes_in_L):
             for i in range(100):
-                N = init_N(
-                    self.number_of_rings,
-                    self.required_FSR,
-                    self.center_wavelength,
-                    self.min_N
+                N = self.ring.init_N(
+                    self.required_FSR
                 )
-                L = calculate_ring_length(N, self.center_wavelength, self.n)
-                FSR_list = calculate_FSR(N, self.center_wavelength)
-                FSR = calculate_practical_FSR(FSR_list)
+                L = self.ring.calculate_ring_length(N)
+                FSR = self.ring.calculate_practical_FSR(N)
                 if FSR > self.required_FSR:
                     break
             if i == 99:
@@ -71,7 +59,7 @@ class Model:
 
             for m_K in range(self.number_of_episodes_in_K):
                 print('episode {}-{}'.format(m_L + 1, m_K + 1))
-                self.K = init_K(self.number_of_rings)
+                self.K = self.ring.init_K(self.number_of_rings)
                 action = generate_action(self.number_of_rings)
 
                 for t in range(self.number_of_steps):
@@ -96,7 +84,7 @@ class Model:
             self.K_list[np.argmax(self.Q_list)],
             self.L_list[np.argmax(self.Q_list)]
         )
-        x = calculate_x(self.center_wavelength, FSR)
+        x = self.ring.calculate_x(FSR)
         y = mrr.simulate(x)
         reward = Reward(
             x,
@@ -115,14 +103,14 @@ class Model:
 
     def calc_Q(self, a):
         if np.all(np.where((self.K + a > 0) & (self.K + a < 1), True, False)):
-            mrr = MRR(
-                self.eta,
-                self.n,
-                self.alpha,
-                self.K + a,
-                self.L
-            )
-            x = calculate_x(self.center_wavelength, self.FSR)
+            mrr = MRR({
+                'eta': self.eta,
+                'n_eq': self.n_eq,
+                'alpha': self.alpha,
+                'K': self.K + a,
+                'L': self.L
+            })
+            x = self.ring.calculate_x(self.FSR)
             y = mrr.simulate(x)
             reward = Reward(
                 x,
