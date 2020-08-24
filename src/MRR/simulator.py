@@ -3,6 +3,24 @@ from typing import Any, Dict, List
 
 
 class MRR:
+    """Simulator of the transfer function of the MRR filter.
+
+    Args:
+        config (Dict[str, Any]): Configuration of the MRR.
+            Keys:
+                eta (float): The coupling loss coefficient.
+                n_eq (float): The equivalent refractive index.
+                alpha (float): The propagation loss coefficient.
+                K (List[float]): List of the coupling rate.
+                L (List[float]): List of the round-trip length.
+    Attributes:
+        eta (float): The coupling loss coefficient.
+        n_eq (float): The equivalent refractive index.
+        a (List[float]): List of the propagation loss.
+        K (List[float]): List of the coupling rate.
+        L (List[float]): List of the round-trip length.
+    """
+
     def __init__(
         self,
         config: Dict[str, Any]
