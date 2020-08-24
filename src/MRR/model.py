@@ -8,6 +8,40 @@ from MRR.logger import Logger
 
 
 class Model:
+    """
+    Args:
+        config (Dict[str, Any]): Configuration of the MRR.
+            Keys:
+                number_of_episodes_in_L (int): Number of the episodes in L.
+                number_of_episodes_in_K (int): Number of the episodes in K.
+                number_of_steps (int): Number of steps.
+                center_wavelength (float): The center wavelength.
+                number_of_rings (int): Number of rings. The ring order.
+                max_loss_in_pass_band (float): The threshold of the max loss in pass band. loss_p.
+                required_loss_in_stop_band (float): The threshold of the min loss in stop band. loss_s.
+                length_of_3db_band (float): The required length of the 3dB band.
+                FSR (float): The required FSR.
+                alpha (float): The propagation loss coefficient.
+                eta (float): The coupling loss coefficient.
+                n_eq (float): The equivalent refractive index.
+                n_eff (float): The effective refractive index.
+                min_ring_length (float): The minimum round-trip length.
+    Attributes:
+        logger (Logger): Logger.
+        number_of_episodes_in_L (int): Number of the episodes in L.
+        number_of_episodes_in_K (int): Number of the episodes in K.
+        number_of_steps (int): Number of steps.
+        center_wavelength (float): The center wavelength.
+        number_of_rings (int): Number of rings. The ring order.
+        max_loss_in_pass_band (float): The threshold of the max loss in pass band. loss_p.
+        required_loss_in_stop_band (float): The threshold of the min loss in stop band. loss_s.
+        length_of_3db_band (float): The required length of the 3dB band.
+        required_FSR (float): The required FSR.
+        alpha (float): The propagation loss coefficient.
+        eta (float): The coupling loss coefficient.
+        n_eq (float): The equivalent refractive index.
+        ring (Ring): The minimum round-trip length.
+    """
     def __init__(
         self,
         config
