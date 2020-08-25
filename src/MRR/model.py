@@ -31,11 +31,7 @@ class Model:
         number_of_episodes_in_L (int): Number of the episodes in L.
         number_of_episodes_in_K (int): Number of the episodes in K.
         number_of_steps (int): Number of steps.
-        center_wavelength (float): The center wavelength.
         number_of_rings (int): Number of rings. The ring order.
-        max_loss_in_pass_band (float): The threshold of the max loss in pass band. loss_p.
-        required_loss_in_stop_band (float): The threshold of the min loss in stop band. loss_s.
-        length_of_3db_band (float): The required length of the 3dB band.
         required_FSR (float): The required FSR.
         ring (Ring): The minimum round-trip length.
     """
@@ -50,19 +46,9 @@ class Model:
         self.number_of_episodes_in_L = config['number_of_episodes_in_L']
         self.number_of_episodes_in_K = config['number_of_episodes_in_K']
         self.number_of_steps = config['number_of_steps']
-        self.center_wavelength = config['center_wavelength']
         self.number_of_rings = config['number_of_rings']
-        self.max_loss_in_pass_band = config['max_loss_in_pass_band']
-        self.required_loss_in_stop_band = config['required_loss_in_stop_band']
-        self.length_of_3db_band = config['length_of_3db_band']
         self.required_FSR = config['FSR']
-        self.ring = Ring({
-            'center_wavelength': config['center_wavelength'],
-            'min_ring_length': config['min_ring_length'],
-            'number_of_rings': config['number_of_rings'],
-            'n_eff': config['n_eff'],
-            'n_eq': config['n_eq']
-        })
+        self.ring = Ring(config)
         self.L_list = []
         self.K_list = []
         self.Q_list = []

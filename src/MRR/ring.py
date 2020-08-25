@@ -4,11 +4,25 @@ from random import randrange, random, sample
 
 
 class Ring:
+    """
+    Args:
+        config (Dict[str, Any]): Configuration of the MRR.
+            Keys:
+                center_wavelength (float): The center wavelength.
+                number_of_rings (int): Number of rings. The ring order.
+                n_eff (float): The effective refractive index.
+                n_eq (float): The equivalent refractive index.
+    Attributes:
+        center_wavelength (float): The center wavelength.
+        number_of_rings (int): Number of rings. The ring order.
+        n_eff (float): The effective refractive index.
+        n_eq (float): The equivalent refractive index.
+    """
     def __init__(self, config):
         self.center_wavelength = config['center_wavelength']
         self.number_of_rings = config['number_of_rings']
-        self.n_eff = config['n_eff']
         self.n_eq = config['n_eq']
+        self.n_eff = config['n_eff']
 
     def calculate_x(self, FSR):
         return np.hstack((
