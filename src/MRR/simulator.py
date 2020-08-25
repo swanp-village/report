@@ -74,13 +74,13 @@ class MRR:
         return y.reshape(y.size)
 
 
-def factory_MRR(config):
-    """Partial apply config for MRR
+def build_MRR(config):
+    """Partial-apply config to MRR
 
     Args:
         config (Dict[str, Any]): Configuration of the MRR
 
     Returns:
-        partial_applied_MRR: MRR that is partial-applied config.
+        MRR_with_config: MRR that is partial-applied config to.
     """
     return lambda L, K: MRR(L, K, config)

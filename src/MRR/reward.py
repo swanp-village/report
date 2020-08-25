@@ -20,25 +20,42 @@ def generate_action(number_of_rings):
     return action
 
 
-class Reward:
+class Evaluator:
+    """Evaluator of the transfer function of the MRR filter.
+    Args:
+        x (List[float]): List of x.
+        y (List[float]): List of y.
+        config (Dict[str, Any]): Configuration of the MRR.
+            Keys:
+                center_wavelength (float): The center wavelength.
+                number_of_rings (int): Number of rings. The ring order.
+                max_loss_in_pass_band (float): The threshold of the max loss in pass band. loss_p.
+                required_loss_in_stop_band (float): The threshold of the min loss in stop band. loss_s.
+                length_of_3db_band (float): The required length of the 3dB band.
+    Attributes:
+        x (List[float]): List of x.
+        y (List[float]): List of y.
+        distance (float): Distance of x.
+        center_wavelength (float): The center wavelength.
+        number_of_rings (int): Number of rings. The ring order.
+        max_loss_in_pass_band (float): The threshold of the max loss in pass band. loss_p.
+        required_loss_in_stop_band (float): The threshold of the min loss in stop band. loss_s.
+        length_of_3db_band (float): The required length of the 3dB band.
+    """
     def __init__(
         self,
         x,
         y,
-        center_wavelength,
-        number_of_rings,
-        max_loss_in_pass_band,
-        required_loss_in_stop_band,
-        length_of_3db_band
+        config
     ):
-        self.x = x
-        self.y = y
-        self.distance = x[1] - x[0]
-        self.center_wavelength = center_wavelength
-        self.number_of_rings = number_of_rings
-        self.max_loss_in_pass_band = max_loss_in_pass_band
-        self.required_loss_in_stop_band = required_loss_in_stop_band
-        self.length_of_3db_band = length_of_3db_band
+        self.x: List[float] = x
+        self.y: List[float] = y
+        self.distance: float = x[1] - x[0]
+        self.center_wavelength: float = config['center_wavelength']
+        self.number_of_rings: int = config['number_of_rings']
+        self.max_loss_in_pass_band: float = config['max_loss_in_pass_band']
+        self.required_loss_in_stop_band: float = config['required_loss_in_stop_band']
+        self.length_of_3db_band: float = config['length_of_3db_band']
 
     def calculate_pass_band_range(self):
         pass_band_range = []
@@ -158,3 +175,15 @@ class Reward:
         if number_of_cross_talk > 0:
             return 0.8
         return 1
+
+
+def build_Evaluator(config):
+    """Partial-apply config to Evaluator
+
+    Args:
+        config (Dict[str, Any]): Configuration of the Evaluator
+
+    Returns:
+        Evaluator_with_config: Evaluator that is partial-applied config to.
+    """
+    return lambda L, K: Evaluator(L, K, config)

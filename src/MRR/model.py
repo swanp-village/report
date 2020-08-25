@@ -1,7 +1,7 @@
 import numpy as np
-from MRR.simulator import MRR
+from MRR.simulator import build_MRR
 from MRR.gragh import plot
-from MRR.reward import Reward, generate_action
+from MRR.reward import build_Evaluator, generate_action
 from MRR.ring import Ring
 from multiprocessing import Pool
 from MRR.logger import Logger
@@ -37,9 +37,6 @@ class Model:
         required_loss_in_stop_band (float): The threshold of the min loss in stop band. loss_s.
         length_of_3db_band (float): The required length of the 3dB band.
         required_FSR (float): The required FSR.
-        alpha (float): The propagation loss coefficient.
-        eta (float): The coupling loss coefficient.
-        n_eq (float): The equivalent refractive index.
         ring (Ring): The minimum round-trip length.
     """
     def __init__(
@@ -47,6 +44,8 @@ class Model:
         config
     ):
         self.logger = Logger()
+        self.MRR = build_MRR(config)
+        self.Evaluator = build_Evaluator(config)
         self.logger.save_config(config)
         self.number_of_episodes_in_L = config['number_of_episodes_in_L']
         self.number_of_episodes_in_K = config['number_of_episodes_in_K']
@@ -57,15 +56,12 @@ class Model:
         self.required_loss_in_stop_band = config['required_loss_in_stop_band']
         self.length_of_3db_band = config['length_of_3db_band']
         self.required_FSR = config['FSR']
-        self.alpha = config['alpha']
-        self.eta = config['eta']
-        self.n_eq = config['n_eq']
         self.ring = Ring({
             'center_wavelength': config['center_wavelength'],
             'min_ring_length': config['min_ring_length'],
             'number_of_rings': config['number_of_rings'],
             'n_eff': config['n_eff'],
-            'n_eq': self.n_eq
+            'n_eq': config['n_eq']
         })
         self.L_list = []
         self.K_list = []
@@ -111,25 +107,17 @@ class Model:
             self.L_list.append(L)
             self.Q_list.append(np.max(_Q_list))
             self.K_list.append(_K_list[np.argmax(_Q_list)])
-        mrr = MRR(
-            self.eta,
-            self.n,
-            self.alpha,
-            self.K_list[np.argmax(self.Q_list)],
-            self.L_list[np.argmax(self.Q_list)]
+        mrr = self.MRR(
+            self.L_list[np.argmax(self.Q_list)],
+            self.K_list[np.argmax(self.Q_list)]
         )
         x = self.ring.calculate_x(FSR)
         y = mrr.simulate(x)
-        reward = Reward(
+        evaluator = self.Evaluator(
             x,
-            y,
-            self.center_wavelength,
-            self.number_of_rings,
-            self.max_loss_in_pass_band,
-            self.required_loss_in_stop_band,
-            self.length_of_3db_band
+            y
         )
-        result = reward.evaluate_band()
+        result = evaluator.evaluate_band()
         if result > 0:
             print(result)
             mrr.print_parameters()
@@ -137,25 +125,17 @@ class Model:
 
     def calc_Q(self, a):
         if np.all(np.where((self.K + a > 0) & (self.K + a < 1), True, False)):
-            mrr = MRR({
-                'eta': self.eta,
-                'n_eq': self.n_eq,
-                'alpha': self.alpha,
-                'K': self.K + a,
-                'L': self.L
-            })
+            mrr = self.MRR(
+                self.L,
+                self.K + a
+            )
             x = self.ring.calculate_x(self.FSR)
             y = mrr.simulate(x)
-            reward = Reward(
+            evaluator = self.Evaluator(
                 x,
-                y,
-                self.center_wavelength,
-                self.number_of_rings,
-                self.max_loss_in_pass_band,
-                self.required_loss_in_stop_band,
-                self.length_of_3db_band
+                y
             )
-            result = reward.evaluate_band()
+            result = evaluator.evaluate_band()
         else:
             result = 0
         return result
