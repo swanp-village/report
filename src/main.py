@@ -4,16 +4,10 @@ from importlib import import_module
 import argparse
 from MRR.model import Model
 from random import seed
-from MRR.reward import Reward
-from MRR.ring import (
-    calculate_N,
-    calculate_practical_FSR,
-    calculate_FSR,
-    calculate_x
-)
+from MRR.evaluator import Evaluator
+from MRR.ring import Ring
 from MRR.logger import Logger
 from copy import deepcopy
-import numpy as np
 
 
 def main(config):
@@ -29,41 +23,41 @@ def simulate(config_list):
 
     for config in config_list:
         mrr = MRR(
-            config['eta'],
-            config['n'],
-            config['alpha'],
+            config['L'],
             config['K'],
-            config['L']
+            config
         )
         mrr.print_parameters()
+        number_of_rings = len(config['L'])
         if 'lambda' in config:
             x = config['lambda']
         else:
-            N = calculate_N(config['L'], config['center_wavelength'], config['n'])
-            FSR = calculate_practical_FSR(
-                calculate_FSR(N, config['center_wavelength'])
-            )
-            x = calculate_x(config['center_wavelength'], FSR)
+            ring = Ring({
+                'center_wavelength': config['center_wavelength'],
+                'number_of_rings': number_of_rings,
+                'n_eff': config['n_eff'],
+                'n_eq': config['n_eq']
+            })
+            N = ring.calculate_N(config['L'])
+            FSR = ring.calculate_practical_FSR(N)
+            x = ring.calculate_x(FSR)
 
         y = mrr.simulate(x)
-        max_loss_in_pass_band = config.get('max_loss_in_pass_band', -10)
-        required_loss_in_stop_band = config.get('required_loss_in_stop_band', -20)
-        length_of_3db_band = config.get('length_of_3db_band', 1e-9)
-        center_wavelength = config.get('center_wavelength', 1550e-9)
-        reward = Reward(
+        config.setdeault('max_loss_in_pass_band', -10)
+        config.setdeault('required_loss_in_stop_band', -20)
+        config.setdeault('length_of_3db_band', 1e-9)
+
+        evaluator = Evaluator(
             x,
             y,
-            center_wavelength,
-            len(config['L']),
-            max_loss_in_pass_band,
-            required_loss_in_stop_band,
-            length_of_3db_band
+            config
         )
-        result = reward.evaluate_band()
+        result = evaluator.evaluate_band()
         print(result)
         logger.save_data_as_csv(x, y, config['name'])
         xs.append(deepcopy(x))
         ys.append(deepcopy(y))
+    print(xs[0].size)
     plot(xs, ys, config['L'].size, logger.generate_image_path(config['name']))
 
 

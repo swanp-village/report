@@ -1,7 +1,7 @@
 import numpy as np
 from MRR.simulator import build_MRR
 from MRR.gragh import plot
-from MRR.reward import build_Evaluator, generate_action
+from MRR.evaluator import build_Evaluator, generate_action
 from MRR.ring import Ring
 from multiprocessing import Pool
 from MRR.logger import Logger
