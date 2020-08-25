@@ -6,30 +6,32 @@ class MRR:
     """Simulator of the transfer function of the MRR filter.
 
     Args:
+        L (List[float]): List of the round-trip length.
+        K (List[float]): List of the coupling rate.
         config (Dict[str, Any]): Configuration of the MRR.
             Keys:
                 eta (float): The coupling loss coefficient.
                 n_eq (float): The equivalent refractive index.
                 alpha (float): The propagation loss coefficient.
-                K (List[float]): List of the coupling rate.
-                L (List[float]): List of the round-trip length.
     Attributes:
+        L (List[float]): List of the round-trip length.
+        K (List[float]): List of the coupling rate.
         eta (float): The coupling loss coefficient.
         n_eq (float): The equivalent refractive index.
         a (List[float]): List of the propagation loss.
-        K (List[float]): List of the coupling rate.
-        L (List[float]): List of the round-trip length.
     """
 
     def __init__(
         self,
+        L,
+        K,
         config: Dict[str, Any]
     ) -> None:
+        self.L: List[float] = L
+        self.K: List[float] = K
         self.eta: float = config['eta']
         self.n_eq: float = config['n_eq']
         self.a: List[float] = np.exp(- config['alpha'] * config['L'])
-        self.K: List[float] = config['K']
-        self.L: List[float] = config['L']
 
     def _C(self, K_k: float) -> np.matrix:
         return 1 / (-1j * self.eta * np.sqrt(K_k)) * np.matrix([
@@ -70,3 +72,15 @@ class MRR:
     def simulate(self, l: List[float]) -> np.array:
         y = 20 * np.log10(np.abs(self._D(l)))
         return y.reshape(y.size)
+
+
+def factory_MRR(config):
+    """Partial apply config for MRR
+
+    Args:
+        config (Dict[str, Any]): Configuration of the MRR
+
+    Returns:
+        partial_applied_MRR: MRR that is partial-applied config.
+    """
+    return lambda L, K: MRR(L, K, config)
