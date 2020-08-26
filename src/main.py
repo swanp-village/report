@@ -43,9 +43,10 @@ def simulate(config_list):
             x = ring.calculate_x(FSR)
 
         y = mrr.simulate(x)
-        config.setdeault('max_loss_in_pass_band', -10)
-        config.setdeault('required_loss_in_stop_band', -20)
-        config.setdeault('length_of_3db_band', 1e-9)
+        config.setdefault('max_loss_in_pass_band', -10)
+        config.setdefault('required_loss_in_stop_band', -20)
+        config.setdefault('length_of_3db_band', 1e-9)
+        config.setdefault('number_of_rings', number_of_rings)
 
         evaluator = Evaluator(
             x,

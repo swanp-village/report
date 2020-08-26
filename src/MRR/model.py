@@ -3,7 +3,7 @@ from MRR.simulator import build_MRR
 from MRR.gragh import plot
 from MRR.evaluator import build_Evaluator, generate_action
 from MRR.ring import Ring
-from multiprocessing import Pool
+# from multiprocessing import Pool
 from MRR.logger import Logger
 
 
@@ -27,6 +27,7 @@ class Model:
                 n_eff (float): The effective refractive index.
                 min_ring_length (float): The minimum round-trip length.
     Attributes:
+        eta (float): The coupling loss coefficient.
         logger (Logger): Logger.
         number_of_episodes_in_L (int): Number of the episodes in L.
         number_of_episodes_in_K (int): Number of the episodes in K.
@@ -43,6 +44,7 @@ class Model:
         self.MRR = build_MRR(config)
         self.Evaluator = build_Evaluator(config)
         self.logger.save_config(config)
+        self.eta = config['eta']
         self.number_of_episodes_in_L = config['number_of_episodes_in_L']
         self.number_of_episodes_in_K = config['number_of_episodes_in_K']
         self.number_of_steps = config['number_of_steps']
@@ -56,9 +58,7 @@ class Model:
     def train(self):
         for m_L in range(self.number_of_episodes_in_L):
             for i in range(100):
-                N = self.ring.init_N(
-                    self.required_FSR
-                )
+                N = self.ring.init_N()
                 L = self.ring.calculate_ring_length(N)
                 FSR = self.ring.calculate_practical_FSR(N)
                 if FSR > self.required_FSR:
@@ -70,19 +70,25 @@ class Model:
             self.L = L
             self.FSR = FSR
 
+            print(N, L, FSR)
+
             _K_list = []
             _Q_list = []
 
             for m_K in range(self.number_of_episodes_in_K):
                 print('episode {}-{}'.format(m_L + 1, m_K + 1))
-                self.K = self.ring.init_K(self.number_of_rings)
+                self.K = self.ring.init_K()
                 action = generate_action(self.number_of_rings)
 
                 for t in range(self.number_of_steps):
                     print('step {}'.format(t + 1))
                     print(self.K)
-                    with Pool(10) as p:
-                        Q = p.map(self.calc_Q, action)
+                    # with Pool(10) as p:
+                    #     Q = p.map(self.calc_Q, action)
+                    Q = [
+                        self.calc_Q(a)
+                        for a in action
+                    ]
                     print(np.max(Q))
                     if np.max(Q) <= 0 or np.argmax(Q) == 0:
                         break
@@ -110,7 +116,7 @@ class Model:
             plot(x, y, L.size, self.logger.generate_image_path())
 
     def calc_Q(self, a):
-        if np.all(np.where((self.K + a > 0) & (self.K + a < 1), True, False)):
+        if np.all(np.where((self.K + a > 0) & (self.K + a < self.eta), True, False)):
             mrr = self.MRR(
                 self.L,
                 self.K + a

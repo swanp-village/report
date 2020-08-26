@@ -1,6 +1,6 @@
 import numpy as np
 from .math import lcm
-from random import randrange, random, sample
+from random import randrange, sample, uniform
 
 
 class Ring:
@@ -9,20 +9,29 @@ class Ring:
         config (Dict[str, Any]): Configuration of the MRR.
             Keys:
                 center_wavelength (float): The center wavelength.
+                eta (float): The coupling loss coefficient.
+                FSR (float): The required FSR.
+                min_ring_length (float): The minimum round-trip length.
                 number_of_rings (int): Number of rings. The ring order.
                 n_eff (float): The effective refractive index.
                 n_eq (float): The equivalent refractive index.
     Attributes:
         center_wavelength (float): The center wavelength.
+        eta (float): The coupling loss coefficient.
+        FSR (float): The required FSR.
+        min_ring_length (float): The minimum round-trip length.
         number_of_rings (int): Number of rings. The ring order.
         n_eff (float): The effective refractive index.
         n_eq (float): The equivalent refractive index.
     """
     def __init__(self, config):
         self.center_wavelength = config['center_wavelength']
+        self.eta = config['eta']
+        self.FSR = config['FSR']
+        self.min_ring_length = config['min_ring_length']
         self.number_of_rings = config['number_of_rings']
-        self.n_eq = config['n_eq']
         self.n_eff = config['n_eff']
+        self.n_eq = config['n_eq']
 
     def calculate_x(self, FSR):
         return np.hstack((
@@ -31,13 +40,13 @@ class Ring:
         ))
 
     def calculate_ring_length(self, N):
-        return N * self.center_wavelength * self.n_eq
+        return N * self.center_wavelength / self.n_eq
 
-    def calculate_min_N(self, min_ring_length):
-        return min_ring_length * self.n_eq / self.center_wavelength
+    def calculate_min_N(self):
+        return self.min_ring_length * self.n_eq / self.center_wavelength
 
     def calculate_FSR(self, N):
-        return self.center_wavelength * self.n_eq / self.n_eff / N
+        return self.center_wavelength * self.n_eq / (self.n_eff * N)
 
     def calculate_N(self, L):
         return L * self.n_eq / self.center_wavelength
@@ -53,10 +62,7 @@ class Ring:
     def calculate_practical_FSR(self, N):
         return lcm(self.calculate_FSR(N))
 
-    def init_N(
-        self,
-        required_FSR,
-    ):
+    def init_N(self):
         rand_start = 1
         rand_end = 3
         ratio = np.array(sample(range(2, 30), self.number_of_rings))
@@ -69,7 +75,7 @@ class Ring:
             i = i + 1
             N = ratio * N_0
             practical_FSR = self.calculate_practical_FSR(N)
-            if practical_FSR > required_FSR:
+            if practical_FSR > self.FSR:
                 if i > 1000:
                     break
                 N_0 = N_0 + randrange(rand_start, rand_end)
@@ -82,8 +88,8 @@ class Ring:
         N = ratio * N_0
         return N
 
-    def init_K(self, number_of_rings):
+    def init_K(self):
         return np.array([
-            random()
-            for _ in range(number_of_rings + 1)
+            uniform(0, self.eta)
+            for _ in range(self.number_of_rings + 1)
         ])
