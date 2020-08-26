@@ -1,23 +1,4 @@
 import numpy as np
-from random import uniform
-
-
-def generate_action(number_of_rings):
-    action = [np.zeros(number_of_rings + 1).tolist()]
-    I = np.eye(number_of_rings + 1)
-    v = np.matrix([-0.3, -0.1, -0.05, -0.01, 0.3, 0.1, 0.05, 0.01])
-    for i in range(number_of_rings + 1):
-        a_i = v.T * I[i]
-        action.extend(a_i.tolist())
-    action.extend([
-        [
-            uniform(-1, 1)
-            for _ in range(number_of_rings + 1)
-        ]
-        for _ in range(5)
-    ])
-
-    return action
 
 
 class Evaluator:
