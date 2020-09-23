@@ -35,8 +35,8 @@ class Ring:
 
     def calculate_x(self, FSR):
         return np.hstack((
-            np.arange(self.center_wavelength - FSR / 2, self.center_wavelength, 1e-12),
-            np.arange(self.center_wavelength, self.center_wavelength + FSR / 2, 1e-12)
+            np.arange(self.center_wavelength - FSR / 2 * 1.1, self.center_wavelength, 1e-12),
+            np.arange(self.center_wavelength, self.center_wavelength + FSR / 2 * 1.1, 1e-12)
         ))
 
     def calculate_ring_length(self, N):
@@ -49,7 +49,7 @@ class Ring:
         return self.center_wavelength * self.n_eq / (self.n_eff * N)
 
     def calculate_N(self, L):
-        return L * self.n_eq / self.center_wavelength
+        return np.round(L * self.n_eq / self.center_wavelength)
 
     def find_ring_length(self, max_N):
         N = np.arange(max_N)
@@ -65,13 +65,17 @@ class Ring:
     def init_N(self):
         rand_start = 1
         rand_end = 3
-        ratio = np.array(sample(range(2, 30), self.number_of_rings))
+        # ratio = np.array(sample(range(2, 30), self.number_of_rings))
+        ratio = np.array([
+            randrange(2, 10)
+            for _ in range(self.number_of_rings)
+        ])
         ratio = (np.lcm.reduce(ratio) / ratio).astype(int)
         N_0 = randrange(100, 200)
         N = ratio * N_0
         min_N_0 = self.calculate_min_N() / min(ratio) + rand_end
         i = 0
-        while i < 1500:
+        while i < 1000000:
             i = i + 1
             N = ratio * N_0
             practical_FSR = self.calculate_practical_FSR(N)

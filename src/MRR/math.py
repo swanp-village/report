@@ -8,7 +8,7 @@ def is_zero(x: float, y: float) -> bool:
         x > y > 0
     """
     result = x / y - np.floor(x / y)
-    return result < 0.01
+    return result < 0.1
 
 
 def lcm(xs: List[float]) -> float:

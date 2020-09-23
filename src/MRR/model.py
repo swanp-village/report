@@ -62,11 +62,12 @@ class Model:
             N = self.ring.init_N()
             L = self.ring.calculate_ring_length(N)
             FSR = self.ring.calculate_practical_FSR(N)
-            if FSR > self.required_FSR:
+            if FSR > self.required_FSR and FSR < self.required_FSR * 1.05 and np.all(L < 0.1):
                 break
         if i == 99:
             raise Exception('required_FSR is too big')
 
+        print(L, FSR)
         self.L = L
         self.FSR = FSR
 
@@ -93,7 +94,7 @@ class Model:
     def generate_action(self):
         action = [np.zeros(self.number_of_rings + 1).tolist()]
         I = np.eye(self.number_of_rings + 1)
-        v = np.matrix([-0.3, -0.1, -0.05, -0.01, 0.3, 0.1, 0.05, 0.01])
+        v = np.matrix([-0.5, -0.3, -0.1, -0.05, -0.01, 0.5, 0.3, 0.1, 0.05, 0.01])
         for i in range(self.number_of_rings + 1):
             a_i = v.T * I[i]
             action.extend(a_i.tolist())
@@ -152,7 +153,8 @@ class Model:
             y
         )
         result = evaluator.evaluate_band()
+        print(result)
+        print('end')
         if result > 0:
-            print(result)
             mrr.print_parameters()
             plot(x, y, L.size, self.logger.generate_image_path())

@@ -29,8 +29,10 @@ class MRR:
     ) -> None:
         self.L: List[float] = L
         self.K: List[float] = K
+        self.center_wavelength: float = config['center_wavelength']
         self.eta: float = config['eta']
         self.n_eq: float = config['n_eq']
+        self.n_eff: float = config['n_eff']
         self.a: List[float] = np.exp(- config['alpha'] * L)
 
     def _C(self, K_k: float) -> np.array:
@@ -40,7 +42,8 @@ class MRR:
         ])
 
     def _R(self, a_k: float, L_k: float, l: np.array) -> np.array:
-        x = 1j * np.pi * L_k * self.n_eq / l
+        # x = 1j * np.pi * L_k * self.n_eq / l
+        x = 1j * np.pi * L_k * self.n_eff * (l - self.center_wavelength) / self.center_wavelength / self.center_wavelength
         return np.array([
             [np.exp(x) / np.sqrt(a_k), 0],
             [0, np.exp(-x) * np.sqrt(a_k)]
@@ -66,7 +69,9 @@ class MRR:
 
     def print_parameters(self) -> None:
         print('eta:', self.eta)
+        print('center_wavelength:', self.center_wavelength)
         print('n_eq:', self.n_eq)
+        print('n_eff:', self.n_eff)
         print('a:', self.a)
         print('K:', self.K)
         print('L:', self.L)

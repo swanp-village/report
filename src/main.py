@@ -11,7 +11,7 @@ from copy import deepcopy
 
 
 def main(config):
-    seed(1)
+    # seed(1)
     model = Model(config)
     model.train()
 
@@ -22,31 +22,31 @@ def simulate(config_list):
     ys = []
 
     for config in config_list:
+        number_of_rings = len(config['L'])
+        config.setdefault('number_of_rings', number_of_rings)
+        config.setdefault('FSR', 10e-9)
+        config.setdefault('min_ring_length', 10e-9)
+        config.setdefault('max_loss_in_pass_band', -10)
+        config.setdefault('required_loss_in_stop_band', -20)
+        config.setdefault('length_of_3db_band', 1e-9)
+
         mrr = MRR(
             config['L'],
             config['K'],
             config
         )
         mrr.print_parameters()
-        number_of_rings = len(config['L'])
+        ring = Ring(config)
+        N = ring.calculate_N(config['L'])
+        FSR = ring.calculate_practical_FSR(N)
+        print(FSR)
+
         if 'lambda' in config:
             x = config['lambda']
         else:
-            ring = Ring({
-                'center_wavelength': config['center_wavelength'],
-                'number_of_rings': number_of_rings,
-                'n_eff': config['n_eff'],
-                'n_eq': config['n_eq']
-            })
-            N = ring.calculate_N(config['L'])
-            FSR = ring.calculate_practical_FSR(N)
             x = ring.calculate_x(FSR)
 
         y = mrr.simulate(x)
-        config.setdefault('max_loss_in_pass_band', -10)
-        config.setdefault('required_loss_in_stop_band', -20)
-        config.setdefault('length_of_3db_band', 1e-9)
-        config.setdefault('number_of_rings', number_of_rings)
 
         evaluator = Evaluator(
             x,
@@ -58,7 +58,6 @@ def simulate(config_list):
         logger.save_data_as_csv(x, y, config['name'])
         xs.append(deepcopy(x))
         ys.append(deepcopy(y))
-    print(xs[0].size)
     plot(xs, ys, config['L'].size, logger.generate_image_path(config['name']))
 
 

@@ -63,8 +63,8 @@ class Evaluator:
         cross_talk = []
         for start, end in self.calculate_pass_band_range():
             if (
-                self.center_wavelength >= self.x[start]
-                and self.center_wavelength <= self.x[end]
+                self.center_wavelength >= self.x[start] and
+                self.center_wavelength <= self.x[end]
             ):
                 pass_band.extend([start, end])
             else:
@@ -83,13 +83,22 @@ class Evaluator:
             number_of_cross_talk = cross_talk.shape[0]
             return (
                 (
-                    self.evaluate_pass_band(start, end) +
+                    self.evaluate_pass_band(start, end) * 2 +
                     self.evaluate_stop_band(start, end) +
-                    self.evaluate_3db_band(start, end)
+                    self.evaluate_insertion_loss() +
+                    self.evaluate_3db_band(start, end) * 1.5
                 ) * self.evaluate_cross_talk(number_of_cross_talk)
             )
         else:
             return 0
+
+    def evaluate_insertion_loss(self):
+        insertion_loss = self.y[self.x == self.center_wavelength]
+        if insertion_loss.size == 0:
+            return 0
+        if insertion_loss[0] < -20:
+            return 0
+        return 1 + insertion_loss[0] / 20
 
     def evaluate_3db_band(self, start, end):
         border = np.max(self.y) - 3
@@ -154,7 +163,7 @@ class Evaluator:
 
     def evaluate_cross_talk(self, number_of_cross_talk):
         if number_of_cross_talk > 0:
-            return 0.8
+            return 0.5
         return 1
 
 
