@@ -4,7 +4,8 @@ from importlib import import_module
 import argparse
 from MRR.model import Model
 from random import seed
-from MRR.evaluator import Evaluator
+from MRR.Evaluator.Model.train import train
+from MRR.Evaluator.evaluator import Evaluator
 from MRR.ring import Ring
 from MRR.logger import Logger
 from copy import deepcopy
@@ -61,9 +62,14 @@ def simulate(config_list):
     plot(xs, ys, config['L'].size, logger.generate_image_path(config['name']))
 
 
+def train_evaluator():
+    train()
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-c', '--config', help='config file path', nargs='*')
+    parser.add_argument('--evaluator', action='store_true')
     args = vars(parser.parse_args())
     if args['config']:
         try:
@@ -76,6 +82,8 @@ if __name__ == '__main__':
             parser.print_help()
         else:
             simulate(config_list)
+    elif args['evaluator']:
+        train_evaluator()
     else:
         try:
             config = import_module('config.base').config
