@@ -32,7 +32,7 @@ class Model:
         ax.set_xlabel('Wavelength (nm)', fontsize=24)
         ax.set_ylabel('Drop Port Power (dB)', fontsize=24)
         ax.xaxis.set_major_formatter(formatter)
-        ax.set_xticks([1500, 1550, 1600], False)
+        ax.set_xticks([1500, 1550, 1600], minor=False)
         ax.set_ylim([-70, 0])
 
         ax.semilogx(self.x * 1e9, self.y)
@@ -50,4 +50,3 @@ class Model:
     def set_y(self, y):
         self.y = y
         self.validate()
-

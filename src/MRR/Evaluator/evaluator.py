@@ -27,10 +27,12 @@ class Evaluator:
         self,
         x,
         y,
+        weight,
         config
     ):
         self.x: List[float] = x
         self.y: List[float] = y
+        self.weight: List[float] = weight
         self.distance: float = x[1] - x[0]
         self.center_wavelength: float = config['center_wavelength']
         self.number_of_rings: int = config['number_of_rings']
@@ -81,12 +83,18 @@ class Evaluator:
             start = pass_band[0][0]
             end = pass_band[0][1]
             number_of_cross_talk = cross_talk.shape[0]
+            # print(
+            #     self.evaluate_pass_band(start, end),
+            #     self.evaluate_stop_band(start, end),
+            #     self.evaluate_insertion_loss(),
+            #     self.evaluate_3db_band(start, end)
+            # )
             return (
                 (
-                    self.evaluate_pass_band(start, end) * 2 +
-                    self.evaluate_stop_band(start, end) +
-                    self.evaluate_insertion_loss() +
-                    self.evaluate_3db_band(start, end) * 1.5
+                    self.evaluate_pass_band(start, end) * self.weight[0] +
+                    self.evaluate_stop_band(start, end) * self.weight[1] +
+                    self.evaluate_insertion_loss() * self.weight[2] +
+                    self.evaluate_3db_band(start, end) * self.weight[3]
                 ) * self.evaluate_cross_talk(number_of_cross_talk)
             )
         else:
@@ -167,7 +175,7 @@ class Evaluator:
         return 1
 
 
-def build_Evaluator(config):
+def build_Evaluator(config, weight=[2, 1, 1, 3]):
     """Partial-apply config to Evaluator
 
     Args:
@@ -176,4 +184,4 @@ def build_Evaluator(config):
     Returns:
         Evaluator_with_config: Evaluator that is partial-applied config to.
     """
-    return lambda L, K: Evaluator(L, K, config)
+    return lambda L, K: Evaluator(L, K, weight, config)

@@ -2,7 +2,7 @@ from MRR.simulator import MRR
 from MRR.gragh import plot
 from importlib import import_module
 import argparse
-from MRR.model import Model
+from MRR.DE import Model
 from random import seed
 from MRR.Evaluator.Model.train import train
 from MRR.Evaluator.evaluator import Evaluator
