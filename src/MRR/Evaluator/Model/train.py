@@ -11,7 +11,7 @@ weight_list = product(
     ]
 )
 
-def _train():
+def train():
     for weight in weight_list:
         print('==========================')
         print(weight)
@@ -27,7 +27,7 @@ def _train():
         print(evaluate_result)
 
 
-def train():
+def _train():
     Evaluator = build_Evaluator(config)
     for data_i in data:
         evaluator = Evaluator(

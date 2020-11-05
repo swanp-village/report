@@ -20,3 +20,4 @@ y = np.hstack((
     np.repeat(-60, (data.FSR - data.length_of_3db_band) / 2 / 1e-12 - d1.size)
 ))
 data.set_y(y)
+data.set_rank(3)

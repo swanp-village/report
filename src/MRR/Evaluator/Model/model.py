@@ -25,6 +25,7 @@ class Model:
         ))
         self.y = np.repeat(0, self.x.size)
         self.img_path = join('MRR/Evaluator/Model/figure', '{}.pdf'.format(name))
+        self.set_rank(1)
         self.validate()
 
     def export_gragh(self):
@@ -50,3 +51,6 @@ class Model:
     def set_y(self, y):
         self.y = y
         self.validate()
+
+    def set_rank(self, rank):
+        self.rank = rank
