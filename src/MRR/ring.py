@@ -35,8 +35,8 @@ class Ring:
 
     def calculate_x(self, FSR):
         return np.hstack((
-            np.arange(self.center_wavelength - FSR / 2 * 1.1, self.center_wavelength, 1e-12),
-            np.arange(self.center_wavelength, self.center_wavelength + FSR / 2 * 1.1, 1e-12)
+            np.arange(self.center_wavelength - FSR / 2, self.center_wavelength, 1e-12),
+            np.arange(self.center_wavelength, self.center_wavelength + FSR / 2, 1e-12)
         ))
 
     def calculate_ring_length(self, N):

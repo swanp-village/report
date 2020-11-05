@@ -5,7 +5,7 @@ import argparse
 from MRR.DE import Model
 from random import seed
 from MRR.Evaluator.Model.train import train
-from MRR.Evaluator.evaluator import Evaluator
+from MRR.Evaluator.evaluator import build_Evaluator
 from MRR.ring import Ring
 from MRR.logger import Logger
 from copy import deepcopy
@@ -30,6 +30,7 @@ def simulate(config_list):
         config.setdefault('max_loss_in_pass_band', -10)
         config.setdefault('required_loss_in_stop_band', -20)
         config.setdefault('length_of_3db_band', 1e-9)
+        Evaluator = build_Evaluator(config)
 
         mrr = MRR(
             config['L'],
@@ -51,8 +52,7 @@ def simulate(config_list):
 
         evaluator = Evaluator(
             x,
-            y,
-            config
+            y
         )
         result = evaluator.evaluate_band()
         print(result)

@@ -38,7 +38,7 @@ def plot(xs, ys, number_of_rings, img_path='img/out.pdf'):
     ax.xaxis.set_minor_formatter(formatter)
     # ax.set_xticks([1500, 1550, 1600], False)
     # ax.set_xticks([], True)
-    ax.set_ylim([-60, 0])
+    ax.set_ylim([-30, 0])
     # ax.grid(which='both')
     fig.savefig(img_path)
     plt.show()

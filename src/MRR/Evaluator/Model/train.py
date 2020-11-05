@@ -6,12 +6,12 @@ from itertools import product
 
 weight_list = product(
     *[
-        np.arange(0, 5, 0.5)
+        np.arange(1, 5, 1)
         for _ in range(config['number_of_weights'])
     ]
 )
 
-def train():
+def _train():
     for weight in weight_list:
         print('==========================')
         print(weight)
@@ -27,7 +27,8 @@ def train():
         print(evaluate_result)
 
 
-def plot():
+def train():
+    Evaluator = build_Evaluator(config)
     for data_i in data:
         evaluator = Evaluator(
             data_i.x,
