@@ -129,9 +129,8 @@ class Evaluator:
         var = np.var(y.T)
         if var == 0:
             return 1
-        result = 1 / var
-        if result > 1:
-            return 1
+        result = 1 / (var + 1)
+
         return result
 
     def evaluate_3db_band(self, start, end):
