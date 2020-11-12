@@ -13,7 +13,7 @@ class Ring:
                 FSR (float): The required FSR.
                 min_ring_length (float): The minimum round-trip length.
                 number_of_rings (int): Number of rings. The ring order.
-                n_eff (float): The effective refractive index.
+                n_g (float): The group index.
                 n_eq (float): The equivalent refractive index.
     Attributes:
         center_wavelength (float): The center wavelength.
@@ -21,7 +21,7 @@ class Ring:
         FSR (float): The required FSR.
         min_ring_length (float): The minimum round-trip length.
         number_of_rings (int): Number of rings. The ring order.
-        n_eff (float): The effective refractive index.
+        n_g (float): The group index.
         n_eq (float): The equivalent refractive index.
     """
     def __init__(self, config):
@@ -30,7 +30,7 @@ class Ring:
         self.FSR = config['FSR']
         self.min_ring_length = config['min_ring_length']
         self.number_of_rings = config['number_of_rings']
-        self.n_eff = config['n_eff']
+        self.n_g = config['n_g']
         self.n_eq = config['n_eq']
 
     def calculate_x(self, FSR):
