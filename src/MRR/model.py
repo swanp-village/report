@@ -23,8 +23,8 @@ class Model:
                 FSR (float): The required FSR.
                 alpha (float): The propagation loss coefficient.
                 eta (float): The coupling loss coefficient.
-                n_eq (float): The equivalent refractive index.
-                n_g (float): The effective refractive index.
+                n_eff (float): The effective refractive index.
+                n_g (float): The group index.
                 min_ring_length (float): The minimum round-trip length.
     Attributes:
         eta (float): The coupling loss coefficient.

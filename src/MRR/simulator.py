@@ -11,14 +11,14 @@ class MRR:
         config (Dict[str, Any]): Configuration of the MRR.
             Keys:
                 eta (float): The coupling loss coefficient.
-                n_eq (float): The equivalent refractive index.
+                n_eff (float): The effective refractive index.
                 n_g (float): The group index.
                 alpha (float): The propagation loss coefficient.
     Attributes:
         L (List[float]): List of the round-trip length.
         K (List[float]): List of the coupling rate.
         eta (float): The coupling loss coefficient.
-        n_eq (float): The equivalent refractive index.
+        n_eff (float): The effective refractive index.
         n_g (float): The group index.
         a (List[float]): List of the propagation loss.
     """
@@ -33,7 +33,7 @@ class MRR:
         self.K: List[float] = K
         self.center_wavelength: float = config['center_wavelength']
         self.eta: float = config['eta']
-        self.n_eq: float = config['n_eq']
+        self.n_eff: float = config['n_eff']
         self.n_g: float = config['n_g']
         self.a: List[float] = np.exp(- config['alpha'] * L)
 
@@ -71,7 +71,7 @@ class MRR:
     def print_parameters(self) -> None:
         print('eta:', self.eta)
         print('center_wavelength:', self.center_wavelength)
-        print('n_eq:', self.n_eq)
+        print('n_eff:', self.n_eff)
         print('n_g:', self.n_g)
         print('a:', self.a)
         print('K:', self.K)

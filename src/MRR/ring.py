@@ -14,7 +14,7 @@ class Ring:
                 min_ring_length (float): The minimum round-trip length.
                 number_of_rings (int): Number of rings. The ring order.
                 n_g (float): The group index.
-                n_eq (float): The equivalent refractive index.
+                n_eff (float): The equivalent refractive index.
     Attributes:
         center_wavelength (float): The center wavelength.
         eta (float): The coupling loss coefficient.
@@ -22,7 +22,7 @@ class Ring:
         min_ring_length (float): The minimum round-trip length.
         number_of_rings (int): Number of rings. The ring order.
         n_g (float): The group index.
-        n_eq (float): The equivalent refractive index.
+        n_eff (float): The equivalent refractive index.
     """
     def __init__(self, config):
         self.center_wavelength = config['center_wavelength']
@@ -31,7 +31,7 @@ class Ring:
         self.min_ring_length = config['min_ring_length']
         self.number_of_rings = config['number_of_rings']
         self.n_g = config['n_g']
-        self.n_eq = config['n_eq']
+        self.n_eff = config['n_eff']
 
     def calculate_x(self, FSR):
         return np.hstack((
@@ -40,16 +40,16 @@ class Ring:
         ))
 
     def calculate_ring_length(self, N):
-        return N * self.center_wavelength / self.n_eq
+        return N * self.center_wavelength / self.n_eff
 
     def calculate_min_N(self):
-        return self.min_ring_length * self.n_eq / self.center_wavelength
+        return self.min_ring_length * self.n_eff / self.center_wavelength
 
     def calculate_FSR(self, N):
-        return self.center_wavelength * self.n_eq / (self.n_eff * N)
+        return self.center_wavelength * self.n_eff / (self.n_g * N)
 
     def calculate_N(self, L):
-        return np.round(L * self.n_eq / self.center_wavelength)
+        return np.round(L * self.n_eff / self.center_wavelength)
 
     def find_ring_length(self, max_N):
         N = np.arange(max_N)

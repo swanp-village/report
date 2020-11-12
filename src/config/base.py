@@ -1,7 +1,7 @@
 config = {
     'eta': 1,  # 結合損
     'alpha': 52.96,  # 伝搬損失係数
-    'n_eq': 3.3938,  # 等価屈折率
+    'n_eff': 3.3938,  # 等価屈折率
     'n_g': 4.2,  # 実行屈折率
     'number_of_rings': 4,  # リング次数
     'center_wavelength': 1550e-9,  # 中心波長
