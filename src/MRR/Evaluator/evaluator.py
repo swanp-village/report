@@ -91,20 +91,24 @@ class Evaluator:
             start = pass_band[0][0]
             end = pass_band[0][1]
             number_of_cross_talk = cross_talk.shape[0]
-            print(
+            result = [
                 self.evaluate_pass_band(start, end),
                 self.evaluate_stop_band(start, end),
                 self.evaluate_insertion_loss(),
                 self.evaluate_3db_band(start, end),
                 self.evaluate_ripple(start, end)
-            )
+            ]
+            binary_result = [
+                self.evaluate_cross_talk(number_of_cross_talk)
+            ]
+            # print(result)
             return (
                 (
-                    self.evaluate_pass_band(start, end) * self.weight[0] +
-                    self.evaluate_stop_band(start, end) * self.weight[1] +
-                    self.evaluate_insertion_loss() * self.weight[2] +
-                    self.evaluate_3db_band(start, end) * self.weight[3] +
-                    self.evaluate_ripple(start, end) * self.weight[4]
+                    result[0] * self.weight[0] +
+                    result[1] * self.weight[1] +
+                    result[2] * self.weight[2] +
+                    result[3] * self.weight[3] +
+                    result[4] * self.weight[4]
                 ) * self.evaluate_cross_talk(number_of_cross_talk)
             )
         else:
@@ -197,7 +201,7 @@ class Evaluator:
         return 1
 
 
-def build_Evaluator(config, weight=[2, 1, 1, 3, 3]):
+def build_Evaluator(config, weight=[1, 2, 1, 1, 2]):
     """Partial-apply config to Evaluator
 
     Args:
