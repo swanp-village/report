@@ -127,4 +127,4 @@ class Model:
         print('end')
         if result > 0:
             mrr.print_parameters()
-            plot(x, y, L.size, self.logger.generate_image_path())
+            plot([x], [y], L.size, self.logger.generate_image_path())

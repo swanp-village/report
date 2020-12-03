@@ -43,6 +43,8 @@ def train():
             score = clf.score(evaluate_result[test_index], rank_list[test_index])
             score_list.append(score)
         average_score = np.average(score_list)
+        print(average_score)
+        print(score_list)
 
         if average_score > max_score:
             max_score = average_score

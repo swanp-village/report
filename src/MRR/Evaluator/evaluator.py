@@ -96,20 +96,25 @@ class Evaluator:
                 self.evaluate_stop_band(start, end),
                 self.evaluate_insertion_loss(),
                 self.evaluate_3db_band(start, end),
-                self.evaluate_ripple(start, end)
-            ]
-            binary_result = [
+                self.evaluate_ripple(start, end),
                 self.evaluate_cross_talk(number_of_cross_talk)
             ]
             # print(result)
             return (
                 (
-                    result[0] * self.weight[0] +
-                    result[1] * self.weight[1] +
-                    result[2] * self.weight[2] +
-                    result[3] * self.weight[3] +
-                    result[4] * self.weight[4]
-                ) * self.evaluate_cross_talk(number_of_cross_talk)
+                    result[0][0] * self.weight[0] +
+                    result[1][0] * self.weight[1] +
+                    result[2][0] * self.weight[2] +
+                    result[3][0] * self.weight[3] +
+                    result[4][0] * self.weight[4] +
+                    result[5][0] * self.weight[5]
+                ) *
+                1 if result[0][1] else self.weight[6] *
+                1 if result[1][1] else self.weight[7] *
+                1 if result[2][1] else self.weight[8] *
+                1 if result[3][1] else self.weight[9] *
+                1 if result[4][1] else self.weight[10] *
+                1 if result[5][1] else self.weight[11]
             )
         else:
             return 0
@@ -117,34 +122,34 @@ class Evaluator:
     def evaluate_insertion_loss(self):
         insertion_loss = self.y[self.x == self.center_wavelength]
         if insertion_loss.size == 0:
-            return 0
+            return (0, True)
         if insertion_loss[0] < -20:
-            return 0
-        return 1 + insertion_loss[0] / 20
+            return (0, False)
+        return (1 + insertion_loss[0] / 20, True)
 
     def evaluate_ripple(self, start, end):
         pass_band = self.y[start:end]
         index = self.get_3db_band(start, end)
         if index.size <= 1:
-            return 0
+            return (0, False)
         border = np.max(self.y) - 3
 
         y = pass_band[index[0]:index[-1]] + border
         var = np.var(y.T)
         if var == 0:
-            return 1
+            return (1, True)
         result = 1 / (var + 1)
 
-        return result
+        return (result, True)
 
     def evaluate_3db_band(self, start, end):
         index = self.get_3db_band(start, end)
         if index.size <= 1:
-            return 0
+            return (0, False)
         distance = self.distance * (index[-1] - index[0])
         if distance > self.length_of_3db_band:
-            return (2 * self.length_of_3db_band - distance) / self.length_of_3db_band
-        return distance / self.length_of_3db_band
+            return ((2 * self.length_of_3db_band - distance) / self.length_of_3db_band, True)
+        return (distance / self.length_of_3db_band, True)
 
     def evaluate_pass_band(self, start, end):
         a = abs(
@@ -158,7 +163,7 @@ class Evaluator:
             ) * self.distance
         )
 
-        return b / a
+        return (b / a, True)
 
     def evaluate_stop_band(self, start, end):
         c = abs(
@@ -193,15 +198,15 @@ class Evaluator:
             ) * self.distance
         )
 
-        return d / c
+        return (d / c, True)
 
     def evaluate_cross_talk(self, number_of_cross_talk):
         if number_of_cross_talk > 0:
-            return 0.5
-        return 1
+            return (0, False)
+        return (0, True)
 
 
-def build_Evaluator(config, weight=[1, 2, 1, 1, 2]):
+def build_Evaluator(config, weight=[1, 3, 3, 1, 4]):
     """Partial-apply config to Evaluator
 
     Args:

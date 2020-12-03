@@ -12,9 +12,9 @@ def formatter(x, pos):
 def plot(xs, ys, number_of_rings, img_path='img/out.pdf'):
     xs = np.array(xs, dtype=object)
     ys = np.array(ys, dtype=object)
-    if len(xs) == 1:
-        xs = np.array([xs])
-        ys = np.array([ys])
+    # if len(xs) == 1:
+    #     xs = np.array([xs])
+    #     ys = np.array([ys])
     rc('text', usetex=True)
     rc('font', size=16)
     if number_of_rings == 1:
