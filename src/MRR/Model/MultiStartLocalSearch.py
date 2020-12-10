@@ -1,9 +1,8 @@
 import numpy as np
 from random import uniform
-from MRR.Simulator import build_TransferFunction
+from MRR.Simulator import build_TransferFunction, Ring
 from MRR.gragh import plot
 from MRR.Evaluator import build_Evaluator
-from MRR.ring import Ring
 from MRR.logger import Logger
 
 

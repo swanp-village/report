@@ -1,7 +1,6 @@
-from MRR.simulator import MRR
 from MRR.gragh import plot
-from MRR.Evaluator.evaluator import build_Evaluator
-from MRR.ring import Ring
+from MRR.Evaluator import build_Evaluator
+from MRR.Simulator import Ring, TransferFunction
 from MRR.logger import Logger
 
 
@@ -20,7 +19,7 @@ def simulate(config_list, skip_plot):
         config.setdefault('length_of_3db_band', 1e-9)
         Evaluator = build_Evaluator(config)
 
-        mrr = MRR(
+        mrr = TransferFunction(
             config['L'],
             config['K'],
             config
