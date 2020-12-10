@@ -1,6 +1,6 @@
 import numpy as np
 from random import uniform
-from MRR.simulator import build_MRR
+from MRR.Simulator import build_TransferFunction
 from MRR.gragh import plot
 from MRR.Evaluator import build_Evaluator
 from MRR.ring import Ring
@@ -52,7 +52,7 @@ class Model:
         self.logger.save_config(config)
         self.ring = Ring(config)
         self.Evaluator = build_Evaluator(config)
-        self.MRR = build_MRR(config)
+        self.TransferFunction = build_TransferFunction(config)
         self.L_list = []
         self.K_list = []
         self.Q_list = []
@@ -110,7 +110,7 @@ class Model:
 
     def calc_Q(self, a):
         if np.all(np.where((self.K + a > 0) & (self.K + a < self.eta), True, False)):
-            mrr = self.MRR(
+            mrr = self.TransferFunction(
                 self.L,
                 self.K + a
             )
@@ -142,7 +142,7 @@ class Model:
 
         L = self.L_list[np.argmax(self.Q_list)]
         K = self.K_list[np.argmax(self.Q_list)]
-        mrr = self.MRR(
+        mrr = self.TransferFunction(
             L,
             K
         )

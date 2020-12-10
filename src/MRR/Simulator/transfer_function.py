@@ -2,7 +2,7 @@ import numpy as np
 from typing import Any, Dict, List
 
 
-class MRR:
+class TransferFunction:
     """Simulator of the transfer function of the MRR filter.
 
     Args:
@@ -82,13 +82,13 @@ class MRR:
         return y.reshape(y.size)
 
 
-def build_MRR(config):
-    """Partial-apply config to MRR
+def build_TransferFunction(config):
+    """Partial-apply config to TransferFunction
 
     Args:
-        config (Dict[str, Any]): Configuration of the MRR
+        config (Dict[str, Any]): Configuration of the TransferFunction
 
     Returns:
-        MRR_with_config: MRR that is partial-applied config to.
+        TransferFunction_with_config: TransferFunction that is partial-applied config to.
     """
-    return lambda L, K: MRR(L, K, config)
+    return lambda L, K: TransferFunction(L, K, config)
