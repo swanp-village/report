@@ -30,11 +30,6 @@ def validate(xs, ys, number_of_rings):
 
 def plot(xs, ys, number_of_rings, img_path='img/out.pdf', skip_plot=False):
     validate(xs, ys, number_of_rings)
-    # xs = np.array(xs, dtype=object)
-    # ys = np.array(ys, dtype=object)
-    # if len(xs) == 1:
-    #     xs = np.array([xs])
-    #     ys = np.array([ys])
     rc('text', usetex=True)
     rc('font', size=16)
     fig, ax = plt.subplots(figsize=(8, 6))
