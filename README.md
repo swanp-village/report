@@ -28,7 +28,7 @@ ref: https://docs.python.org/3/library/venv.html
 ### 作成 / make
 
 ```bash
-python3 -m venv .
+python3 -m venv .venv
 ```
 
 ### 有効化 / activate
@@ -36,7 +36,7 @@ python3 -m venv .
 Run this command before execution.
 
 ```bash
-. bin/activate
+. .venv/bin/activate
 ```
 
 ## Install modules
