@@ -41,7 +41,8 @@ class Model:
     """
     def __init__(
         self,
-        config
+        config,
+        skip_plot
     ):
         self.eta = config['eta']
         self.number_of_episodes_in_L = config['number_of_episodes_in_L']
@@ -54,6 +55,7 @@ class Model:
         self.ring = Ring(config)
         self.Evaluator = build_Evaluator(config)
         self.MRR = build_MRR(config)
+        self.skip_plot = skip_plot
         self.L_list = []
         self.K_list = []
         self.Q_list = []
@@ -127,4 +129,4 @@ class Model:
         print('end')
         if result > 0:
             mrr.print_parameters()
-            plot([x], [y], L.size, self.logger.generate_image_path())
+            plot([x], [y], L.size, self.logger.generate_image_path(), skip_plot)

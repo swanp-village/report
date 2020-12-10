@@ -4,20 +4,19 @@ from importlib import import_module
 import argparse
 from MRR.DE import Model
 from random import seed
-from MRR.Evaluator.Model.train import train
+from MRR.Evaluator.Model.train import train_evaluator, show_data
 from MRR.Evaluator.evaluator import build_Evaluator
 from MRR.ring import Ring
 from MRR.logger import Logger
-from copy import deepcopy
 
 
-def main(config):
+def main(config, skip_plot):
     # seed(1)
-    model = Model(config)
+    model = Model(config, skip_plot)
     model.train()
 
 
-def simulate(config_list):
+def simulate(config_list, skip_plot):
     logger = Logger()
     xs = []
     ys = []
@@ -57,20 +56,19 @@ def simulate(config_list):
         result = evaluator.evaluate_band()
         print(result)
         logger.save_data_as_csv(x, y, config['name'])
-        xs.append(deepcopy(x))
-        ys.append(deepcopy(y))
-    plot(xs, ys, config['L'].size, logger.generate_image_path(config['name']))
-
-
-def train_evaluator():
-    train()
+        xs.append(x)
+        ys.append(y)
+    plot(xs, ys, config['L'].size, logger.generate_image_path(config['name']), skip_plot)
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-c', '--config', help='config file path', nargs='*')
-    parser.add_argument('--evaluator', action='store_true')
+    parser.add_argument('--train-evaluator', action='store_true')
+    parser.add_argument('--show-data', action='store_true')
+    parser.add_argument('--skip-plot', action='store_true')
     args = vars(parser.parse_args())
+    skip_plot = args['skip_plot']
     if args['config']:
         try:
             config_list = []
@@ -81,13 +79,15 @@ if __name__ == '__main__':
         except:
             parser.print_help()
         else:
-            simulate(config_list)
-    elif args['evaluator']:
+            simulate(config_list, skip_plot)
+    elif args['train_evaluator']:
         train_evaluator()
+    elif args['show_data']:
+        show_data(skip_plot)
     else:
         try:
             config = import_module('config.base').config
         except:
             parser.print_help()
         else:
-            main(config)
+            main(config, skip_plot)

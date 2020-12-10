@@ -9,27 +9,40 @@ def formatter(x, pos):
     return "%.1f" % x
 
 
-def plot(xs, ys, number_of_rings, img_path='img/out.pdf'):
-    xs = np.array(xs, dtype=object)
-    ys = np.array(ys, dtype=object)
+def generate_title(number_of_rings):
+    if number_of_rings == 1:
+        return '{}st order MRR'.format(number_of_rings)
+    elif number_of_rings == 2:
+        return '{}nd order MRR'.format(number_of_rings)
+    elif number_of_rings == 3:
+        return '{}rd order MRR'.format(number_of_rings)
+    else:
+        return '{}th order MRR'.format(number_of_rings)
+
+def validate(xs, ys, number_of_rings):
+    if not isinstance(xs, list):
+        print('xs is wrong')
+    if not isinstance(ys, list):
+        print('ys is wrong')
+    if len(xs) == number_of_rings and len(ys) == number_of_rings:
+        print('number_of_rings is wrong')
+
+
+def plot(xs, ys, number_of_rings, img_path='img/out.pdf', skip_plot=False):
+    validate(xs, ys, number_of_rings)
+    # xs = np.array(xs, dtype=object)
+    # ys = np.array(ys, dtype=object)
     # if len(xs) == 1:
     #     xs = np.array([xs])
     #     ys = np.array([ys])
     rc('text', usetex=True)
     rc('font', size=16)
-    if number_of_rings == 1:
-        title = '{}st order MRR'.format(number_of_rings)
-    elif number_of_rings == 2:
-        title = '{}nd order MRR'.format(number_of_rings)
-    elif number_of_rings == 3:
-        title = '{}rd order MRR'.format(number_of_rings)
-    else:
-        title = '{}th order MRR'.format(number_of_rings)
     fig, ax = plt.subplots(figsize=(8, 6))
-    for i in range(xs.shape[0]):
+    for i in range(len(xs)):
         ax.semilogx(xs[i] * 1e9, ys[i])
     ax.set_xlabel('Wavelength (nm)', fontsize=24)
     ax.set_ylabel('Drop Port Power (dB)', fontsize=24)
+    # title = generate_title(number_of_rings)
     # ax.set(
     #     title=title
     # )
@@ -41,7 +54,8 @@ def plot(xs, ys, number_of_rings, img_path='img/out.pdf'):
     ax.set_ylim([-30, 0])
     # ax.grid(which='both')
     fig.savefig(img_path)
-    plt.show()
+    if not skip_plot:
+        plt.show()
 
 
 def plot_(xs, ys, number_of_rings, img_path='img/out.pdf'):
@@ -65,4 +79,5 @@ def plot_(xs, ys, number_of_rings, img_path='img/out.pdf'):
     ax.set_xticks(np.arange(1540, 1561, 2))
     ax.set_xticks([], True)
     fig.savefig(img_path)
-    plt.show()
+    if not skip_plot:
+            plt.show()

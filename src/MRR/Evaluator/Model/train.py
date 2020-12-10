@@ -5,12 +5,23 @@ from .config import config
 from itertools import product
 from scipy.cluster.vq import kmeans, whiten
 from sklearn.svm import SVC
-from sklearn.model_selection import LeaveOneOut
+from sklearn.model_selection import LeaveOneOut, cross_val_score
 
+weight_of_binary_evaluation = np.array([0.5])
 weight_list = product(
     *[
-        np.arange(1, 6, 1)
-        for _ in range(config['number_of_weights'])
+        np.arange(1, 6, 1),
+        np.arange(1, 6, 1),
+        np.arange(1, 6, 1),
+        np.arange(1, 6, 1),
+        np.arange(1, 6, 1),
+        np.array([1]),
+        weight_of_binary_evaluation,
+        weight_of_binary_evaluation,
+        weight_of_binary_evaluation,
+        weight_of_binary_evaluation,
+        weight_of_binary_evaluation,
+        weight_of_binary_evaluation
     ]
 )
 rank_list = np.array([
@@ -18,7 +29,8 @@ rank_list = np.array([
     for d in data
 ])
 
-def train():
+
+def train_evaluator():
     loo = LeaveOneOut()
     max_score = 0
     optimized_weight = []
@@ -35,16 +47,13 @@ def train():
             for data_i in data
         ])
         print(evaluate_result)
-        score_list = []
-        for train_index, test_index in loo.split(evaluate_result):
-            evaluate_result = np.array(evaluate_result).reshape(-1, 1)
-            clf = SVC()
-            clf.fit(evaluate_result[train_index], rank_list[train_index])
-            score = clf.score(evaluate_result[test_index], rank_list[test_index])
-            score_list.append(score)
-        average_score = np.average(score_list)
-        print(average_score)
-        print(score_list)
+        evaluate_result = np.array(evaluate_result).reshape(-1, 1)
+        X = evaluate_result
+        y = rank_list
+        clf = SVC()
+        scores = cross_val_score(clf, X, y, cv=4, scoring='f1_micro')
+        average_score = scores.mean()
+        print(scores.mean(), scores)
 
         if average_score > max_score:
             max_score = average_score
@@ -53,7 +62,7 @@ def train():
     print(max_score, optimized_weight)
 
 
-def _train():
+def show_data():
     Evaluator = build_Evaluator(config)
     for data_i in data:
         evaluator = Evaluator(
