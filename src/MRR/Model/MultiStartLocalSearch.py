@@ -2,7 +2,7 @@ import numpy as np
 from random import uniform
 from MRR.simulator import build_MRR
 from MRR.gragh import plot
-from MRR.Evaluator.evaluator import build_Evaluator
+from MRR.Evaluator import build_Evaluator
 from MRR.ring import Ring
 from MRR.logger import Logger
 
