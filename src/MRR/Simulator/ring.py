@@ -1,6 +1,8 @@
 import numpy as np
 from .math import lcm
-from random import randrange, sample, uniform
+from random import randrange, sample, uniform, choice
+from itertools import combinations_with_replacement
+from scipy.stats import norm
 
 
 class Ring:
@@ -62,15 +64,36 @@ class Ring:
     def calculate_practical_FSR(self, N):
         return lcm(self.calculate_FSR(N))
 
+    def init_ratio(self):
+        n = self.number_of_rings
+        p = [
+            norm.cdf(-2),
+            *[
+                (norm.cdf(2 / (n - 2) * (x + 1)) - norm.cdf(2 / (n - 2) * x)) * 2
+                for x in range(n - 2)
+            ],
+            norm.cdf(-2)
+        ]
+        a = np.arange(1, n + 1)
+        number_of_different_perimeters = np.random.choice(a, p=p)
+        perimeter_range = range(number_of_different_perimeters)
+        combinations_of_perimeters = [
+            x
+            for x in combinations_with_replacement(perimeter_range, n)
+            if set(x) == set(perimeter_range)
+        ]
+        c = choice(combinations_of_perimeters)
+        base_ratio = sample(range(2, 30), number_of_different_perimeters)
+        base_ratio = (np.lcm.reduce(base_ratio) / base_ratio).astype(int)
+        ratio = [base_ratio[x] for x in c]
+        ratio = sample(ratio, len(ratio))
+
+        return np.array(ratio)
+
     def init_N(self):
         rand_start = 1
         rand_end = 3
-        # ratio = np.array(sample(range(2, 30), self.number_of_rings))
-        ratio = np.array([
-            randrange(2, 10)
-            for _ in range(self.number_of_rings)
-        ])
-        ratio = (np.lcm.reduce(ratio) / ratio).astype(int)
+        ratio = self.init_ratio()
         N_0 = randrange(100, 200)
         N = ratio * N_0
         min_N_0 = self.calculate_min_N() / min(ratio) + rand_end

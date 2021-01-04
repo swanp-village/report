@@ -93,7 +93,7 @@ class Model:
             return - evaluator.evaluate_band()
 
         result = differential_evolution(func, bounds, strategy='currenttobest1bin')
-        print(result.x, -result.fun)
+        print(self.L, result.x, -result.fun)
 
         self.K_list[m_L].append(result.x.tolist())
         self.Q_list[m_L].append(-result.fun)
