@@ -62,7 +62,7 @@ def train_evaluator():
     print(max_score, optimized_weight)
 
 
-def show_data():
+def show_data(skip_plot):
     Evaluator = build_Evaluator(config)
     for data_i in data:
         evaluator = Evaluator(
@@ -70,4 +70,4 @@ def show_data():
             data_i.y
         )
         print(evaluator.evaluate_band())
-        data_i.export_gragh()
+        data_i.export_gragh(skip_plot)

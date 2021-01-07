@@ -28,7 +28,7 @@ class Model:
         self.set_rank(1)
         self.validate()
 
-    def export_gragh(self):
+    def export_gragh(self, skip_plot):
         fig, ax = plt.subplots(figsize=(8, 6))
         ax.set_xlabel('Wavelength (nm)', fontsize=24)
         ax.set_ylabel('Drop Port Power (dB)', fontsize=24)
@@ -38,7 +38,8 @@ class Model:
 
         ax.semilogx(self.x * 1e9, self.y)
         fig.savefig(self.img_path)
-        plt.show()
+        if not skip_plot:
+            plt.show()
 
     def validate(self):
         if self.x.size != self.FSR / 1e-12:
