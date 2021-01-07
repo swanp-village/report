@@ -6,17 +6,19 @@ def generate_model(crosstalk, rank):
     d1 = np.arange(-60, 0, 0.5)
     d2 = np.arange(-60, crosstalk, 0.5)
     y = np.hstack((
-        np.repeat(-60, (m.FSR - m.length_of_3db_band) / 4 / 1e-12 - d2.size),
+        np.repeat(-60, (m.FSR - m.length_of_3db_band) / 6 / 1e-12 - d2.size),
         d2,
+        np.repeat(crosstalk, (m.FSR - m.length_of_3db_band) / 6 / 1e-12),
         d2[::-1],
-        np.repeat(-60, (m.FSR - m.length_of_3db_band) / 4 / 1e-12 - d2.size - d1.size),
+        np.repeat(-60, (m.FSR - m.length_of_3db_band) / 6 / 1e-12 - d2.size - d1.size),
         d1,
         np.repeat(0, m.length_of_3db_band / 1e-12),
         d1[::-1],
-        np.repeat(-60, (m.FSR - m.length_of_3db_band) / 4 / 1e-12 - d2.size - d1.size),
+        np.repeat(-60, (m.FSR - m.length_of_3db_band) / 6 / 1e-12 - d2.size - d1.size),
         d2,
+        np.repeat(crosstalk, (m.FSR - m.length_of_3db_band) / 6 / 1e-12),
         d2[::-1],
-        np.repeat(-60, (m.FSR - m.length_of_3db_band) / 4 / 1e-12 - d2.size)
+        np.repeat(-60, (m.FSR - m.length_of_3db_band) / 6 / 1e-12 - d2.size)
     ))
     m.set_y(y)
     m.set_rank(rank)
