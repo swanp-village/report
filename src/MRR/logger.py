@@ -13,6 +13,7 @@ class Logger:
         self.target.mkdir()
 
     def save_config(self, config):
+        self.config = config
         src = json.dumps(config, indent=4)
         self.target.joinpath('config.json').write_text(src)
 
@@ -24,3 +25,16 @@ class Logger:
         with open(path, 'w') as tsvfile:
             tsv_writer = csv.writer(tsvfile, delimiter='\t')
             tsv_writer.writerows(zip(x.tolist(), y.tolist()))
+
+    def save_result(self, K, L):
+        result = {
+            'eta': self.config['eta'],
+            'alpha': self.config['alpha'],
+            'K': K,
+            'L': L,
+            'n_eff': self.config['n_eff'],
+            'n_g': self.config['n_g'],
+            'center_wavelength': self.config['center_wavelength']
+        }
+        src = json.dumps(result, indent=4)
+        self.target.joinpath('result.json').write_text(src)

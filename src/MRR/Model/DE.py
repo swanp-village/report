@@ -13,8 +13,6 @@ class Model:
         config (Dict[str, Any]): Configuration of the MRR.
             Keys:
                 number_of_episodes_in_L (int): Number of the episodes in L.
-                number_of_episodes_in_K (int): Number of the episodes in K.
-                number_of_steps (int): Number of steps.
                 center_wavelength (float): The center wavelength.
                 number_of_rings (int): Number of rings. The ring order.
                 max_loss_in_pass_band (float): The threshold of the max loss in pass band. loss_p.
@@ -29,8 +27,6 @@ class Model:
     Attributes:
         eta (float): The coupling loss coefficient.
         number_of_episodes_in_L (int): Number of the episodes in L.
-        number_of_episodes_in_K (int): Number of the episodes in K.
-        number_of_steps (int): Number of steps.
         number_of_rings (int): Number of rings. The ring order.
         required_FSR (float): The required FSR.
         logger (Logger): Logger.
@@ -45,8 +41,6 @@ class Model:
     ):
         self.eta = config['eta']
         self.number_of_episodes_in_L = config['number_of_episodes_in_L']
-        self.number_of_episodes_in_K = config['number_of_episodes_in_K']
-        self.number_of_steps = config['number_of_steps']
         self.number_of_rings = config['number_of_rings']
         self.required_FSR = config['FSR']
         self.logger = Logger()
@@ -126,6 +120,7 @@ class Model:
         )
         result = evaluator.evaluate_band()
         print(result)
+        self.logger.save_result(L.tolist(), K)
         print('end')
         if result > 0:
             mrr.print_parameters()
