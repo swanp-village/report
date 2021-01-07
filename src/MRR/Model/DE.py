@@ -100,6 +100,7 @@ class Model:
 
     def train(self):
         for m_L in range(self.number_of_episodes_in_L):
+            print(m_L + 1)
             self.optimize_L()
 
             self.K_list.append([])
