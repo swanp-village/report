@@ -91,20 +91,23 @@ class Ring:
         return np.array(ratio)
 
     def init_N(self):
+        ratio = self.init_ratio()
+        N = self.optimize_N(ratio)
+
+        return N
+
+    def optimize_N(self, ratio):
         rand_start = 1
         rand_end = 3
-        ratio = self.init_ratio()
-        N_0 = randrange(100, 200)
-        N = ratio * N_0
         min_N_0 = self.calculate_min_N() / min(ratio) + rand_end
-        i = 0
-        while i < 1000000:
-            i = i + 1
+        N_0 = randrange(100, 200)
+
+        for i in range(10000):
             N = ratio * N_0
             practical_FSR = self.calculate_practical_FSR(N)
             if practical_FSR > self.FSR:
                 if i > 1000:
-                    break
+                    return N
                 N_0 = N_0 + randrange(rand_start, rand_end)
             else:
                 if N_0 > min_N_0:
@@ -112,8 +115,8 @@ class Ring:
                 else:
                     N_0 = N_0 + randrange(10, 20)
 
-        N = ratio * N_0
         return N
+
 
     def init_K(self):
         return np.array([
