@@ -91,7 +91,6 @@ class Evaluator:
             start = pass_band[0][0]
             end = pass_band[0][1]
             number_of_cross_talk = cross_talk.shape[0]
-            print(number_of_cross_talk)
             result = [
                 self.evaluate_pass_band(start, end),
                 self.evaluate_stop_band(start, end),

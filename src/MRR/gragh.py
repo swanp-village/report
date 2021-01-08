@@ -75,4 +75,4 @@ def plot_(xs, ys, number_of_rings, img_path='img/out.pdf'):
     ax.set_xticks([], True)
     fig.savefig(img_path)
     if not skip_plot:
-            plt.show()
+        plt.show()
