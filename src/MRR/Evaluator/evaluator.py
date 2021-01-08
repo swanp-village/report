@@ -205,7 +205,7 @@ class Evaluator:
         return (0, True)
 
 
-def build_Evaluator(config, weight=[2, 1, 3, 5, 1, 1, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5]):
+def build_Evaluator(config, weight=[1, 1, 4, 5, 1, 1, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5]):
     """Partial-apply config to Evaluator
 
     Args:
