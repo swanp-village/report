@@ -91,6 +91,7 @@ class Evaluator:
             start = pass_band[0][0]
             end = pass_band[0][1]
             number_of_cross_talk = cross_talk.shape[0]
+            print(number_of_cross_talk)
             result = [
                 self.evaluate_pass_band(start, end),
                 self.evaluate_stop_band(start, end),
@@ -99,7 +100,6 @@ class Evaluator:
                 self.evaluate_ripple(start, end),
                 self.evaluate_cross_talk(number_of_cross_talk)
             ]
-            # print(result)
             return (
                 (
                     result[0][0] * self.weight[0] +
@@ -109,12 +109,12 @@ class Evaluator:
                     result[4][0] * self.weight[4] +
                     result[5][0] * self.weight[5]
                 ) *
-                1 if result[0][1] else self.weight[6] *
-                1 if result[1][1] else self.weight[7] *
-                1 if result[2][1] else self.weight[8] *
-                1 if result[3][1] else self.weight[9] *
-                1 if result[4][1] else self.weight[10] *
-                1 if result[5][1] else self.weight[11]
+                (1 if result[0][1] else self.weight[6]) *
+                (1 if result[1][1] else self.weight[7]) *
+                (1 if result[2][1] else self.weight[8]) *
+                (1 if result[3][1] else self.weight[9]) *
+                (1 if result[4][1] else self.weight[10]) *
+                (1 if result[5][1] else self.weight[11])
             )
         else:
             return 0

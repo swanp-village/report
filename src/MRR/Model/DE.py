@@ -5,6 +5,7 @@ from MRR.gragh import plot
 from MRR.Evaluator import build_Evaluator
 from MRR.logger import Logger
 from scipy.optimize import differential_evolution
+from multiprocessing import Pool
 
 
 class Model:
@@ -87,14 +88,13 @@ class Model:
             return - evaluator.evaluate_band()
 
         result = differential_evolution(func, bounds, strategy='currenttobest1bin')
-        print(self.L, result.x, -result.fun)
+        print(m_L + 1, self.L, result.x, -result.fun)
 
         self.K_list[m_L].append(result.x.tolist())
         self.Q_list[m_L].append(-result.fun)
 
     def train(self):
         for m_L in range(self.number_of_episodes_in_L):
-            print(m_L + 1)
             self.optimize_L()
 
             self.K_list.append([])

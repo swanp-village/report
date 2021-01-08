@@ -26,7 +26,7 @@ class Logger:
             tsv_writer = csv.writer(tsvfile, delimiter='\t')
             tsv_writer.writerows(zip(x.tolist(), y.tolist()))
 
-    def save_result(self, K, L):
+    def save_result(self, L, K):
         result = {
             'eta': self.config['eta'],
             'alpha': self.config['alpha'],

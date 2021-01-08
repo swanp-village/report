@@ -13,3 +13,7 @@ python3 -m venv .venv
 . .venv/bin/activate
 pip install --upgrade pip
 pip install -r requirements.txt
+
+# tmux new -s train
+# tmux a -t train
+# tmux kill-session -t train
