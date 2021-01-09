@@ -141,7 +141,7 @@ class Evaluator:
             return (1, True)
         E = 1 / (var + 1)
 
-        return (E, True)
+        return (E, E > 0.7)
 
     def evaluate_3db_band(self, start, end):
         index = self.get_3db_band(start, end)
