@@ -81,6 +81,12 @@ class TransferFunction:
         y = 20 * np.log10(np.abs(self._D(l)))
         return y.reshape(y.size)
 
+class build_TransferFunction_Factory:
+    def __init__(self, config):
+        self.config = config
+
+    def create(self, L, K):
+        return TransferFunction(L, K, self.config)
 
 def build_TransferFunction(config):
     """Partial-apply config to TransferFunction
@@ -91,4 +97,4 @@ def build_TransferFunction(config):
     Returns:
         TransferFunction_with_config: TransferFunction that is partial-applied config to.
     """
-    return lambda L, K: TransferFunction(L, K, config)
+    return build_TransferFunction_Factory(config).create
