@@ -6,7 +6,21 @@ from MRR.Evaluator import build_Evaluator
 from MRR.logger import Logger
 from scipy.optimize import differential_evolution
 from multiprocessing import Pool
+import pickle
 
+def optimize_K_func(K, model, L, FSR):
+    mrr = model.TransferFunction(
+        L,
+        K
+    )
+    x = model.ring.calculate_x(FSR)
+    y = mrr.simulate(x)
+    evaluator = model.Evaluator(
+        x,
+        y
+    )
+
+    return - evaluator.evaluate_band()
 
 class Model:
     """
@@ -70,21 +84,7 @@ class Model:
             for _ in range(self.number_of_rings + 1)
         ]
 
-        def func(K):
-            mrr = self.TransferFunction(
-                L,
-                K
-            )
-            x = self.ring.calculate_x(FSR)
-            y = mrr.simulate(x)
-            evaluator = self.Evaluator(
-                x,
-                y
-            )
-
-            return - evaluator.evaluate_band()
-
-        result = differential_evolution(func, bounds, strategy='currenttobest1bin')
+        result = differential_evolution(optimize_K_func, bounds, args=(self, L, FSR), strategy='currenttobest1bin', workers=-1)
         E = -result.fun
         K = result.x
 
