@@ -214,4 +214,4 @@ def build_Evaluator(config, weight=[1, 1, 4, 5, 1, 1, 0.5, 0.5, 0.5, 0.5, 0.5, 0
     Returns:
         Evaluator_with_config: Evaluator that is partial-applied config to.
     """
-    return lambda L, K: Evaluator(L, K, weight, config)
+    return lambda x, y: Evaluator(x, y, weight, config)
