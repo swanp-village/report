@@ -50,9 +50,7 @@ class Model:
         self.Evaluator = build_Evaluator(config)
         self.TransferFunction = build_TransferFunction(config)
         self.skip_plot = skip_plot
-        self.L_list = []
-        self.K_list = []
-        self.Q_list = []
+
 
     def optimize_L(self):
         for i in range(100):
@@ -64,10 +62,9 @@ class Model:
         if i == 99:
             raise Exception('required_FSR is too big')
 
-        self.L = L
-        self.FSR = FSR
+        return L, FSR
 
-    def optimize_K(self, m_L):
+    def optimize_K(self, m_L, L, FSR):
         bounds = [
             (0.0000000001, self.eta)
             for _ in range(self.number_of_rings + 1)
@@ -75,10 +72,10 @@ class Model:
 
         def func(K):
             mrr = self.TransferFunction(
-                self.L,
+                L,
                 K
             )
-            x = self.ring.calculate_x(self.FSR)
+            x = self.ring.calculate_x(FSR)
             y = mrr.simulate(x)
             evaluator = self.Evaluator(
                 x,
@@ -88,40 +85,50 @@ class Model:
             return - evaluator.evaluate_band()
 
         result = differential_evolution(func, bounds, strategy='currenttobest1bin')
-        print(m_L + 1, self.L, result.x, -result.fun)
+        E = -result.fun
+        K = result.x
 
-        self.K_list[m_L].append(result.x.tolist())
-        self.Q_list[m_L].append(-result.fun)
+        return K, E
 
     def train(self):
+        L_list = [[] for _ in range(self.number_of_episodes_in_L)]
+        K_list = [[] for _ in range(self.number_of_episodes_in_L)]
+        FSR_list = [0 for _ in range(self.number_of_episodes_in_L)]
+        E_list = [0 for _ in range(self.number_of_episodes_in_L)]
         for m_L in range(self.number_of_episodes_in_L):
-            self.optimize_L()
+            L, FSR = self.optimize_L()
+            K, E = self.optimize_K(m_L, L, FSR)
 
-            self.K_list.append([])
-            self.Q_list.append([])
+            L_list[m_L] = L
+            FSR_list[m_L] = FSR
+            K_list[m_L] = K
+            E_list[m_L] = E
+            print(m_L + 1)
+            print('L  : {}'.format(L))
+            print('K  : {}'.format(K))
+            print('FSR: {}'.format(FSR))
+            print('E  : {}'.format(E))
+            print('================')
 
-            self.optimize_K(m_L)
-            self.L_list.append(self.L)
-            max_index = np.argmax(self.Q_list[m_L])
-            self.Q_list[m_L] = self.Q_list[m_L][max_index]
-            self.K_list[m_L] = self.K_list[m_L][max_index]
-
-        L = self.L_list[np.argmax(self.Q_list)]
-        K = self.K_list[np.argmax(self.Q_list)]
+        max_index = np.argmax(E_list)
+        L = L_list[max_index]
+        K = K_list[max_index]
+        FSR = FSR_list[max_index]
         mrr = self.TransferFunction(
             L,
             K
         )
-        x = self.ring.calculate_x(self.FSR)
+        x = self.ring.calculate_x(FSR)
         y = mrr.simulate(x)
         evaluator = self.Evaluator(
             x,
             y
         )
         result = evaluator.evaluate_band()
-        print(result)
-        self.logger.save_result(L.tolist(), K)
+        print('result')
+        mrr.print_parameters()
+        print('E: {}'.format(result))
+        self.logger.save_result(L.tolist(), K.tolist())
         print('end')
         if result > 0:
-            mrr.print_parameters()
-            plot([x], [y], L.size, self.logger.generate_image_path(), self.skip_plot)
+            plot([x], [y], self.number_of_rings, self.logger.generate_image_path(), self.skip_plot)
