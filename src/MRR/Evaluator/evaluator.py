@@ -119,12 +119,14 @@ class Evaluator:
             return 0
 
     def evaluate_insertion_loss(self):
+        max_insertion_loss = -10
         insertion_loss = self.y[self.x == self.center_wavelength]
         if insertion_loss.size == 0:
             return (0, True)
-        if insertion_loss[0] < -20:
+        if insertion_loss[0] < max_insertion_loss:
             return (0, False)
-        return (1 + insertion_loss[0] / 20, True)
+        E = 1 + insertion_loss[0] / abs(max_insertion_loss)
+        return (E, True)
 
     def evaluate_ripple(self, start, end):
         pass_band = self.y[start:end]
@@ -137,9 +139,9 @@ class Evaluator:
         var = np.var(y.T)
         if var == 0:
             return (1, True)
-        result = 1 / (var + 1)
+        E = 1 / (var + 1)
 
-        return (result, True)
+        return (E, True)
 
     def evaluate_3db_band(self, start, end):
         index = self.get_3db_band(start, end)
@@ -161,8 +163,9 @@ class Evaluator:
                 self.max_loss_in_pass_band - self.y[start:end]
             ) * self.distance
         )
+        E = b / a
 
-        return (b / a, True)
+        return (E, True)
 
     def evaluate_stop_band(self, start, end):
         c = abs(
@@ -196,8 +199,9 @@ class Evaluator:
                 sum(y1) + sum(y2)
             ) * self.distance
         )
+        E = d / c
 
-        return (d / c, True)
+        return (E, True)
 
     def evaluate_cross_talk(self, number_of_cross_talk):
         if number_of_cross_talk > 0:
