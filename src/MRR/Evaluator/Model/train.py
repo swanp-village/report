@@ -38,7 +38,7 @@ def train_evaluator():
         print('==========================')
         print(weight)
 
-        Evaluator = build_Evaluator(config)
+        Evaluator = build_Evaluator(config, weight)
         evaluate_result = np.array([
             Evaluator(
                 data_i.x,
