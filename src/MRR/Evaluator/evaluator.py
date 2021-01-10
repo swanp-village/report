@@ -158,6 +158,10 @@ class Evaluator:
                 self.x[end] - self.x[start]
             )
         )
+
+        if a == 0:
+            return (0, False)
+
         b = abs(
             sum(
                 self.max_loss_in_pass_band - self.y[start:end]
@@ -173,6 +177,9 @@ class Evaluator:
                 (self.x[start] - self.x[0]) + (self.x[-1] - self.x[end])
             )
         )
+
+        if c == 0:
+            return (0, False)
 
         y1 = np.where(
             self.y[0:start] > self.required_loss_in_stop_band,
