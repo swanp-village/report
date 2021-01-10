@@ -60,6 +60,9 @@ def train_evaluator():
             optimized_weight = weight
 
     print(max_score, optimized_weight)
+    with open('result', 'w') as f:
+        f.write('{} {}'.format(max_score, optimized_weight))
+
 
 
 def show_data(skip_plot):
