@@ -1,7 +1,7 @@
 #!/bin/bash
 # Install or update needed software
 sudo apt-get update
-sudo apt-get install -yq git python3.7 python3-venv
+sudo apt-get install -yq git python3.8 python3-venv
 
 # Fetch source code
 git clone https://github.com/nimiusrd/MRR.git
@@ -17,3 +17,6 @@ pip install -r requirements.txt
 # tmux new -s train
 # tmux a -t train
 # tmux kill-session -t train
+
+# python main.py --skip-plot
+# python main.py --train-evaluator
