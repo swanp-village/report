@@ -130,5 +130,5 @@ class Model:
         print('E: {}'.format(result))
         self.logger.save_result(L.tolist(), K.tolist())
         print('end')
-        if result > 0:
-            plot([x], [y], self.number_of_rings, self.logger.generate_image_path(), self.skip_plot)
+        if result > 0 and not self.skip_plot:
+            plot([x], [y], self.number_of_rings, self.logger.generate_image_path())

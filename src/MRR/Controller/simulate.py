@@ -46,4 +46,6 @@ def simulate(config_list, skip_plot):
         logger.save_data_as_csv(x, y, config['name'])
         xs.append(x)
         ys.append(y)
-    plot(xs, ys, config['L'].size, logger.generate_image_path(config['name']), skip_plot)
+
+    if not skip_plot:
+        plot(xs, ys, config['L'].size, logger.generate_image_path(config['name']))
