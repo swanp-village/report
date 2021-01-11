@@ -13,5 +13,5 @@ config = {
     'required_loss_in_stop_band': -60,
     'min_ring_length': 50e-6,
 
-    'number_of_episodes_in_L': 2
+    'number_of_episodes_in_L': 50
 }
