@@ -228,11 +228,11 @@ class build_Evaluator_Factory:
         return Evaluator(L, K, self.weight, self.config)
 
 def build_Evaluator(config, weight=[
-            1.5,
-            5.5,
-            4.0,
+            3.0,
             1.0,
-            2.5,
+            1.0,
+            9.0,
+            1.0,
             1.0,
             0.5,
             0.5,
