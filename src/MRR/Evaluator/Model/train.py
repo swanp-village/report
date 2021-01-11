@@ -92,7 +92,7 @@ def show_data(skip_plot):
 
 
 def save_result(score, weight):
-    p = Path('result.json')
+    p = Path.cwd().joinpath('MRR', 'Evaluator', 'Model', 'result.json')
     result = {
         'score': score,
         'weights': weight

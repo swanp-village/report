@@ -131,3 +131,4 @@ pyvenv.cfg
 src/img
 result
 src/MRR/Evaluator/Model/figure
+src/MRR/Evaluator/Model/result.json
