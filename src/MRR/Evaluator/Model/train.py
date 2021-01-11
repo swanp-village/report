@@ -13,11 +13,11 @@ from multiprocessing import Pool
 weight_of_binary_evaluation = np.array([0.5])
 weight_list = list(product(
     *[
-        np.arange(1, 6, 0.5),
-        np.arange(1, 6, 0.5),
-        np.arange(1, 6, 0.5),
-        np.arange(1, 6, 0.5),
-        np.arange(1, 6, 0.5),
+        np.arange(1, 10),
+        np.arange(1, 10),
+        np.arange(1, 10),
+        np.arange(1, 10),
+        np.arange(1, 10),
         np.array([1]),
         weight_of_binary_evaluation,
         weight_of_binary_evaluation,
