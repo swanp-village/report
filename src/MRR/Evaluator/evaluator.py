@@ -149,8 +149,12 @@ class Evaluator:
             return (0, False)
         distance = self.distance * (index[-1] - index[0])
         if distance > self.length_of_3db_band:
-            return ((2 * self.length_of_3db_band - distance) / self.length_of_3db_band, True)
-        return (distance / self.length_of_3db_band, True)
+            E = (2 * self.length_of_3db_band - distance) / self.length_of_3db_band
+        else:
+            E = distance/ self.length_of_3db_band
+        E = E ** 3
+        print(distance, E)
+        return (E, True)
 
     def evaluate_pass_band(self, start, end):
         a = abs(
