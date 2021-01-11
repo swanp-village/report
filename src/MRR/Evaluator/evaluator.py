@@ -153,7 +153,6 @@ class Evaluator:
         else:
             E = distance/ self.length_of_3db_band
         E = E ** 3
-        print(distance, E)
         return (E, True)
 
     def evaluate_pass_band(self, start, end):
