@@ -19,23 +19,23 @@ def generate_model(three_db_band, rank):
 
 data = [
     *[
-        generate_model(i / 100, 3)
-        for i in range(80, 95, 1)
+        generate_model(i, 3)
+        for i in np.arange(0.80, 0.95, 0.01)
     ],
     *[
-        generate_model(i / 100, 2)
-        for i in range(95, 99, 1)
+        generate_model(i, 2)
+        for i in np.arange(0.95, 0.99, 0.002)
     ],
     *[
-        generate_model(i / 100, 1)
-        for i in range(99, 102, 1)
+        generate_model(i, 1)
+        for i in np.arange(0.99, 1.02, 0.002)
     ],
     *[
-        generate_model(i / 100, 2)
-        for i in range(102, 106, 1)
+        generate_model(i, 2)
+        for i in np.arange(1.02, 1.06, 0.002)
     ],
     *[
-        generate_model(i / 100, 3)
-        for i in range(106, 120, 1)
+        generate_model(i, 3)
+        for i in np.arange(1.06, 1.20, 0.01)
     ]
 ]

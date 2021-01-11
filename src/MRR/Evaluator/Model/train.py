@@ -6,6 +6,8 @@ from itertools import product
 from scipy.cluster.vq import kmeans, whiten
 from sklearn.svm import SVC
 from sklearn.model_selection import cross_validate
+import json
+from pathlib import Path
 from multiprocessing import Pool
 
 weight_of_binary_evaluation = np.array([0.5])
@@ -25,7 +27,7 @@ weight_list = list(product(
         weight_of_binary_evaluation
     ]
 ))
-train, test = get_splited_data(0.2)
+train, test = get_splited_data(0.3)
 train_rank_list = np.array([
     d.rank
     for d in train
@@ -59,16 +61,13 @@ def train_data(weight):
     clf = SVC()
     clf.fit(X_train, y_train)
     score = clf.score(X_test, y_test)
-    print('==========================')
-    print(weight)
-    print(score)
+    print(score, weight)
 
     return score
 
 
 def train_evaluator():
     max_score = 0
-    optimized_weight = []
 
     with Pool() as p:
         scores = p.map(train_data, weight_list)
@@ -78,12 +77,7 @@ def train_evaluator():
     max_score = np.max(scores)
     optimized_weights = weights[scores == max_score]
     print(max_score)
-    print(optimized_weights)
-
-    with open('result', 'w') as f:
-        f.write('{}\n'.format(max_score))
-        f.write('{}'.format(optimized_weights))
-
+    save_result(max_score, optimized_weights.tolist())
 
 
 def show_data(skip_plot):
@@ -95,3 +89,13 @@ def show_data(skip_plot):
         )
         print(evaluator.evaluate_band())
         data_i.export_gragh(skip_plot)
+
+
+def save_result(score, weight):
+    p = Path('result.json')
+    result = {
+        'score': score,
+        'weights': weight
+    }
+    src = json.dumps(result, indent=4)
+    p.write_text(src)

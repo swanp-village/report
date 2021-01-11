@@ -19,14 +19,14 @@ def generate_model(stopband, rank):
 data = [
     *[
         generate_model(i, 3)
-        for i in range(-30, -40, -1)
+        for i in np.arange(-30, -40, -1)
     ],
     *[
         generate_model(i, 2)
-        for i in range(-40, -50, -1)
+        for i in np.arange(-40, -50, -1)
     ],
     *[
         generate_model(i, 1)
-        for i in range(-50, -60, -1)
+        for i in np.arange(-50, -60, -1)
     ]
 ]

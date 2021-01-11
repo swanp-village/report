@@ -28,14 +28,14 @@ def generate_model(ripple, rank):
 data = [
     *[
         generate_model(i / 10, 1)
-        for i in range(0, -10, -1)
+        for i in np.arange(0, -10, -1)
     ],
     *[
         generate_model(i / 10, 2)
-        for i in range(-10, -20, -1)
+        for i in np.arange(-10, -20, -1)
     ],
     *[
         generate_model(i / 10, 3)
-        for i in range(-20, -50, -1)
+        for i in np.arange(-20, -50, -1)
     ]
 ]

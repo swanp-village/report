@@ -28,14 +28,14 @@ def generate_model(crosstalk, rank):
 data = [
     *[
         generate_model(i, 3)
-        for i in range(-5, -30, -1)
+        for i in np.arange(-5, -30, -1)
     ],
     *[
         generate_model(i, 2)
-        for i in range(-30, -40, -1)
+        for i in np.arange(-30, -40, -1)
     ],
     *[
         generate_model(i, 1)
-        for i in range(-40, -60, -1)
+        for i in np.arange(-40, -60, -1)
     ]
 ]

@@ -19,14 +19,14 @@ def generate_model(insertion_loss, rank):
 data = [
     *[
         generate_model(i, 1)
-        for i in range(-1, -4, -1)
+        for i in np.arange(-1, -4, -0.2)
     ],
     *[
         generate_model(i, 2)
-        for i in range(-4, -20, -1)
+        for i in np.arange(-4, -20, -1)
     ],
     *[
         generate_model(i, 3)
-        for i in range(-20, -30, -1)
+        for i in np.arange(-20, -30, -1)
     ]
 ]
