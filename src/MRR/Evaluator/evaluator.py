@@ -166,7 +166,7 @@ class Evaluator:
             return (0, False)
 
         b = abs(
-            sum(
+            np.sum(
                 self.max_loss_in_pass_band - self.y[start:end]
             ) * self.distance
         )
