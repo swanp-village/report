@@ -206,7 +206,7 @@ class Evaluator:
         )
         d = abs(
             (
-                sum(y1) + sum(y2)
+                np.sum(y1) + np.sum(y2)
             ) * self.distance
         )
         E = d / c
