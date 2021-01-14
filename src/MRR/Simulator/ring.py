@@ -101,20 +101,16 @@ class Ring:
         rand_end = 3
         min_N_0 = self.calculate_min_N() / min(ratio) + rand_end
         N_0 = randrange(100, 200)
-
-        for i in range(100000):
+        for i in range(10000):
             N = ratio * N_0
             practical_FSR = self.calculate_practical_FSR(N)
-            dif = abs(practical_FSR - self.FSR)
-            if dif < self.FSR * 0.05:
-                if dif < self.FSR * 0.01:
-                    return N
+            dif = practical_FSR - self.FSR
+            if abs(dif) < self.FSR * 0.01:
+                return N
+            if dif > 0:
                 N_0 = N_0 + randrange(rand_start, rand_end)
             else:
-                if N_0 > min_N_0:
-                    N_0 = N_0 - randrange(rand_start, rand_end)
-                else:
-                    N_0 = N_0 + randrange(10, 20)
+                N_0 = N_0 - randrange(rand_start, rand_end)
 
         return N
 
