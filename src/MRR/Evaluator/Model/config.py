@@ -9,7 +9,8 @@ config = {
     'FSR': 10e-9,
     'length_of_3db_band': 1e-9,
 
-    'number_of_evaluate_funct ion': 6,
+    'max_crosstalk': -30,
+    'number_of_evaluate_function': 6,
     'max_loss_in_pass_band': -40,
     'required_loss_in_stop_band': -60,
 }

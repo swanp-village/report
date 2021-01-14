@@ -36,6 +36,7 @@ class Evaluator:
         self.distance: float = x[1] - x[0]
         self.center_wavelength: float = config['center_wavelength']
         self.number_of_rings: int = config['number_of_rings']
+        self.max_crosstalk: int = config['max_crosstalk']
         self.max_loss_in_pass_band: float = config['max_loss_in_pass_band']
         self.required_loss_in_stop_band: float = config['required_loss_in_stop_band']
         self.length_of_3db_band: float = config['length_of_3db_band']
@@ -90,14 +91,13 @@ class Evaluator:
         if pass_band.shape[0] == 1:
             start = pass_band[0][0]
             end = pass_band[0][1]
-            number_of_cross_talk = cross_talk.shape[0]
             result = [
                 self.evaluate_pass_band(start, end),
                 self.evaluate_stop_band(start, end),
                 self.evaluate_insertion_loss(),
                 self.evaluate_3db_band(start, end),
                 self.evaluate_ripple(start, end),
-                self.evaluate_cross_talk(number_of_cross_talk)
+                self.evaluate_cross_talk(start, end)
             ]
             return (
                 (
@@ -213,8 +213,10 @@ class Evaluator:
 
         return (E, True)
 
-    def evaluate_cross_talk(self, number_of_cross_talk):
-        if number_of_cross_talk > 0:
+    def evaluate_cross_talk(self, pass_band_start, pass_band_end):
+        a = np.any(self.y[:pass_band_start] > self.max_crosstalk)
+        b = np.any(self.y[pass_band_end:] > self.max_crosstalk)
+        if a or b:
             return (0, False)
         return (0, True)
 
@@ -228,11 +230,11 @@ class build_Evaluator_Factory:
         return Evaluator(L, K, self.weight, self.config)
 
 def build_Evaluator(config, weight=[
-            3.0,
+            1.5,
+            5.5,
+            4.0,
             1.0,
-            1.0,
-            9.0,
-            1.0,
+            2.5,
             1.0,
             0.5,
             0.5,

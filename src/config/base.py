@@ -9,7 +9,8 @@ config = {
     'FSR': 20e-9,
     'length_of_3db_band': 1e-9,
 
-    'max_loss_in_pass_band': -40,
+    'max_cross_talk': -30,
+    'max_loss_in_pass_band': -20,
     'required_loss_in_stop_band': -60,
     'min_ring_length': 50e-6,
 

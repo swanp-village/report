@@ -1,5 +1,6 @@
 from random import sample
 from math import floor
+from .crosstalk_pulse import data as crosstalk_pulse
 from .crosstalk import data as crosstalk
 from .insertion_loss import data as insertion_loss
 from .ripple import data as ripple
@@ -8,6 +9,7 @@ from .three_db_band import data as three_db_band
 
 
 all_data = [
+    *crosstalk_pulse,
     *crosstalk,
     *insertion_loss,
     *ripple,
@@ -27,6 +29,7 @@ def split(data, test_size):
 
 def get_splited_data(test_size=0.25):
     data = [
+        crosstalk_pulse,
         crosstalk,
         insertion_loss,
         ripple,
