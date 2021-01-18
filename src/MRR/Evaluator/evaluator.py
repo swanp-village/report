@@ -233,17 +233,17 @@ class build_Evaluator_Factory:
 
 def build_Evaluator(config, weight=[
             1.0,
+            3.5,
             1.0,
-            3.0,
             5.0,
-            1.5,
+            3.5,
             1.0,
             0.5,
             0.5,
             0.5,
             0.5,
             0.5,
-            0.5,
+            0.5
         ]):
     """Partial-apply config to Evaluator
 
