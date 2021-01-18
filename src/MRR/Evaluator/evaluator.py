@@ -187,7 +187,7 @@ class Evaluator:
         max_insertion_loss = -10
         insertion_loss = self.y[self.x == self.center_wavelength]
         if insertion_loss.size == 0:
-            return (0, True)
+            return (0, False)
         if insertion_loss[0] < max_insertion_loss:
             return (0, False)
         E = 1 + insertion_loss[0] / abs(max_insertion_loss)
