@@ -10,8 +10,8 @@ class Evaluator:
             Keys:
                 center_wavelength (float): The center wavelength.
                 number_of_rings (int): Number of rings. The ring order.
-                max_loss_in_pass_band (float): The threshold of the max loss in pass band. loss_p.
-                required_loss_in_stop_band (float): The threshold of the min loss in stop band. loss_s.
+                H_p (float): The threshold of the max loss in pass band. H_p.
+                H_s (float): The threshold of the min loss in stop band. H_s.
                 length_of_3db_band (float): The required length of the 3dB band.
     Attributes:
         x (List[float]): List of x.
@@ -19,8 +19,8 @@ class Evaluator:
         distance (float): Distance of x.
         center_wavelength (float): The center wavelength.
         number_of_rings (int): Number of rings. The ring order.
-        max_loss_in_pass_band (float): The threshold of the max loss in pass band. loss_p.
-        required_loss_in_stop_band (float): The threshold of the min loss in stop band. loss_s.
+        H_p (float): The threshold of the max loss in pass band. H_p.
+        H_s (float): The threshold of the min loss in stop band. H_s.
         length_of_3db_band (float): The required length of the 3dB band.
     """
     def __init__(
@@ -37,15 +37,15 @@ class Evaluator:
         self.center_wavelength: float = config['center_wavelength']
         self.number_of_rings: int = config['number_of_rings']
         self.max_crosstalk: int = config['max_crosstalk']
-        self.max_loss_in_pass_band: float = config['max_loss_in_pass_band']
-        self.required_loss_in_stop_band: float = config['required_loss_in_stop_band']
+        self.H_p: float = config['H_p']
+        self.H_s: float = config['H_s']
         self.length_of_3db_band: float = config['length_of_3db_band']
 
     def calculate_pass_band_range(self):
         pass_band_range = []
         start = 0
         end = self.x.size - 1
-        a = np.where(self.y <= self.max_loss_in_pass_band, True, False)
+        a = np.where(self.y <= self.H_p, True, False)
         b = np.append(a[1:], a[-1])
         pass_band_range = np.where(np.logical_xor(a, b))[0]
         if pass_band_range.size == 0:
@@ -157,7 +157,7 @@ class Evaluator:
 
     def evaluate_pass_band(self, start, end):
         a = abs(
-            self.max_loss_in_pass_band * (
+            self.H_p * (
                 self.x[end] - self.x[start]
             )
         )
@@ -167,7 +167,7 @@ class Evaluator:
 
         b = abs(
             np.sum(
-                self.max_loss_in_pass_band - self.y[start:end]
+                self.H_p - self.y[start:end]
             ) * self.distance
         )
         E = b / a
@@ -176,7 +176,7 @@ class Evaluator:
 
     def evaluate_stop_band(self, start, end):
         c = abs(
-            (self.required_loss_in_stop_band - self.max_loss_in_pass_band) * (
+            (self.H_s - self.H_p) * (
                 (self.x[start] - self.x[0]) + (self.x[-1] - self.x[end])
             )
         )
@@ -185,9 +185,9 @@ class Evaluator:
             return (0, False)
 
         y1 = np.where(
-            self.y[0:start] > self.required_loss_in_stop_band,
-            self.max_loss_in_pass_band - self.y[0:start],
-            self.max_loss_in_pass_band - self.required_loss_in_stop_band
+            self.y[0:start] > self.H_s,
+            self.H_p - self.y[0:start],
+            self.H_p - self.H_s
         )
         y1 = np.where(
             y1 > 0,
@@ -195,9 +195,9 @@ class Evaluator:
             0
         )
         y2 = np.where(
-            self.y[end:-1] > self.required_loss_in_stop_band,
-            self.max_loss_in_pass_band - self.y[end:-1],
-            self.max_loss_in_pass_band - self.required_loss_in_stop_band
+            self.y[end:-1] > self.H_s,
+            self.H_p - self.y[end:-1],
+            self.H_p - self.H_s
         )
         y2 = np.where(
             y2 > 0,

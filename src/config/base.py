@@ -9,9 +9,9 @@ config = {
     'FSR': 20e-9,
     'length_of_3db_band': 1e-9,
 
-    'max_cross_talk': -30,
-    'max_loss_in_pass_band': -20,
-    'required_loss_in_stop_band': -60,
+    'max_crosstalk': -30,
+    'H_p': -20,
+    'H_s': -60,
     'min_ring_length': 50e-6,
 
     'number_of_episodes_in_L': 50

@@ -11,6 +11,6 @@ config = {
 
     'max_crosstalk': -30,
     'number_of_evaluate_function': 6,
-    'max_loss_in_pass_band': -40,
-    'required_loss_in_stop_band': -60,
+    'H_p': -40,
+    'H_s': -60,
 }

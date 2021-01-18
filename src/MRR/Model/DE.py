@@ -30,8 +30,8 @@ class Model:
                 number_of_episodes_in_L (int): Number of the episodes in L.
                 center_wavelength (float): The center wavelength.
                 number_of_rings (int): Number of rings. The ring order.
-                max_loss_in_pass_band (float): The threshold of the max loss in pass band. loss_p.
-                required_loss_in_stop_band (float): The threshold of the min loss in stop band. loss_s.
+                H_p (float): The threshold of the max loss in pass band. loss_p.
+                H_s (float): The threshold of the min loss in stop band. loss_s.
                 length_of_3db_band (float): The required length of the 3dB band.
                 FSR (float): The required FSR.
                 alpha (float): The propagation loss coefficient.
