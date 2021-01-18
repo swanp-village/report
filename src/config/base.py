@@ -12,7 +12,7 @@ config = {
     'max_crosstalk': -30,
     'H_p': -20,
     'H_s': -60,
-    'min_ring_length': 50e-6,
 
-    'number_of_episodes_in_L': 50
+    'min_ring_length': 50e-6,
+    'number_of_episodes_in_L': 10
 }

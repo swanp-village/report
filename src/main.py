@@ -2,6 +2,7 @@ import argparse
 from importlib import import_module
 from MRR.Evaluator.Model.train import train_evaluator, show_data
 from MRR.Controller import simulate, optimize
+from config.base import config
 
 
 if __name__ == '__main__':
@@ -29,8 +30,6 @@ if __name__ == '__main__':
         show_data(skip_plot)
     else:
         try:
-            config = import_module('config.base').config
+            optimize(config, skip_plot)
         except:
             parser.print_help()
-        else:
-            optimize(config, skip_plot)
