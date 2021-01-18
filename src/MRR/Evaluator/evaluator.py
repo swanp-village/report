@@ -87,7 +87,7 @@ class Evaluator:
         return index
 
     def evaluate_band(self):
-        pass_band, cross_talk = self.get_pass_band()
+        pass_band, _ = self.get_pass_band()
         if pass_band.shape[0] == 1:
             start = pass_band[0][0]
             end = pass_band[0][1]
@@ -117,43 +117,6 @@ class Evaluator:
             )
         else:
             return 0
-
-    def evaluate_insertion_loss(self):
-        max_insertion_loss = -10
-        insertion_loss = self.y[self.x == self.center_wavelength]
-        if insertion_loss.size == 0:
-            return (0, True)
-        if insertion_loss[0] < max_insertion_loss:
-            return (0, False)
-        E = 1 + insertion_loss[0] / abs(max_insertion_loss)
-        return (E, True)
-
-    def evaluate_ripple(self, start, end):
-        pass_band = self.y[start:end]
-        index = self.get_3db_band(start, end)
-        if index.size <= 1:
-            return (0, False)
-        border = np.max(self.y) - 3
-
-        y = pass_band[index[0]:index[-1]] + border
-        var = np.var(y.T)
-        if var == 0:
-            return (1, True)
-        E = 1 / (var + 1)
-
-        return (E, E > 0.7)
-
-    def evaluate_3db_band(self, start, end):
-        index = self.get_3db_band(start, end)
-        if index.size <= 1:
-            return (0, False)
-        distance = self.distance * (index[-1] - index[0])
-        if distance > self.length_of_3db_band:
-            E = (2 * self.length_of_3db_band - distance) / self.length_of_3db_band
-        else:
-            E = distance/ self.length_of_3db_band
-        E = E ** 3
-        return (E, True)
 
     def evaluate_pass_band(self, start, end):
         a = abs(
@@ -219,6 +182,43 @@ class Evaluator:
         if a or b:
             return (0, False)
         return (0, True)
+
+    def evaluate_insertion_loss(self):
+        max_insertion_loss = -10
+        insertion_loss = self.y[self.x == self.center_wavelength]
+        if insertion_loss.size == 0:
+            return (0, True)
+        if insertion_loss[0] < max_insertion_loss:
+            return (0, False)
+        E = 1 + insertion_loss[0] / abs(max_insertion_loss)
+        return (E, True)
+
+    def evaluate_ripple(self, start, end):
+        pass_band = self.y[start:end]
+        index = self.get_3db_band(start, end)
+        if index.size <= 1:
+            return (0, False)
+        border = np.max(self.y) - 3
+
+        y = pass_band[index[0]:index[-1]] + border
+        var = np.var(y.T)
+        if var == 0:
+            return (1, True)
+        E = 1 / (var + 1)
+
+        return (E, E > 0.7)
+
+    def evaluate_3db_band(self, start, end):
+        index = self.get_3db_band(start, end)
+        if index.size <= 1:
+            return (0, False)
+        distance = self.distance * (index[-1] - index[0])
+        if distance > self.length_of_3db_band:
+            E = (2 * self.length_of_3db_band - distance) / self.length_of_3db_band
+        else:
+            E = distance/ self.length_of_3db_band
+        E = E ** 3
+        return (E, True)
 
 
 class build_Evaluator_Factory:
