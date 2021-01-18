@@ -104,10 +104,9 @@ class Ring:
         for i in range(10000):
             N = ratio * N_0
             practical_FSR = self.calculate_practical_FSR(N)
-            dif = practical_FSR - self.FSR
-            if abs(dif) < self.FSR * 0.01:
+            if practical_FSR < self.FSR * 1.025 or practical_FSR > self.FSR * 0.975:
                 return N
-            if dif > 0:
+            if practical_FSR > self.FSR:
                 N_0 = N_0 + randrange(rand_start, rand_end)
             else:
                 N_0 = N_0 - randrange(rand_start, rand_end)
