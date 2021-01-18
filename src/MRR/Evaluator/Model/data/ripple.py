@@ -5,18 +5,24 @@ def generate_model(ripple, rank):
     m = Model('ripple{}'.format(ripple))
     d1 = np.arange(-60, 0, 0.5)
     d2 = np.arange(ripple, 0, 0.5)
+    f1 = np.repeat(0, m.length_of_3db_band / 5 / 1e-12 - d2.size) - 1e-12
+    f2 = np.repeat(ripple, m.length_of_3db_band / 5 / 1e-12 - d2.size) + 1e-12
+    f3 = np.repeat(0, m.length_of_3db_band / 5 / 1e-12) - 1e-12
+    f1[1] = f1[1] + 1e-12
+    f2[1] = f2[1] - 1e-12
+    f3[1] = f3[1] + 1e-12
     y = np.hstack((
         np.repeat(-60, (m.FSR - m.length_of_3db_band) / 2 / 1e-12 - d1.size),
         d1,
-        np.repeat(0, m.length_of_3db_band / 5 / 1e-12 - d2.size),
+        f1,
         d2[::-1],
-        np.repeat(ripple, m.length_of_3db_band / 5 / 1e-12 - d2.size),
+        f2,
         d2,
         np.repeat(0, m.length_of_3db_band / 5 / 1e-12),
         d2[::-1],
-        np.repeat(ripple, m.length_of_3db_band / 5 / 1e-12 - d2.size),
+        f2,
         d2,
-        np.repeat(0, m.length_of_3db_band / 5 / 1e-12 - d2.size),
+        f1,
         d1[::-1],
         np.repeat(-60, (m.FSR - m.length_of_3db_band) / 2 / 1e-12 - d1.size)
     ))
