@@ -5,20 +5,25 @@ def generate_model(crosstalk, rank):
     m = Model('crosstalk{}'.format(crosstalk))
     d1 = np.arange(-60, 0, 0.5)
     d2 = np.arange(-60, crosstalk, 0.5)
+    f1 = np.repeat(-60, (m.FSR - m.length_of_3db_band) / 6 / 1e-12 - d2.size)
+    f2 = np.repeat(crosstalk, (m.FSR - m.length_of_3db_band) / 6 / 1e-12)
+    f3 = np.repeat(-60, (m.FSR - m.length_of_3db_band) / 6 / 1e-12 - d2.size - d1.size)
+    f4 = np.repeat(0, m.length_of_3db_band / 1e-12) - 1e-12
+    f4[1] = f4[1] + 1e-12
     y = np.hstack((
-        np.repeat(-60, (m.FSR - m.length_of_3db_band) / 6 / 1e-12 - d2.size),
+        f1,
         d2,
-        np.repeat(crosstalk, (m.FSR - m.length_of_3db_band) / 6 / 1e-12),
+        f2,
         d2[::-1],
-        np.repeat(-60, (m.FSR - m.length_of_3db_band) / 6 / 1e-12 - d2.size - d1.size),
+        f3,
         d1,
-        np.repeat(0, m.length_of_3db_band / 1e-12),
+        f4,
         d1[::-1],
-        np.repeat(-60, (m.FSR - m.length_of_3db_band) / 6 / 1e-12 - d2.size - d1.size),
+        f3,
         d2,
-        np.repeat(crosstalk, (m.FSR - m.length_of_3db_band) / 6 / 1e-12),
+        f2,
         d2[::-1],
-        np.repeat(-60, (m.FSR - m.length_of_3db_band) / 6 / 1e-12 - d2.size)
+        f1
     ))
     m.set_y(y)
     m.set_rank(rank)

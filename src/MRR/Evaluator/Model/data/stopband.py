@@ -4,12 +4,15 @@ import numpy as np
 def generate_model(stopband, rank):
     m = Model('stopband{}'.format(stopband))
     d = np.arange(stopband, 0, 0.5)
+    f1 = np.repeat(stopband, (m.FSR - m.length_of_3db_band) / 2 / 1e-12 - d.size)
+    f2 = np.repeat(0, m.length_of_3db_band / 1e-12) - 1e-12
+    f2[1] = f2[1] + 1e-12
     y = np.hstack((
-        np.repeat(stopband, (m.FSR - m.length_of_3db_band) / 2 / 1e-12 - d.size),
+        f1,
         d,
-        np.repeat(0, m.length_of_3db_band / 1e-12),
+        f2,
         d[::-1],
-        np.repeat(stopband, (m.FSR - m.length_of_3db_band) / 2 / 1e-12 - d.size)
+        f1
     ))
     m.set_y(y)
     m.set_rank(rank)

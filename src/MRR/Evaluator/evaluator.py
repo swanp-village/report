@@ -1,5 +1,5 @@
 import numpy as np
-
+from scipy.signal import argrelmax, argrelmin
 
 class Evaluator:
     """Evaluator of the transfer function of the MRR filter.
@@ -186,27 +186,29 @@ class Evaluator:
     def evaluate_insertion_loss(self):
         max_insertion_loss = -10
         insertion_loss = self.y[self.x == self.center_wavelength]
-        if insertion_loss.size == 0:
-            return (0, False)
         if insertion_loss[0] < max_insertion_loss:
             return (0, False)
-        E = 1 + insertion_loss[0] / abs(max_insertion_loss)
+        E = 1 - insertion_loss[0] / max_insertion_loss
         return (E, True)
 
     def evaluate_ripple(self, start, end):
+        max_ripple = 5
         pass_band = self.y[start:end]
         index = self.get_3db_band(start, end)
         if index.size <= 1:
             return (0, False)
-        border = np.max(self.y) - 3
-
-        y = pass_band[index[0]:index[-1]] + border
-        var = np.var(y.T)
-        if var == 0:
+        three_db_band = pass_band[index[0]:index[-1]]
+        maxid = argrelmax(three_db_band, order=1)
+        minid = argrelmin(three_db_band, order=1)
+        peak_max = three_db_band[maxid]
+        peak_min = three_db_band[minid]
+        if len(peak_min) == 0:
             return (1, True)
-        E = 1 / (var + 1)
-
-        return (E, E > 0.7)
+        dif = peak_max.max() - peak_min.min()
+        if dif > max_ripple:
+            return (0, False)
+        E = 1 - dif / max_ripple
+        return (E, True)
 
     def evaluate_3db_band(self, start, end):
         index = self.get_3db_band(start, end)

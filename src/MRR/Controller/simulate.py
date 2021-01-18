@@ -33,17 +33,17 @@ def simulate(config_list, skip_plot):
 
         if 'lambda' in config:
             x = config['lambda']
+            y = mrr.simulate(x)
         else:
             x = ring.calculate_x(FSR)
+            y = mrr.simulate(x)
+            evaluator = Evaluator(
+                x,
+                y
+            )
+            result = evaluator.evaluate_band()
+            print(result)
 
-        y = mrr.simulate(x)
-
-        evaluator = Evaluator(
-            x,
-            y
-        )
-        result = evaluator.evaluate_band()
-        print(result)
         logger.save_data_as_csv(x, y, config['name'])
         xs.append(x)
         ys.append(y)

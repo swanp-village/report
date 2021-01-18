@@ -5,12 +5,15 @@ def generate_model(three_db_band, rank):
     m = Model('three_db_band{}'.format(three_db_band))
     d = np.arange(-60, 0, 0.5)
     length_of_3db_band = m.length_of_3db_band * three_db_band
+    f1 = np.repeat(-60, (m.FSR - length_of_3db_band) / 2 / 1e-12 - d.size)
+    f2 = np.repeat(0, length_of_3db_band / 1e-12) - 1e-12
+    f2[1] = f2[1] + 1e-12
     y = np.hstack((
-        np.repeat(-60, (m.FSR - length_of_3db_band) / 2 / 1e-12 - d.size),
+        f1,
         d,
-        np.repeat(0, length_of_3db_band / 1e-12),
+        f2,
         d[::-1],
-        np.repeat(-60, (m.FSR - length_of_3db_band) / 2 / 1e-12 - d.size)
+        f1
     ))
     m.set_y(y)
     m.set_rank(rank)
