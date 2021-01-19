@@ -29,7 +29,4 @@ if __name__ == '__main__':
     elif args['show_data']:
         show_data(skip_plot)
     else:
-        try:
-            optimize(config, skip_plot)
-        except:
-            parser.print_help()
+        optimize(config, skip_plot)
