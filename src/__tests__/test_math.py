@@ -1,5 +1,5 @@
 import unittest
-from MRR import math
+from MRR.Simulator import math
 
 
 class Test(unittest.TestCase):
