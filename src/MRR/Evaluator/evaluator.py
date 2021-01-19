@@ -218,7 +218,7 @@ class Evaluator:
         if distance > self.length_of_3db_band:
             E = (2 * self.length_of_3db_band - distance) / self.length_of_3db_band
         else:
-            E = distance/ self.length_of_3db_band
+            E = distance / self.length_of_3db_band
         E = E ** 3
         return (E, True)
 
