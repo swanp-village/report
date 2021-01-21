@@ -84,7 +84,14 @@ class Model:
             for _ in range(self.number_of_rings + 1)
         ]
 
-        result = differential_evolution(optimize_K_func, bounds, args=(self, L, FSR), strategy='currenttobest1bin', workers=-1)
+        result = differential_evolution(
+            optimize_K_func,
+            bounds,
+            args=(self, L, FSR),
+            strategy='currenttobest1bin',
+            workers=-1,
+            disp=True
+        )
         E = -result.fun
         K = result.x
 
