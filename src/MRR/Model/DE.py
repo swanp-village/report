@@ -91,6 +91,7 @@ class Model:
             strategy='currenttobest1bin',
             workers=-1,
             popsize=50,
+            maxiter=500
         )
         E = -result.fun
         K = result.x
