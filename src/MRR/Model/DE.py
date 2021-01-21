@@ -90,6 +90,7 @@ class Model:
             args=(self, L, FSR),
             strategy='currenttobest1bin',
             workers=-1,
+            updating='deferred',
             popsize=50,
             maxiter=500
         )
