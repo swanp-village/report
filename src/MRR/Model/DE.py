@@ -80,7 +80,7 @@ class Model:
 
     def optimize_K(self, m_L, L, FSR):
         bounds = [
-            (0.0000000001, self.eta)
+            (1e-12, self.eta)
             for _ in range(self.number_of_rings + 1)
         ]
 
