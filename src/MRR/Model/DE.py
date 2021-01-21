@@ -90,7 +90,7 @@ class Model:
             args=(self, L, FSR),
             strategy='currenttobest1bin',
             workers=-1,
-            disp=True
+            popsize=50,
         )
         E = -result.fun
         K = result.x
