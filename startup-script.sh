@@ -14,6 +14,8 @@ python3 -m venv .venv
 pip install --upgrade pip
 pip install -r requirements.txt
 
+ulimit -n 8096
+
 # tmux new -s train
 # tmux a -t train
 # tmux kill-session -t train
