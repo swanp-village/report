@@ -1,5 +1,5 @@
 import numpy as np
-from .math import lcm
+from .mymath import lcm
 from random import randrange, sample, uniform, choice
 from itertools import combinations_with_replacement
 from scipy.stats import norm

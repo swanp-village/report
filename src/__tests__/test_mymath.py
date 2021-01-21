@@ -1,5 +1,5 @@
 import unittest
-from MRR import math
+from MRR.Simulator import mymath
 
 
 class Test(unittest.TestCase):
@@ -12,7 +12,7 @@ class Test(unittest.TestCase):
 
         for x, y, expect in test_case:
             with self.subTest(x=x, y=y):
-                self.assertEqual(math.is_zero(x, y), expect)
+                self.assertEqual(mymath.is_zero(x, y), expect)
 
     def test_mod(self):
         test_case = [
@@ -25,7 +25,7 @@ class Test(unittest.TestCase):
 
         for x, y, expect in test_case:
             with self.subTest(x=x, y=y):
-                self.assertAlmostEqual(math.mod(x, y), expect, places=7)
+                self.assertAlmostEqual(mymath.mod(x, y), expect, places=7)
 
     def test_gcd(self):
         test_case = [
@@ -37,7 +37,7 @@ class Test(unittest.TestCase):
 
         for x, y, expect in test_case:
             with self.subTest(x=x, y=y):
-                self.assertAlmostEqual(math._gcd(x, y), expect, places=7)
+                self.assertAlmostEqual(mymath._gcd(x, y), expect, places=7)
 
     def test_lcm(self):
         test_case = [
@@ -49,7 +49,7 @@ class Test(unittest.TestCase):
 
         for xs, expect in test_case:
             with self.subTest(xs=xs):
-                self.assertAlmostEqual(math.lcm(xs), expect, places=7)
+                self.assertAlmostEqual(mymath.lcm(xs), expect, places=7)
 
 if __name__ == '__main__':
     unittest.main()
