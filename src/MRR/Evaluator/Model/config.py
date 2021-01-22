@@ -15,4 +15,6 @@ config = {
     'number_of_evaluate_function': 6,
     'H_p': base['H_p'],
     'H_s': base['H_s'],
+    'H_i': base['H_i'],
+    'r_max': base['r_max'],
 }

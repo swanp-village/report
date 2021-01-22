@@ -39,6 +39,8 @@ class Evaluator:
         self.max_crosstalk: int = config['max_crosstalk']
         self.H_p: float = config['H_p']
         self.H_s: float = config['H_s']
+        self.H_i: float = config['H_i']
+        self.r_max: float = config['r_max']
         self.length_of_3db_band: float = config['length_of_3db_band']
 
     def calculate_pass_band_range(self):
@@ -184,15 +186,13 @@ class Evaluator:
         return (0, True)
 
     def evaluate_insertion_loss(self):
-        max_insertion_loss = -10
         insertion_loss = self.y[self.x == self.center_wavelength]
-        if insertion_loss[0] < max_insertion_loss:
+        if insertion_loss[0] < self.H_i:
             return (0, False)
-        E = 1 - insertion_loss[0] / max_insertion_loss
+        E = 1 - insertion_loss[0] / self.H_i
         return (E, True)
 
     def evaluate_ripple(self, start, end):
-        max_ripple = 5
         pass_band = self.y[start:end]
         index = self.get_3db_band(start, end)
         if index.size <= 1:
@@ -205,9 +205,9 @@ class Evaluator:
         if len(peak_min) == 0:
             return (1, True)
         dif = peak_max.max() - peak_min.min()
-        if dif > max_ripple:
+        if dif > self.r_max:
             return (0, False)
-        E = 1 - dif / max_ripple
+        E = 1 - dif /  self.r_max
         return (E, True)
 
     def evaluate_3db_band(self, start, end):
