@@ -4,7 +4,7 @@ config = {
     'n_eff': 3.3938,
     'n_g': 4.2,
 
-    'number_of_rings': 8,
+    'number_of_rings': 10,
     'center_wavelength': 1550e-9,
     'FSR': 20e-9,
     'length_of_3db_band': 1e-9,
