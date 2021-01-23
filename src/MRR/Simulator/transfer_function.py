@@ -74,8 +74,8 @@ class TransferFunction:
         print('n_eff:', self.n_eff)
         print('n_g:', self.n_g)
         print('a:', self.a)
-        print('K:', self.K)
-        print('L:', self.L)
+        print('K:', self.K.tolist())
+        print('L:', self.L.tolist())
 
     def simulate(self, l: List[float]) -> np.array:
         y = 20 * np.log10(np.abs(self._D(l)))

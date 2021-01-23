@@ -113,8 +113,8 @@ class Model:
             K_list[m_L] = K
             E_list[m_L] = E
             print(m_L + 1)
-            print('L  : {}'.format(L))
-            print('K  : {}'.format(K))
+            print('L  : {}'.format(L.tolist()))
+            print('K  : {}'.format(K.tolist()))
             print('FSR: {}'.format(FSR))
             print('E  : {}'.format(E))
             print('================')
@@ -136,6 +136,7 @@ class Model:
         result = evaluator.evaluate_band()
         print('result')
         mrr.print_parameters()
+        print('FSR: {}'.format(FSR))
         print('E: {}'.format(result))
         self.logger.save_result(L.tolist(), K.tolist())
         print('end')
