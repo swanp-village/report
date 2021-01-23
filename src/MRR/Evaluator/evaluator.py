@@ -188,7 +188,6 @@ class Evaluator:
         maxid_end = np.append(argrelmax(end), -1)
         start_peak = start[maxid_start]
         end_peak = end[maxid_end]
-        print(pass_band_start, pass_band_end)
         a = np.any(start_peak > self.max_crosstalk)
         b = np.any(end_peak > self.max_crosstalk)
         if a or b:
