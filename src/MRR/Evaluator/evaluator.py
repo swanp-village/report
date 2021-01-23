@@ -99,7 +99,8 @@ class Evaluator:
                 self.evaluate_insertion_loss(),
                 self.evaluate_3db_band(start, end),
                 self.evaluate_ripple(start, end),
-                self.evaluate_cross_talk(start, end)
+                self.evaluate_cross_talk(start, end),
+                self.evaluate_shape_factor(start, end)
             ]
             return (
                 (
@@ -108,14 +109,16 @@ class Evaluator:
                     result[2][0] * self.weight[2] +
                     result[3][0] * self.weight[3] +
                     result[4][0] * self.weight[4] +
-                    result[5][0] * self.weight[5]
+                    result[5][0] * self.weight[5] +
+                    result[6][0] * self.weight[6]
                 ) *
                 (1 if result[0][1] else self.weight[6]) *
                 (1 if result[1][1] else self.weight[7]) *
                 (1 if result[2][1] else self.weight[8]) *
                 (1 if result[3][1] else self.weight[9]) *
                 (1 if result[4][1] else self.weight[10]) *
-                (1 if result[5][1] else self.weight[11])
+                (1 if result[5][1] else self.weight[11]) *
+                (1 if result[6][1] else self.weight[12])
             )
         else:
             return 0
@@ -185,6 +188,7 @@ class Evaluator:
         maxid_end = np.append(argrelmax(end), -1)
         start_peak = start[maxid_start]
         end_peak = end[maxid_end]
+        print(pass_band_start, pass_band_end)
         a = np.any(start_peak > self.max_crosstalk)
         b = np.any(end_peak > self.max_crosstalk)
         if a or b:
@@ -228,6 +232,15 @@ class Evaluator:
         E = E ** 3
         return (E, True)
 
+    def evaluate_shape_factor(self, start, end):
+        index = self.get_3db_band(start, end)
+        if index.size <= 1:
+            return (0, False)
+        E = (index[-1] - index[0]) / (end - start)
+        if E < 0.5:
+            return (E, False)
+        return (E, True)
+
 
 class build_Evaluator_Factory:
     def __init__(self, weight, config):
@@ -244,6 +257,8 @@ def build_Evaluator(config, weight=[
             5.0,
             3.5,
             1.0,
+            1.0,
+            0.5,
             0.5,
             0.5,
             0.5,
