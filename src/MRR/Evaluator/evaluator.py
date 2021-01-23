@@ -179,8 +179,14 @@ class Evaluator:
         return (E, True)
 
     def evaluate_cross_talk(self, pass_band_start, pass_band_end):
-        a = np.any(self.y[:pass_band_start] > self.max_crosstalk)
-        b = np.any(self.y[pass_band_end:] > self.max_crosstalk)
+        start = self.y[:pass_band_start]
+        end = self.y[pass_band_end:]
+        maxid_start = np.append(0, argrelmax(start))
+        maxid_end = np.append(argrelmax(end), -1)
+        start_peak = start[maxid_start]
+        end_peak = end[maxid_end]
+        a = np.any(start_peak > self.max_crosstalk)
+        b = np.any(end_peak > self.max_crosstalk)
         if a or b:
             return (0, False)
         return (0, True)

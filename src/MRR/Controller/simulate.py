@@ -12,11 +12,13 @@ def simulate(config_list, skip_plot):
     for config in config_list:
         number_of_rings = len(config['L'])
         config.setdefault('number_of_rings', number_of_rings)
-        config.setdefault('FSR', 10e-9)
+        config.setdefault('FSR', 20e-9)
         config.setdefault('min_ring_length', 10e-9)
         config.setdefault('max_crosstalk', -30)
-        config.setdefault('H_p', -10)
-        config.setdefault('H_s', -20)
+        config.setdefault('H_p', -20)
+        config.setdefault('H_s', -60)
+        config.setdefault('H_i', -10)
+        config.setdefault('r_max', 5)
         config.setdefault('length_of_3db_band', 1e-9)
         Evaluator = build_Evaluator(config)
 
