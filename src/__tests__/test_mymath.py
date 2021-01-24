@@ -41,15 +41,16 @@ class Test(unittest.TestCase):
 
     def test_lcm(self):
         test_case = [
-            ([2, 3], 6),
-            ([2, 4], 4),
-            ([1.5, 4.5], 4.5),
-            ([3.9, 2.6], 7.8)
+            ([2, 3], 6, '整数のlcm 1'),
+            ([2, 4], 4, '整数のlcm 2'),
+            ([1.5, 4.5], 4.5, '実数のlcm 1'),
+            ([3.9, 2.6], 7.8, '実数のlcm 2'),
+            ([3.91e-9, 2.65e-9], 1.04e-06, '再帰回数の制限')
         ]
 
-        for xs, expect in test_case:
+        for xs, expect, msg in test_case:
             with self.subTest(xs=xs):
-                self.assertAlmostEqual(mymath.lcm(xs), expect, places=7)
+                self.assertAlmostEqual(mymath.lcm(xs), expect, places=7, msg=msg)
 
 if __name__ == '__main__':
     unittest.main()

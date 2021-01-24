@@ -19,16 +19,16 @@ def mod(x: float, y: float) -> float:
     return x - y * np.floor(x / y)
 
 
-def _gcd(x: float, y: float) -> float:
+def _gcd(x: float, y: float, n: float = 0) -> float:
     """
         x > y
     """
     if y == 0:
         return x
-    elif is_zero(x, y):
+    elif is_zero(x, y) or n > 10:
         return y
     else:
-        return _gcd(y, mod(x, y))
+        return _gcd(y, mod(x, y), n + 1)
 
 
 def _lcm(x: float, y: float) -> float:
