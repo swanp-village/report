@@ -28,10 +28,10 @@ def _gcd(x: float, y: float) -> float:
         x, y = y, mod(x, y)
         n += 1
 
-    if y == 0:
-        return x
-    elif is_zero(x, y):
+    if is_zero(x, y):
         return y
+    else:
+        return x
 
 
 def _lcm(x: float, y: float) -> float:
