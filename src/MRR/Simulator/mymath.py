@@ -23,12 +23,13 @@ def _gcd(x: float, y: float, n: float = 0) -> float:
     """
         x > y
     """
+    while y != 0 and not is_zero(x, y):
+        x, y = y, mod(x, y)
+
     if y == 0:
         return x
-    elif is_zero(x, y) or n > 10:
+    elif is_zero(x, y):
         return y
-    else:
-        return _gcd(y, mod(x, y), n + 1)
 
 
 def _lcm(x: float, y: float) -> float:
