@@ -4,7 +4,7 @@ from MRR.Simulator import Ring, TransferFunction
 from MRR.logger import Logger
 
 
-def simulate(config_list, skip_plot):
+def simulate(config_list, skip_plot, is_focus):
     logger = Logger()
     xs = []
     ys = []
@@ -51,4 +51,4 @@ def simulate(config_list, skip_plot):
         ys.append(y)
 
     if not skip_plot:
-        plot(xs, ys, config['L'].size, logger.generate_image_path(config['name']))
+        plot(xs, ys, config['L'].size, logger.generate_image_path(config['name']), is_focus)

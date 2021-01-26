@@ -28,7 +28,7 @@ def validate(xs, ys, number_of_rings):
         print('number_of_rings is wrong')
 
 
-def plot(xs, ys, number_of_rings, img_path='img/out.pdf'):
+def plot(xs, ys, number_of_rings, img_path='img/out.pdf', is_focus=False):
     validate(xs, ys, number_of_rings)
     rc('text', usetex=True)
     rc('font', size=16)
@@ -46,7 +46,9 @@ def plot(xs, ys, number_of_rings, img_path='img/out.pdf'):
     ax.xaxis.set_minor_formatter(formatter)
     # ax.set_xticks([1500, 1550, 1600], False)
     # ax.set_xticks([], True)
-    ax.set_ylim([-40, 0])
+    if is_focus:
+        ax.set_xlim([1545, 1555])
+        ax.set_ylim([-20, 0])
     # ax.grid(which='both')
     fig.savefig(img_path)
     plt.show()
@@ -73,5 +75,4 @@ def plot_(xs, ys, number_of_rings, img_path='img/out.pdf'):
     ax.set_xticks(np.arange(1540, 1561, 2))
     ax.set_xticks([], True)
     fig.savefig(img_path)
-    if not skip_plot:
-        plt.show()
+    plt.show()
