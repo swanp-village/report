@@ -71,7 +71,7 @@ class Model:
             N = self.ring.init_N()
             L = self.ring.calculate_ring_length(N)
             FSR = self.ring.calculate_practical_FSR(N)
-            if FSR > self.required_FSR * 0.975 and FSR < self.required_FSR * 1.025 and np.all(L < 0.1):
+            if FSR > self.required_FSR * 0.99 and FSR < self.required_FSR * 1.01 and np.all(L < 0.1):
                 break
         if i == 99:
             raise Exception('required_FSR is too big')
