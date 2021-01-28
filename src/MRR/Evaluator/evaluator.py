@@ -90,38 +90,33 @@ class Evaluator:
 
     def evaluate_band(self):
         pass_band, _ = self.get_pass_band()
-        if pass_band.shape[0] == 1:
-            start = pass_band[0][0]
-            end = pass_band[0][1]
-            result = [
-                self.evaluate_pass_band(start, end),
-                self.evaluate_stop_band(start, end),
-                self.evaluate_insertion_loss(),
-                self.evaluate_3db_band(start, end),
-                self.evaluate_ripple(start, end),
-                self.evaluate_cross_talk(start, end),
-                self.evaluate_shape_factor(start, end)
-            ]
-            return (
-                (
-                    result[0][0] * self.weight[0] +
-                    result[1][0] * self.weight[1] +
-                    result[2][0] * self.weight[2] +
-                    result[3][0] * self.weight[3] +
-                    result[4][0] * self.weight[4] +
-                    result[5][0] * self.weight[5] +
-                    result[6][0] * self.weight[6]
-                ) *
-                (1 if result[0][1] else self.weight[6]) *
-                (1 if result[1][1] else self.weight[7]) *
-                (1 if result[2][1] else self.weight[8]) *
-                (1 if result[3][1] else self.weight[9]) *
-                (1 if result[4][1] else self.weight[10]) *
-                (1 if result[5][1] else self.weight[11]) *
-                (1 if result[6][1] else self.weight[12])
-            )
-        else:
+        if pass_band.shape[0] != 1:
             return 0
+
+        start = pass_band[0][0]
+        end = pass_band[0][1]
+        result = [
+            self.evaluate_pass_band(start, end),
+            self.evaluate_stop_band(start, end),
+            self.evaluate_insertion_loss(),
+            self.evaluate_3db_band(start, end),
+            self.evaluate_ripple(start, end),
+            self.evaluate_cross_talk(start, end),
+            self.evaluate_shape_factor(start, end)
+        ]
+        print(result)
+        n_eval = len(result)
+        W_c = self.weight[:n_eval]
+        W_b = self.weight[n_eval:]
+        E_c = 0
+        E_b = 1
+        for i in range(n_eval):
+            E_c += result[i][0] * W_c[i]
+            if not result[i][1]:
+                E_b *= W_b[i]
+        E = E_c * E_b
+
+        return E
 
     def evaluate_pass_band(self, start, end):
         a = abs(
