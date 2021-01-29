@@ -74,7 +74,7 @@ class Model:
             if FSR > self.required_FSR * 0.99 and FSR < self.required_FSR * 1.01 and np.all(L < 0.1):
                 break
         if i == 99:
-            raise Exception('required_FSR is too big')
+            raise Exception('required_FSR is too strict')
 
         return L, FSR
 

@@ -3,6 +3,7 @@ from .mymath import lcm
 from random import randrange, sample, uniform, choice
 from itertools import combinations_with_replacement
 from scipy.stats import norm
+from math import ceil
 
 
 class Ring:
@@ -99,12 +100,16 @@ class Ring:
     def optimize_N(self, ratio):
         rand_start = 1
         rand_end = 3
-        min_N_0 = self.calculate_min_N() / min(ratio) + rand_end
+        min_N_0 = ceil(self.calculate_min_N() / min(ratio) + rand_end)
         N_0 = randrange(100, 200)
+
         for i in range(10000):
             N = ratio * N_0
             practical_FSR = self.calculate_practical_FSR(N)
-            if i > 7000 and practical_FSR < self.FSR * 1.01 and practical_FSR > self.FSR * 0.99:
+            if i > 7000 and 0.99 < practical_FSR / self.FSR < 1.01:
+                return N
+            if N_0 < min_N_0:
+                N = ratio * min_N_0
                 return N
             if practical_FSR > self.FSR:
                 N_0 = N_0 + randrange(rand_start, rand_end)
