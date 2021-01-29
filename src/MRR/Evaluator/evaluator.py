@@ -104,7 +104,6 @@ class Evaluator:
             self.evaluate_cross_talk(start, end),
             self.evaluate_shape_factor(start, end)
         ]
-        print(result)
         n_eval = len(result)
         W_c = self.weight[:n_eval]
         W_b = self.weight[n_eval:]
