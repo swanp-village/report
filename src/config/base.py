@@ -1,8 +1,8 @@
 config = {
     'eta': 0.996,
     'alpha': 52.96,
-    'n_eff': 3.3938,
-    'n_g': 4.2,
+    'n_eff': 2.2,
+    'n_g': 4.4,
 
     'number_of_rings': 8,
     'center_wavelength': 1550e-9,
