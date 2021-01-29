@@ -10,7 +10,7 @@ config = {
     'length_of_3db_band': 1e-9,
 
     'max_crosstalk': -30,
-    'H_p': -30,
+    'H_p': -20,
     'H_s': -60,
     'H_i': -10,
     'r_max': 5,
