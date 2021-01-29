@@ -19,12 +19,14 @@ weight_list = list(product(
         np.arange(1, 6, 0.5),
         np.arange(1, 6, 0.5),
         np.array([1]),
+        np.arange(1, 6, 0.5),
         weight_of_binary_evaluation,
         weight_of_binary_evaluation,
         weight_of_binary_evaluation,
         weight_of_binary_evaluation,
         weight_of_binary_evaluation,
-        weight_of_binary_evaluation
+        weight_of_binary_evaluation,
+        weight_of_binary_evaluation,
     ]
 ))
 train, test = get_splited_data(0.3)
