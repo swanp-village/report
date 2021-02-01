@@ -1,12 +1,17 @@
 import matplotlib.pyplot as plt
 from matplotlib import rc
-from matplotlib.ticker import FuncFormatter
+from matplotlib.ticker import (
+    FuncFormatter,
+    AutoLocator,
+    MultipleLocator,
+    NullFormatter
+)
 import numpy as np
 
 
 @FuncFormatter
 def formatter(x, pos):
-    return "%.1f" % x
+    return "%d" % x
 
 
 def generate_title(number_of_rings):
@@ -43,36 +48,14 @@ def plot(xs, ys, number_of_rings, img_path='img/out.pdf', is_focus=False):
     # )
     ax.axis([None, None, None, 5])
     ax.xaxis.set_major_formatter(formatter)
+    ax.xaxis.set_major_locator(AutoLocator())
     ax.xaxis.set_minor_formatter(formatter)
-    # ax.set_xticks([1500, 1550, 1600], False)
-    # ax.set_xticks([], True)
     if is_focus:
-        ax.set_xlim([1545, 1555])
-        ax.set_ylim([-20, 0])
-    # ax.grid(which='both')
-    fig.savefig(img_path)
-    plt.show()
-
-
-def plot_(xs, ys, number_of_rings, img_path='img/out.pdf'):
-    xs = np.array(xs)
-    ys = np.array(ys)
-    if xs.ndim == 1:
-        xs = np.array([xs])
-        ys = np.array([ys])
-    rc('text', usetex=True)
-    rc('font', size=16)
-    fig, ax = plt.subplots(figsize=(8, 6))
-    for i in range(xs.shape[0]):
-        ax.semilogx(xs[i] * 1e9, ys[i])
-    ax.set_xlabel('Wavelength (nm)', fontsize=24)
-    ax.set_ylabel('Drop Port Power (dB)', fontsize=24)
-    ax.axis([None, None, None, 5])
-    ax.xaxis.set_major_formatter(formatter)
-    ax.xaxis.set_minor_formatter(formatter)
-    ax.set_ylim([-70, 0])
-    ax.set_xlim([1540, 1561])
-    ax.set_xticks(np.arange(1540, 1561, 2))
-    ax.set_xticks([], True)
+        ax.set_xlim([1549, 1551])
+        ax.xaxis.set_major_locator(MultipleLocator())
+        ax.xaxis.set_minor_locator(MultipleLocator(0.5))
+        ax.xaxis.set_minor_formatter(NullFormatter())
+        ax.set_ylim([-10, 0])
+        ax.yaxis.set_major_locator(MultipleLocator(2))
     fig.savefig(img_path)
     plt.show()
