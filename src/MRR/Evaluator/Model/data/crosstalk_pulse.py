@@ -2,7 +2,7 @@ from ..model import Model
 import numpy as np
 
 def generate_model(crosstalk, rank):
-    m = Model('crosstalk{}'.format(crosstalk))
+    m = Model('crosstalk_pulse{}'.format(crosstalk))
     d1 = np.arange(-60, 0, 0.5)
     d2 = np.arange(-60, crosstalk, 0.5)
     f1 = np.repeat(-60, (m.FSR - m.length_of_3db_band) / 4 / 1e-12 - d2.size)
