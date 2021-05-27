@@ -5,8 +5,6 @@ from MRR.gragh import plot
 from MRR.Evaluator import build_Evaluator
 from MRR.logger import Logger
 from scipy.optimize import differential_evolution
-from multiprocessing import Pool
-import pickle
 
 def optimize_K_func(K, model, L, FSR):
     mrr = model.TransferFunction(
@@ -78,7 +76,7 @@ class Model:
 
         return L, FSR
 
-    def optimize_K(self, m_L, L, FSR):
+    def optimize_K(self, L, FSR):
         bounds = [
             (1e-12, self.eta)
             for _ in range(self.number_of_rings + 1)
@@ -106,7 +104,7 @@ class Model:
         E_list = [0 for _ in range(self.number_of_episodes_in_L)]
         for m_L in range(self.number_of_episodes_in_L):
             L, FSR = self.optimize_L()
-            K, E = self.optimize_K(m_L, L, FSR)
+            K, E = self.optimize_K(L, FSR)
 
             L_list[m_L] = L
             FSR_list[m_L] = FSR

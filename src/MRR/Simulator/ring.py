@@ -65,6 +65,9 @@ class Ring:
     def calculate_practical_FSR(self, N):
         return lcm(self.calculate_FSR(N))
 
+    def calculate_practical_FSR_from_L(self, L):
+        return self.calculate_practical_FSR(self.calculate_N(L))
+
     def init_ratio(self):
         n = self.number_of_rings
         p = [
