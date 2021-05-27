@@ -94,7 +94,9 @@ class Model:
         )
         E = -result.fun
         ratio = result.x[:self.number_of_rings]
-        L, FSR = self.ring.optimize_N(ratio)
+        N = self.ring.optimize_N(ratio)
+        L = self.ring.calculate_ring_length(ratio)
+        FSR = self.ring.calculate_FSR(ratio)
         K = result.x[self.number_of_rings:]
 
         return L, K, FSR, E
