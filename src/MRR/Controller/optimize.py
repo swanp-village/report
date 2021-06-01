@@ -1,5 +1,5 @@
 from random import seed
-from MRR.Model.DE2 import Model
+from MRR.Model.DE import Model
 
 
 def optimize(config, skip_plot):

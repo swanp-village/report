@@ -16,5 +16,5 @@ config = {
     'r_max': 5,
 
     'min_ring_length': 50e-6,
-    'number_of_episodes_in_L': 50
+    'number_of_episodes_in_L': 500
 }

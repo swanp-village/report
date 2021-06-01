@@ -1,5 +1,4 @@
 import numpy as np
-from random import uniform
 from MRR.Simulator import build_TransferFunction, Ring
 from MRR.gragh import plot
 from MRR.Evaluator import build_Evaluator
@@ -62,6 +61,7 @@ class Model:
         self.Evaluator = build_Evaluator(config)
         self.TransferFunction = build_TransferFunction(config)
         self.skip_plot = skip_plot
+        self.rng = np.random.default_rng()
 
 
     def optimize_L(self):
@@ -74,7 +74,7 @@ class Model:
         if i == 99:
             raise Exception('required_FSR is too strict')
 
-        return L, FSR
+        return N, L, FSR
 
     def optimize_K(self, L, FSR):
         bounds = [
@@ -98,19 +98,27 @@ class Model:
         return K, E
 
     def train(self):
+        N_list = [[] for _ in range(self.number_of_episodes_in_L)]
         L_list = [[] for _ in range(self.number_of_episodes_in_L)]
         K_list = [[] for _ in range(self.number_of_episodes_in_L)]
         FSR_list = [0 for _ in range(self.number_of_episodes_in_L)]
         E_list = [0 for _ in range(self.number_of_episodes_in_L)]
-        for m_L in range(self.number_of_episodes_in_L):
-            L, FSR = self.optimize_L()
+        for m in range(self.number_of_episodes_in_L):
+            if m > 20 and self.rng.choice([True, False], p=[0.1, 0.9]):
+                max_index = np.argmax(E_list)
+                N = self.rng.permutation(N_list[max_index])
+                L = self.ring.calculate_ring_length(N)
+                FSR = self.ring.calculate_practical_FSR(N)
+            else:
+                N, L, FSR = self.optimize_L()
             K, E = self.optimize_K(L, FSR)
 
-            L_list[m_L] = L
-            FSR_list[m_L] = FSR
-            K_list[m_L] = K
-            E_list[m_L] = E
-            print(m_L + 1)
+            N_list[m] = N
+            L_list[m] = L
+            FSR_list[m] = FSR
+            K_list[m] = K
+            E_list[m] = E
+            print(m + 1)
             print('L  : {}'.format(L.tolist()))
             print('K  : {}'.format(K.tolist()))
             print('FSR: {}'.format(FSR))
