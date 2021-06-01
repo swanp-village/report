@@ -104,7 +104,7 @@ class Model:
         FSR_list = [0 for _ in range(self.number_of_episodes_in_L)]
         E_list = [0 for _ in range(self.number_of_episodes_in_L)]
         for m in range(self.number_of_episodes_in_L):
-            if m > 20 and self.rng.choice([True, False], p=[0.1, 0.9]):
+            if m > 20 and self.rng.choice([True, False], p=[0.2, 0.8]):
                 max_index = np.argmax(E_list)
                 N = self.rng.permutation(N_list[max_index])
                 L = self.ring.calculate_ring_length(N)
