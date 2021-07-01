@@ -104,10 +104,10 @@ class Model:
         FSR_list = [0 for _ in range(self.number_of_episodes_in_L)]
         E_list = [0 for _ in range(self.number_of_episodes_in_L)]
         for m in range(self.number_of_episodes_in_L):
-            if m < 20:
+            if m < 10:
                 method = 3
             else:
-                method = self.rng.choice([1,2,3], p=[1/3, 1/3, 1/3])
+                method = self.rng.choice([1,2,3], p=[0.1, 0.2, 0.7])
 
             if method == 1:
                 max_index = np.argmax(E_list)
