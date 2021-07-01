@@ -133,33 +133,39 @@ class Model:
             FSR_list[m] = FSR
             K_list[m] = K
             E_list[m] = E
+            best_index = np.argmax(E_list)
+            best_L = L_list[best_index]
+            best_K = K_list[best_index]
+            best_FSR = FSR_list[best_index]
+            best_E = E_list[best_index]
             print(m + 1)
             print('L  : {}'.format(L.tolist()))
             print('K  : {}'.format(K.tolist()))
             print('FSR: {}'.format(FSR))
             print('E  : {}'.format(E))
+            print("==")
+            print('L  : {}'.format(best_L.tolist()))
+            print('K  : {}'.format(best_K.tolist()))
+            print('FSR: {}'.format(best_FSR))
+            print('E  : {}'.format(best_E))
             print('================')
 
         max_index = np.argmax(E_list)
         L = L_list[max_index]
         K = K_list[max_index]
         FSR = FSR_list[max_index]
+        E = E_list[max_index]
         mrr = self.TransferFunction(
             L,
             K
         )
         x = self.ring.calculate_x(FSR)
         y = mrr.simulate(x)
-        evaluator = self.Evaluator(
-            x,
-            y
-        )
-        result = evaluator.evaluate_band()
         print('result')
         mrr.print_parameters()
         print('FSR: {}'.format(FSR))
-        print('E: {}'.format(result))
+        print('E: {}'.format(E))
         self.logger.save_result(L.tolist(), K.tolist())
         print('end')
-        if result > 0 and not self.skip_plot:
+        if E > 0 and not self.skip_plot:
             plot([x], [y], self.number_of_rings, self.logger.generate_image_path())
