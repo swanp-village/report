@@ -104,9 +104,22 @@ class Model:
         FSR_list = [0 for _ in range(self.number_of_episodes_in_L)]
         E_list = [0 for _ in range(self.number_of_episodes_in_L)]
         for m in range(self.number_of_episodes_in_L):
-            if m > 20 and self.rng.choice([True, False], p=[0.2, 0.8]):
+            if m > 20:
+                method = 3
+            else:
+                method = self.rng.choice([1,2,3], p=[1/3, 1/3, 1/3])
+
+            if method == 1:
                 max_index = np.argmax(E_list)
-                N = self.rng.permutation(N_list[max_index])
+                max_N = N_list[max_index]
+                N = self.rng.permutation(max_N)
+                L = self.ring.calculate_ring_length(N)
+                FSR = self.ring.calculate_practical_FSR(N)
+            elif method == 2:
+                max_index = np.argmax(E_list)
+                max_N = N_list[max_index]
+                kind = list(set(max_N))
+                N = self.rng.choice(kind, self.number_of_rings)
                 L = self.ring.calculate_ring_length(N)
                 FSR = self.ring.calculate_practical_FSR(N)
             else:
