@@ -104,7 +104,7 @@ class Model:
         FSR_list = [0 for _ in range(self.number_of_episodes_in_L)]
         E_list = [0 for _ in range(self.number_of_episodes_in_L)]
         for m in range(self.number_of_episodes_in_L):
-            if m > 20:
+            if m < 20:
                 method = 3
             else:
                 method = self.rng.choice([1,2,3], p=[1/3, 1/3, 1/3])
