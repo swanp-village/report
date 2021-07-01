@@ -143,7 +143,7 @@ class Model:
             print('K  : {}'.format(K.tolist()))
             print('FSR: {}'.format(FSR))
             print('E  : {}'.format(E))
-            print("==")
+            print("==best==")
             print('L  : {}'.format(best_L.tolist()))
             print('K  : {}'.format(best_K.tolist()))
             print('FSR: {}'.format(best_FSR))
