@@ -120,6 +120,8 @@ class Model:
                 max_N = N_list[max_index]
                 kind = list(set(max_N))
                 N = self.rng.choice(kind, self.number_of_rings)
+                while not set(kind) == set(N):
+                    N = self.rng.choice(kind, self.number_of_rings)
                 L = self.ring.calculate_ring_length(N)
                 FSR = self.ring.calculate_practical_FSR(N)
             else:
