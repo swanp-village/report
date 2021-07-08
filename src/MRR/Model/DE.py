@@ -166,6 +166,7 @@ class Model:
         print('FSR: {}'.format(FSR))
         print('E: {}'.format(E))
         self.logger.save_result(L.tolist(), K.tolist())
+        self.logger.save_evaluation_value(E_list)
         print('end')
         if E > 0 and not self.skip_plot:
             plot([x], [y], self.number_of_rings, self.logger.generate_image_path())

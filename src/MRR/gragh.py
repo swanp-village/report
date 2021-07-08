@@ -6,7 +6,6 @@ from matplotlib.ticker import (
     MultipleLocator,
     NullFormatter
 )
-import numpy as np
 
 
 @FuncFormatter

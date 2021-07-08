@@ -2,6 +2,7 @@ from pathlib import Path
 from datetime import datetime
 import json
 import csv
+import numpy as np
 
 
 class Logger:
@@ -25,6 +26,14 @@ class Logger:
         with open(path, 'w') as tsvfile:
             tsv_writer = csv.writer(tsvfile, delimiter='\t')
             tsv_writer.writerows(zip(x.tolist(), y.tolist()))
+
+    def save_evaluation_value(self, E_list, name='evaluation_value'):
+        count = [i + 1 for i in range(len(E_list))]
+        max_E_list = [np.max(E_list[:i]) for i in count]
+        path = self.target.joinpath('{}.tsv'.format(name))
+        with open(path, 'w') as tsvfile:
+            tsv_writer = csv.writer(tsvfile, delimiter='\t')
+            tsv_writer.writerows(zip(count, max_E_list))
 
     def save_result(self, L, K):
         result = {
