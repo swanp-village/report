@@ -109,7 +109,7 @@ class Model:
             if m < 10:
                 method = 3
             else:
-                method = self.rng.choice([1,2,3], p=[0.1, 0.2, 0.7])
+                method = self.rng.choice([1,2,3], p=[1/3, 1/3, 1/3])
 
             if method == 1:
                 max_index = np.argmax(E_list)
