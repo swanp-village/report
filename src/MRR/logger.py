@@ -27,13 +27,11 @@ class Logger:
             tsv_writer = csv.writer(tsvfile, delimiter='\t')
             tsv_writer.writerows(zip(x.tolist(), y.tolist()))
 
-    def save_evaluation_value(self, E_list, name='evaluation_value'):
-        count = [i + 1 for i in range(len(E_list))]
-        max_E_list = [np.max(E_list[:i]) for i in count]
+    def save_evaluation_value(self, E_list, method_list, name='evaluation_value'):
         path = self.target.joinpath('{}.tsv'.format(name))
         with open(path, 'w') as tsvfile:
             tsv_writer = csv.writer(tsvfile, delimiter='\t')
-            tsv_writer.writerows(zip(count, max_E_list))
+            tsv_writer.writerows(zip(E_list, method_list))
 
     def save_result(self, L, K):
         result = {

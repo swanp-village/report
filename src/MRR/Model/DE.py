@@ -103,6 +103,8 @@ class Model:
         K_list = [[] for _ in range(self.number_of_episodes_in_L)]
         FSR_list = [0 for _ in range(self.number_of_episodes_in_L)]
         E_list = [0 for _ in range(self.number_of_episodes_in_L)]
+        method_list = [0 for _ in range(self.number_of_episodes_in_L)]
+        best_E_list = [0 for _ in range(self.number_of_episodes_in_L)]
         for m in range(self.number_of_episodes_in_L):
             if m < 10:
                 method = 3
@@ -150,6 +152,9 @@ class Model:
             print('E  : {}'.format(best_E))
             print('================')
 
+            method_list[m] = method
+            best_E_list[m] = best_E
+
         max_index = np.argmax(E_list)
         L = L_list[max_index]
         K = K_list[max_index]
@@ -166,7 +171,7 @@ class Model:
         print('FSR: {}'.format(FSR))
         print('E: {}'.format(E))
         self.logger.save_result(L.tolist(), K.tolist())
-        self.logger.save_evaluation_value(E_list)
+        self.logger.save_evaluation_value(best_E_list, method_list)
         print('end')
         if E > 0 and not self.skip_plot:
             plot([x], [y], self.number_of_rings, self.logger.generate_image_path())
