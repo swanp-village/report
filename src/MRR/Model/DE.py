@@ -90,7 +90,7 @@ class Model:
             workers=-1,
             updating='deferred',
             popsize=20,
-            maxiter=1000
+            maxiter=500
         )
         E = -result.fun
         K = result.x
