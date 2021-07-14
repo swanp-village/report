@@ -108,7 +108,7 @@ class Model:
         best_E_list = [0 for _ in range(self.number_of_episodes_in_L)]
         for m in range(self.number_of_episodes_in_L):
             if m < 10:
-                method = 3
+                method = 4
             else:
                 method = self.rng.choice([1, 2, 3, 4], p=[0.03, 0.07, 0.2, 0.7])
 
