@@ -5,6 +5,7 @@ from MRR.Evaluator import build_Evaluator
 from MRR.logger import Logger
 from scipy.optimize import differential_evolution
 
+
 def optimize_K_func(K, model, L, FSR):
     mrr = model.TransferFunction(
         L,
@@ -18,6 +19,7 @@ def optimize_K_func(K, model, L, FSR):
     )
 
     return - evaluator.evaluate_band()
+
 
 class Model:
     """
@@ -62,7 +64,6 @@ class Model:
         self.TransferFunction = build_TransferFunction(config)
         self.skip_plot = skip_plot
         self.rng = np.random.default_rng()
-
 
     def optimize_L(self):
         for i in range(100):
@@ -109,18 +110,25 @@ class Model:
             if m < 10:
                 method = 3
             else:
-                method = self.rng.choice([1,2,3], p=[1/3, 1/3, 1/3])
+                method = self.rng.choice([1, 2, 3, 4], p=[0.03, 0.07, 0.2, 0.7])
 
             if method == 1:
                 max_index = np.argmax(E_list)
                 max_N = N_list[max_index]
-                N = self.rng.permutation(max_N)
+                kind, counts = self.rng.permutation(np.unique(max_N, return_counts=True), axis=1)
+                N = np.repeat(kind, counts)
                 L = self.ring.calculate_ring_length(N)
                 FSR = self.ring.calculate_practical_FSR(N)
             elif method == 2:
                 max_index = np.argmax(E_list)
                 max_N = N_list[max_index]
-                kind = list(set(max_N))
+                N = self.rng.permutation(max_N)
+                L = self.ring.calculate_ring_length(N)
+                FSR = self.ring.calculate_practical_FSR(N)
+            elif method == 3:
+                max_index = np.argmax(E_list)
+                max_N = N_list[max_index]
+                kind = np.unique(max_N)
                 N = self.rng.choice(kind, self.number_of_rings)
                 while not set(kind) == set(N):
                     N = self.rng.choice(kind, self.number_of_rings)
