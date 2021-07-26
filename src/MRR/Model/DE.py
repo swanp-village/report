@@ -111,7 +111,7 @@ class Model:
                 method = 4
             else:
                 _, counts = np.unique(best_E_list[:m], return_counts=True)
-                if np.max(counts) > 20:
+                if np.max(counts) > 30:
                     break
                 method = self.rng.choice([1, 2, 3, 4], p=[0.03, 0.07, 0.2, 0.7])
 
