@@ -22,7 +22,8 @@ if __name__ == "__main__":
                 imported_config = import_module("config.simulate.{}".format(c)).config
                 imported_config["name"] = c
                 config_list.append(imported_config)
-        except:
+        except ModuleNotFoundError as e:
+            print(e)
             parser.print_help()
         else:
             simulate(config_list, skip_plot, is_focus)
