@@ -6,6 +6,7 @@ target-version = ["py38"]
 profile = "black"
 
 [tool.mypy]
+plugins = numpy.typing.mypy_plugin
 python_version = "3.8"
 warn_return_any = true
 warn_unused_configs = true
