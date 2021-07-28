@@ -10,8 +10,12 @@ class BaseConfig:
     alpha: float = 52.96
     n_eff: float = 2.2
     n_g: float = 4.4
-    center_wavelength: float = 1550e-9
 
+    center_wavelength: float = 1550e-9
+    FSR: float = 20e-9
+    length_of_3db_band: float = 1e-9
+
+    min_ring_length: float = 50e-6
     max_crosstalk: float = -30
     H_p: float = -20
     H_s: float = -60
@@ -22,16 +26,17 @@ class BaseConfig:
 @dataclass
 class OptimizationConfig(BaseConfig):
     number_of_rings: int = 8
-    FSR: float = 20e-9
-    length_of_3db_band: float = 1e-9
-    min_ring_length: float = 50e-6
     number_of_episodes_in_L: int = 100
     strategy: list[float] = [0.03, 0.07, 0.2, 0.7]
 
 
 @dataclass
 class SimulationConfig(BaseConfig):
-    K: npt.ArrayLike = np.array([])
-    L: npt.ArrayLike = np.array([])
-    lambda_limit: npt.ArrayLike = np.array([])
+    K: npt.NDArray[np.float64] = np.array([])
+    L: npt.NDArray[np.float64] = np.array([])
+    lambda_limit: npt.NDArray[np.float64] = np.array([])
     name: str = ""
+
+    @property
+    def number_of_rings(self) -> int:
+        return self.L.size

@@ -1,9 +1,14 @@
-import numpy as np
-from .mymath import lcm
-from random import randrange, sample, uniform, choice
 from itertools import combinations_with_replacement
-from scipy.stats import norm
 from math import ceil
+from random import choice, randrange, sample, uniform
+from typing import Union
+
+import numpy as np
+from scipy.stats import norm
+
+from src.config.model import OptimizationConfig, SimulationConfig
+
+from .mymath import lcm
 
 
 class Ring:
@@ -27,20 +32,23 @@ class Ring:
         n_g (float): The group index.
         n_eff (float): The equivalent refractive index.
     """
-    def __init__(self, config):
-        self.center_wavelength = config['center_wavelength']
-        self.eta = config['eta']
-        self.FSR = config['FSR']
-        self.min_ring_length = config['min_ring_length']
-        self.number_of_rings = config['number_of_rings']
-        self.n_g = config['n_g']
-        self.n_eff = config['n_eff']
+
+    def __init__(self, config: Union[SimulationConfig, OptimizationConfig]):
+        self.center_wavelength = config.center_wavelength
+        self.eta = config.eta
+        self.FSR = config.FSR
+        self.min_ring_length = config.min_ring_length
+        self.number_of_rings = config.number_of_rings
+        self.n_g = config.n_g
+        self.n_eff = config.n_eff
 
     def calculate_x(self, FSR):
-        return np.hstack((
-            np.arange(self.center_wavelength - FSR / 2, self.center_wavelength, 1e-12),
-            np.arange(self.center_wavelength, self.center_wavelength + FSR / 2, 1e-12)
-        ))
+        return np.hstack(
+            (
+                np.arange(self.center_wavelength - FSR / 2, self.center_wavelength, 1e-12),
+                np.arange(self.center_wavelength, self.center_wavelength + FSR / 2, 1e-12),
+            )
+        )
 
     def calculate_ring_length(self, N):
         return N * self.center_wavelength / self.n_eff
@@ -72,19 +80,14 @@ class Ring:
         n = self.number_of_rings
         p = [
             norm.cdf(-2),
-            *[
-                (norm.cdf(2 / (n - 2) * (x + 1)) - norm.cdf(2 / (n - 2) * x)) * 2
-                for x in range(n - 2)
-            ],
-            norm.cdf(-2)
+            *[(norm.cdf(2 / (n - 2) * (x + 1)) - norm.cdf(2 / (n - 2) * x)) * 2 for x in range(n - 2)],
+            norm.cdf(-2),
         ]
         a = np.arange(1, n + 1)
         number_of_different_perimeters = np.random.choice(a, p=p)
         perimeter_range = range(number_of_different_perimeters)
         combinations_of_perimeters = [
-            x
-            for x in combinations_with_replacement(perimeter_range, n)
-            if set(x) == set(perimeter_range)
+            x for x in combinations_with_replacement(perimeter_range, n) if set(x) == set(perimeter_range)
         ]
         c = choice(combinations_of_perimeters)
         base_ratio = sample(range(2, 30), number_of_different_perimeters)
@@ -121,9 +124,5 @@ class Ring:
 
         return N
 
-
     def init_K(self):
-        return np.array([
-            uniform(0, self.eta)
-            for _ in range(self.number_of_rings + 1)
-        ])
+        return np.array([uniform(0, self.eta) for _ in range(self.number_of_rings + 1)])
