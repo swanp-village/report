@@ -1,6 +1,6 @@
-from src.config.model import OptimizeConfig
+from src.config.model import OptimizationConfig
 
-config = OptimizeConfig(
+config = OptimizationConfig(
     eta=0.996,
     alpha=52.96,
     n_eff=2.2,
