@@ -1,9 +1,9 @@
 import numpy as np
 from scipy.optimize import differential_evolution
 
-from config.model import OptimizeConfig
+from config.model import OptimizationConfig
 from MRR.Evaluator import build_Evaluator
-from MRR.gragh import plot
+from MRR.gragh import Gragh
 from MRR.logger import Logger
 from MRR.Simulator import Ring, build_TransferFunction
 
@@ -45,7 +45,7 @@ class Model:
         MRR (MRR): MRR.
     """
 
-    def __init__(self, config: OptimizeConfig, skip_plot):
+    def __init__(self, config: OptimizationConfig, skip_plot):
         self.eta = config.eta
         self.number_of_generations = config.number_of_episodes_in_L
         self.number_of_rings = config.number_of_rings
@@ -57,6 +57,7 @@ class Model:
         self.TransferFunction = build_TransferFunction(config)
         self.skip_plot = skip_plot
         self.rng = np.random.default_rng()
+        self.graph = Gragh()
 
     def optimize_L(self):
         for i in range(100):
@@ -172,4 +173,5 @@ class Model:
         self.logger.save_evaluation_value(best_E_list, method_list)
         print("end")
         if E > 0 and not self.skip_plot:
-            plot([x], [y], self.number_of_rings, self.logger.generate_image_path())
+            self.graph.plot(x, y, self.number_of_rings)
+            self.graph.show(self.logger.generate_image_path())

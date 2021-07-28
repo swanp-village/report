@@ -6,7 +6,7 @@ from typing import Union
 import numpy as np
 from scipy.stats import norm
 
-from src.config.model import OptimizationConfig, SimulationConfig
+from config.model import OptimizationConfig, SimulationConfig
 
 from .mymath import lcm
 

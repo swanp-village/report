@@ -1,20 +1,20 @@
 import numpy as np
 import numpy.typing as npt
 
+from config.model import SimulationConfig
 from MRR.Evaluator import build_Evaluator
-from MRR.gragh import plot
+from MRR.gragh import Gragh
 from MRR.logger import Logger
 from MRR.Simulator import Ring, TransferFunction
-from src.config.model import SimulationConfig
 
 
 class Simulator:
-    def __init__(self, is_focus: bool) -> None:
+    def __init__(self, is_focus: bool = False) -> None:
         self.logger = Logger()
         self.xs: list[npt.NDArray[np.float64]] = []
         self.ys: list[npt.NDArray[np.float64]] = []
-        self.is_focus: bool = is_focus
         self.number_of_rings: int = 0
+        self.graph = Gragh(is_focus)
 
     def simulate(self, config: SimulationConfig) -> None:
         Evaluator = build_Evaluator(config)
@@ -24,7 +24,7 @@ class Simulator:
         N = ring.calculate_N(config.L)
         FSR = ring.calculate_practical_FSR(N)
 
-        if config.lambda_limit:
+        if config.lambda_limit_is_defined():
             x = config.lambda_limit
             y = mrr.simulate(x)
         else:
@@ -35,8 +35,7 @@ class Simulator:
             print(result)
 
         self.logger.save_data_as_csv(x, y, config.name)
-        self.xs.append(x)
-        self.ys.append(y)
+        self.graph.plot(x, y)
 
-    def plot(self, name: str) -> None:
-        plot(self.xs, self.ys, self.number_of_rings, self.logger.generate_image_path(name), self.is_focus)
+    def show(self) -> None:
+        self.graph.show(self.logger.generate_image_path())

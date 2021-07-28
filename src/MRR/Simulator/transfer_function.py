@@ -1,7 +1,7 @@
 import numpy as np
 import numpy.typing as npt
 
-from src.config.model import SimulationConfig
+from config.model import SimulationConfig
 
 
 class TransferFunction:

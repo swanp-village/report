@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 import numpy as np
 import numpy.typing as npt
@@ -27,16 +27,19 @@ class BaseConfig:
 class OptimizationConfig(BaseConfig):
     number_of_rings: int = 8
     number_of_episodes_in_L: int = 100
-    strategy: list[float] = [0.03, 0.07, 0.2, 0.7]
+    strategy: list[float] = field(default_factory=[0.03, 0.07, 0.2, 0.7])
 
 
 @dataclass
 class SimulationConfig(BaseConfig):
-    K: npt.NDArray[np.float64] = np.array([])
-    L: npt.NDArray[np.float64] = np.array([])
-    lambda_limit: npt.NDArray[np.float64] = np.array([])
+    K: npt.NDArray[np.float64] = field(default_factory=np.ndarray)
+    L: npt.NDArray[np.float64] = field(default_factory=np.ndarray)
+    lambda_limit: npt.NDArray[np.float64] = field(default_factory=np.ndarray)
     name: str = ""
 
     @property
     def number_of_rings(self) -> int:
         return self.L.size
+
+    def lambda_limit_is_defined(self) -> bool:
+        return self.lambda_limit.size > 0

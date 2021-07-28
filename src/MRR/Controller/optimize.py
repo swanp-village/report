@@ -1,4 +1,5 @@
 from random import seed
+
 from MRR.Model.DE import Model
 
 

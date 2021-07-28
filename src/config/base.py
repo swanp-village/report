@@ -1,4 +1,4 @@
-from src.config.model import OptimizationConfig
+from config.model import OptimizationConfig
 
 config = OptimizationConfig(
     eta=0.996,
@@ -16,4 +16,5 @@ config = OptimizationConfig(
     r_max=5,
     min_ring_length=50e-6,
     number_of_episodes_in_L=100,
+    strategy=[0.03, 0.07, 0.2, 0.7],
 )

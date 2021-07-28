@@ -2,7 +2,9 @@ import argparse
 from importlib import import_module
 
 from config.base import config
-from MRR.Controller import optimize, simulate
+from config.model import SimulationConfig
+from MRR.Controller.optimize import optimize
+from MRR.Controller.simulate import Simulator
 from MRR.Evaluator.Model.train import show_data, train_evaluator
 
 if __name__ == "__main__":
@@ -16,17 +18,18 @@ if __name__ == "__main__":
     skip_plot = args["skip_plot"]
     is_focus = args["focus"]
     if args["config"]:
+        simulator = Simulator(is_focus)
         try:
-            config_list = []
-            for c in args["config"]:
-                imported_config = import_module("config.simulate.{}".format(c)).config
-                imported_config["name"] = c
-                config_list.append(imported_config)
+            for name in args["config"]:
+                imported_config = import_module(f"config.simulate.{name}").config
+                simulation_config = SimulationConfig(**imported_config)
+                simulation_config.name = name
+                simulator.simulate(simulation_config)
+            if not skip_plot:
+                simulator.show()
         except ModuleNotFoundError as e:
             print(e)
             parser.print_help()
-        else:
-            simulate(config_list, skip_plot, is_focus)
     elif args["train_evaluator"]:
         train_evaluator()
     elif args["show_data"]:

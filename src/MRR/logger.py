@@ -24,10 +24,10 @@ class Logger:
         self.target.joinpath("config.json").write_text(src)
 
     def generate_image_path(self, name: str = "out") -> Path:
-        return self.target.joinpath("{}.pdf".format(name))
+        return self.target.joinpath(f"{name}.pdf")
 
     def save_data_as_csv(self, x: npt.NDArray[np.float64], y: npt.NDArray[np.float64], name: str = "out") -> None:
-        path = self.target.joinpath("{}.tsv".format(name))
+        path = self.target.joinpath(f"{name}.tsv")
         with open(path, "w") as tsvfile:
             tsv_writer = csv.writer(tsvfile, delimiter="\t")
             tsv_writer.writerows(zip(x.tolist(), y.tolist()))
@@ -35,7 +35,7 @@ class Logger:
     def save_evaluation_value(
         self, E_list: npt.NDArray[np.float64], method_list: list[int], name: str = "evaluation_value"
     ) -> None:
-        path = self.target.joinpath("{}.tsv".format(name))
+        path = self.target.joinpath(f"{name}.tsv")
         with open(path, "w") as tsvfile:
             tsv_writer = csv.writer(tsvfile, delimiter="\t")
             tsv_writer.writerows(zip(E_list, method_list))
