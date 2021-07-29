@@ -1,0 +1,32 @@
+\documentclass[tikz]{standalone}
+\usepackage{pgfplots}
+\tikzset{
+  /pgf/number format/.cd,
+  1000 sep={},
+}
+\pgfplotsset{compat=1.17}
+\begin{document}
+\begin{tikzpicture}[thick]
+\begin{axis}[
+  width=85mm,
+  height=65mm,
+  xlabel={Wavelength (nm)},
+  ylabel={Drop Port Power (dB)},
+  xlabel near ticks,
+  ylabel near ticks,
+  ymin=-60,
+  ymax=0,
+  ytick={
+    -60,
+    -50,
+    -40,
+    -30,
+    -20,
+    -10,
+    0
+  }
+]
+  \addplot[smooth, blue] table[x expr={\thisrowno{0} * 1e9}] {data.txt};
+\end{axis}
+\end{tikzpicture}
+\end{document}
