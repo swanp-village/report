@@ -54,13 +54,13 @@ class Logger:
         src = json.dumps(result, indent=4)
         self.target.joinpath("result.json").write_text(src)
 
-    def typeset_pgfplots_graph(self, tsv_name: str = "out") -> None:
+    def typeset_pgfplots_graph(self, tsv_name: str = "out", legent_text: str = "\\(1\\text{--}10^\\text{th}(p=[0.03,0.07,0.2,0.7])\\)") -> None:
         import subprocess
         from importlib.resources import read_text
         from . import templates
 
         tsv_path = f"{tsv_name}.tsv"
-        template = read_text(templates, "pgfplots.tex").replace("data.txt", tsv_path)
+        template = read_text(templates, "pgfplots.tex").replace("data.txt", tsv_path).replace("Legend Text", legent_text)
         with open(self.target.joinpath("pgfplots.tex"), 'w') as fp:
             fp.write(template)
         subprocess.run(['lualatex', 'pgfplots'], cwd=self.target)
