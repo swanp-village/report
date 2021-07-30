@@ -1,4 +1,5 @@
 import numpy as np
+import numpy.typing as npt
 from scipy.optimize import differential_evolution
 
 from config.model import OptimizationConfig
@@ -6,15 +7,6 @@ from MRR.Evaluator import build_Evaluator
 from MRR.gragh import Gragh
 from MRR.logger import Logger
 from MRR.Simulator import Ring, build_TransferFunction
-
-
-def optimize_K_func(K, model, L, FSR):
-    mrr = model.TransferFunction(L, K)
-    x = model.ring.calculate_x(FSR)
-    y = mrr.simulate(x)
-    evaluator = model.Evaluator(x, y)
-
-    return -evaluator.evaluate_band()
 
 
 class Model:
@@ -45,7 +37,7 @@ class Model:
         MRR (MRR): MRR.
     """
 
-    def __init__(self, config: OptimizationConfig, skip_plot):
+    def __init__(self, config: OptimizationConfig, skip_plot: bool = False) -> None:
         self.eta = config.eta
         self.number_of_generations = config.number_of_episodes_in_L
         self.number_of_rings = config.number_of_rings
@@ -59,7 +51,7 @@ class Model:
         self.rng = np.random.default_rng()
         self.graph = Gragh()
 
-    def optimize_L(self):
+    def optimize_L(self) -> tuple[npt.NDArray[np.int_], npt.NDArray[np.float_], float]:
         for i in range(100):
             N = self.ring.init_N()
             L = self.ring.calculate_ring_length(N)
@@ -71,7 +63,7 @@ class Model:
 
         return N, L, FSR
 
-    def optimize_K(self, L, FSR):
+    def optimize_K(self, L: npt.NDArray[np.float_], FSR: float) -> tuple[npt.NDArray[np.float_], float]:
         bounds = [(1e-12, self.eta) for _ in range(self.number_of_rings + 1)]
 
         result = differential_evolution(
@@ -84,32 +76,41 @@ class Model:
             popsize=20,
             maxiter=500,
         )
-        E = -result.fun
-        K = result.x
+        E: float = -result.fun
+        K: npt.NDArray[np.float_] = result.x
 
         return K, E
 
-    def train(self):
-        N_list = [[] for _ in range(self.number_of_generations)]
-        L_list = [[] for _ in range(self.number_of_generations)]
-        K_list = [[] for _ in range(self.number_of_generations)]
-        FSR_list = [0 for _ in range(self.number_of_generations)]
-        E_list = [0 for _ in range(self.number_of_generations)]
-        method_list = [0 for _ in range(self.number_of_generations)]
-        best_E_list = [0 for _ in range(self.number_of_generations)]
+    def optimize(self) -> None:
+        N_list: list[npt.NDArray[np.int_]] = [np.array([]) for _ in range(self.number_of_generations)]
+        L_list: list[npt.NDArray[np.float_]] = [np.array([]) for _ in range(self.number_of_generations)]
+        K_list: list[npt.NDArray[np.float_]] = [np.array([]) for _ in range(self.number_of_generations)]
+        FSR_list: list[float] = [0 for _ in range(self.number_of_generations)]
+        E_list: list[float] = [0 for _ in range(self.number_of_generations)]
+        method_list: list[int] = [0 for _ in range(self.number_of_generations)]
+        best_E_list: list[float] = [0 for _ in range(self.number_of_generations)]
         for m in range(self.number_of_generations):
+            N: npt.NDArray[np.int_]
+            L: npt.NDArray[np.float_]
+            FSR: float
+
+            kind: npt.NDArray[np.int_]
+            counts: npt.NDArray[np.int_]
+
             if m < 10:
-                method = 4
+                method: int = 4
             else:
-                _, counts = np.unique(best_E_list[:m], return_counts=True)
-                if np.max(counts) > 30:
+                _, counts = np.unique(best_E_list[:m], return_counts=True)  # type: ignore
+                max_counts: np.int_ = np.max(counts)  # type: ignore
+                if max_counts > 30:
                     break
                 method = self.rng.choice([1, 2, 3, 4], p=[0.03, 0.07, 0.2, 0.7])
 
             if method == 1:
                 max_index = np.argmax(E_list)
                 max_N = N_list[max_index]
-                kind, counts = self.rng.permutation(np.unique(max_N, return_counts=True), axis=1)
+
+                kind, counts = self.rng.permutation(np.unique(max_N, return_counts=True), axis=1)  # type: ignore
                 N = np.repeat(kind, counts)
                 L = self.ring.calculate_ring_length(N)
                 FSR = self.ring.calculate_practical_FSR(N)
@@ -122,7 +123,7 @@ class Model:
             elif method == 3:
                 max_index = np.argmax(E_list)
                 max_N = N_list[max_index]
-                kind = np.unique(max_N)
+                kind = np.unique(max_N)  # type: ignore
                 N = self.rng.choice(kind, self.number_of_rings)
                 while not set(kind) == set(N):
                     N = self.rng.choice(kind, self.number_of_rings)
@@ -175,3 +176,12 @@ class Model:
         if E > 0 and not self.skip_plot:
             self.graph.plot(x, y, self.number_of_rings)
             self.graph.show(self.logger.generate_image_path())
+
+
+def optimize_K_func(K: npt.NDArray[np.float_], model: Model, L: npt.NDArray[np.float_], FSR: float) -> float:
+    mrr = model.TransferFunction(L, K)
+    x = model.ring.calculate_x(FSR)
+    y = mrr.simulate(x)
+    evaluator = model.Evaluator(x, y)
+
+    return -evaluator.evaluate_band()

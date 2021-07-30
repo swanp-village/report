@@ -36,6 +36,7 @@ class SimulationConfig(BaseConfig):
     L: npt.NDArray[np.float64] = field(default_factory=np.ndarray)
     lambda_limit: npt.NDArray[np.float64] = field(default_factory=np.ndarray)
     name: str = ""
+    label: str = ""
 
     @property
     def number_of_rings(self) -> int:
