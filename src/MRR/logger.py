@@ -1,5 +1,6 @@
 import csv
 import json
+from dataclasses import asdict
 from datetime import datetime
 from pathlib import Path
 from typing import Union
@@ -20,7 +21,7 @@ class Logger:
 
     def save_config(self, config: Union[OptimizationConfig, SimulationConfig]) -> None:
         self.config = config
-        src = json.dumps(config, indent=4)
+        src = json.dumps(asdict(config), indent=4)
         self.target.joinpath("config.json").write_text(src)
 
     def generate_image_path(self, name: str = "out") -> Path:
