@@ -4,6 +4,7 @@ from random import choice, randrange, sample, uniform
 from typing import Union
 
 import numpy as np
+import numpy.typing as npt
 from scipy.stats import norm
 
 from config.model import OptimizationConfig, SimulationConfig
@@ -34,15 +35,20 @@ class Ring:
     """
 
     def __init__(self, config: Union[SimulationConfig, OptimizationConfig]):
-        self.center_wavelength = config.center_wavelength
-        self.eta = config.eta
-        self.FSR = config.FSR
-        self.min_ring_length = config.min_ring_length
+        self.center_wavelength = np.float_(config.center_wavelength)
+        self.eta = np.float_(config.eta)
+        self.FSR = np.float_(config.FSR)
+        self.min_ring_length = np.float_(config.min_ring_length)
         self.number_of_rings = config.number_of_rings
-        self.n_g = config.n_g
-        self.n_eff = config.n_eff
+        self.n_g = np.float_(config.n_g)
+        self.n_eff = np.float_(config.n_eff)
+        self.rng = np.random.default_rng()
 
-    def calculate_x(self, FSR):
+    @property
+    def min_N(self) -> np.float_:
+        return self.min_ring_length * self.n_eff / self.center_wavelength
+
+    def calculate_x(self, FSR: np.float_) -> npt.NDArray[np.float_]:
         return np.hstack(
             (
                 np.arange(self.center_wavelength - FSR / 2, self.center_wavelength, 1e-12),
@@ -50,33 +56,22 @@ class Ring:
             )
         )
 
-    def calculate_ring_length(self, N):
+    def calculate_ring_length(self, N: npt.NDArray[np.int_]) -> npt.NDArray[np.float_]:
         return N * self.center_wavelength / self.n_eff
 
-    def calculate_min_N(self):
-        return self.min_ring_length * self.n_eff / self.center_wavelength
-
-    def calculate_FSR(self, N):
+    def calculate_FSR(self, N: npt.NDArray[np.int_]) -> npt.NDArray[np.float_]:
         return self.center_wavelength * self.n_eff / (self.n_g * N)
 
-    def calculate_N(self, L):
+    def calculate_N(self, L: npt.NDArray[np.float_]) -> npt.NDArray[np.int_]:
         return np.round(L * self.n_eff / self.center_wavelength)
 
-    def find_ring_length(self, max_N):
-        N = np.arange(max_N)
-        N[0] = 1
-        ring_length_list = self.calculate_ring_length(N)
-        FSR_list = self.calculate_FSR(N)
-
-        return ring_length_list, FSR_list
-
-    def calculate_practical_FSR(self, N):
+    def calculate_practical_FSR(self, N: npt.NDArray[np.int_]) -> np.float_:
         return lcm(self.calculate_FSR(N))
 
-    def calculate_practical_FSR_from_L(self, L):
+    def calculate_practical_FSR_from_L(self, L: npt.NDArray[np.float_]) -> np.float_:
         return self.calculate_practical_FSR(self.calculate_N(L))
 
-    def init_ratio(self):
+    def init_ratio(self) -> npt.NDArray[np.int_]:
         n = self.number_of_rings
         p = [
             norm.cdf(-2),
@@ -84,45 +79,38 @@ class Ring:
             norm.cdf(-2),
         ]
         a = np.arange(1, n + 1)
-        number_of_different_perimeters = np.random.choice(a, p=p)
-        perimeter_range = range(number_of_different_perimeters)
-        combinations_of_perimeters = [
-            x for x in combinations_with_replacement(perimeter_range, n) if set(x) == set(perimeter_range)
-        ]
-        c = choice(combinations_of_perimeters)
-        base_ratio = sample(range(2, 30), number_of_different_perimeters)
-        base_ratio = (np.lcm.reduce(base_ratio) / base_ratio).astype(int)
-        ratio = [base_ratio[x] for x in c]
-        ratio = sample(ratio, len(ratio))
+        number_of_types = self.rng.choice(a, p=p)
+        base = self.rng.choice(np.arange(2, 30), number_of_types, replace=False)
+        reciprocal_of_ratio: npt.NDArray[np.int_] = self.rng.choice(base, n)
+        while np.unique(reciprocal_of_ratio).size != number_of_types:
+            reciprocal_of_ratio = self.rng.choice(base, n)
+        ratio: npt.NDArray[np.int_] = (np.lcm.reduce(reciprocal_of_ratio) / reciprocal_of_ratio).astype(np.int_)
 
-        return np.array(ratio)
+        return ratio
 
-    def init_N(self):
+    def optimize_N(self) -> npt.NDArray[np.int_]:
         ratio = self.init_ratio()
-        N = self.optimize_N(ratio)
+        min_N_0 = np.ceil(self.min_N / ratio).min().astype(np.int_)
+        N_0 = self.rng.integers(min_N_0, 100, dtype=np.int_)
 
-        return N
+        for _ in range(10000):
+            a = np.power(np.arange(3), 4)
+            neighborhood_N_0 = np.concatenate((-np.flip(a)[: a.size - 1], a)) + N_0
+            neighborhood_N_0 = neighborhood_N_0[neighborhood_N_0 >= min_N_0]
+            E = []
+            for n_0 in np.nditer(neighborhood_N_0):
+                N = ratio * n_0
+                FSR = self.calculate_practical_FSR(N)
+                E.append(np.square(FSR - self.FSR))
 
-    def optimize_N(self, ratio):
-        rand_start = 1
-        rand_end = 3
-        min_N_0 = ceil(self.calculate_min_N() / min(ratio) + rand_end)
-        N_0 = randrange(100, 200)
-
-        for i in range(10000):
-            N = ratio * N_0
-            FSR_e = self.calculate_practical_FSR(N)
-            if i > 7000 and 0.99 < FSR_e / self.FSR < 1.01:
-                return N
-            if N_0 < min_N_0:
-                N = ratio * min_N_0
-                return N
-            if FSR_e > self.FSR:
-                N_0 = N_0 + randrange(rand_start, rand_end)
+            best_E_index = np.argmin(E)
+            best_N_0 = neighborhood_N_0[best_E_index]
+            if best_N_0 == N_0:
+                break
             else:
-                N_0 = N_0 - randrange(rand_start, rand_end)
-
+                N_0 = best_N_0
+        N = ratio * N_0
         return N
 
-    def init_K(self):
+    def init_K(self) -> npt.NDArray[np.float_]:
         return np.array([uniform(0, self.eta) for _ in range(self.number_of_rings + 1)])

@@ -53,7 +53,7 @@ class Model:
 
     def optimize_L(self) -> tuple[npt.NDArray[np.int_], npt.NDArray[np.float_], float]:
         for i in range(100):
-            N = self.ring.init_N()
+            N = self.ring.optimize_N()
             L = self.ring.calculate_ring_length(N)
             FSR = self.ring.calculate_practical_FSR(N)
             if FSR > self.required_FSR * 0.99 and FSR < self.required_FSR * 1.01 and np.all(L < 0.1):

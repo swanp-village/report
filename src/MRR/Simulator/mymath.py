@@ -1,27 +1,29 @@
-from typing import List
-import numpy as np
 from functools import reduce
 
+import numpy as np
+import numpy.typing as npt
 
-def is_zero(x: float, y: float) -> bool:
+
+def is_zero(x: np.float_, y: np.float_) -> np.bool_:
     """
-        x > y > 0
+    x > y > 0
     """
-    result = x / y - np.floor(x / y)
+    result: np.float_ = x / y - np.floor(x / y, dtype=np.float_)
     return result < 0.1
 
 
-def lcm(xs: List[float]) -> float:
+def lcm(xs: npt.NDArray[np.float_]) -> np.float_:
     return reduce(_lcm, xs)
 
 
-def mod(x: float, y: float) -> float:
-    return x - y * np.floor(x / y)
+def mod(x: np.float_, y: np.float_) -> np.float_:
+    result: np.float_ = x - y * np.floor(x / y)
+    return result
 
 
-def _gcd(x: float, y: float) -> float:
+def _gcd(x: np.float_, y: np.float_) -> np.float_:
     """
-        x > y
+    x > y
     """
     n = 0
     while y != 0 and not is_zero(x, y) and n < 10:
@@ -34,7 +36,7 @@ def _gcd(x: float, y: float) -> float:
         return x
 
 
-def _lcm(x: float, y: float) -> float:
+def _lcm(x: np.float_, y: np.float_) -> np.float_:
     if x > y:
         return x * y / _gcd(x, y)
     else:
