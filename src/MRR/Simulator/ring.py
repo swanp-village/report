@@ -57,6 +57,7 @@ class Ring:
         return np.round(L * self.n_eff / self.center_wavelength)
 
     def calculate_practical_FSR(self, N: npt.NDArray[np.int_]) -> np.float_:
+        print(N)
         return lcm(self.calculate_FSR(N))
 
     def calculate_practical_FSR_from_L(self, L: npt.NDArray[np.float_]) -> np.float_:
@@ -90,11 +91,11 @@ class Ring:
         N_0 = np.int_(self.rng.integers(min_N_0, 100))
 
         for _ in range(10000):
-            a = np.int_(np.power(np.arange(3), 4))
-            neighborhood_N_0: npt.NDArray[np.int_] = np.concatenate(-np.flip(a)[: a.size - 1], a, dtype=np.int_) + N_0
+            a: npt.NDArray[np.int_] = np.power(np.arange(3, dtype=np.int_), 4)
+            neighborhood_N_0: npt.NDArray[np.int_] = np.concatenate((-np.flip(a)[: a.size - 1], a)) + N_0
             neighborhood_N_0 = neighborhood_N_0[neighborhood_N_0 >= min_N_0]
             neighborhood_N: npt.NDArray[np.int_] = neighborhood_N_0.reshape(1, -1).T * ratio
-            E = [np.square(self.calculate_practical_FSR(n) - self.FSR) for n in np.nditer(neighborhood_N)]
+            E = [np.square(self.calculate_practical_FSR(n) - self.FSR) for n in neighborhood_N]
             best_E_index = np.argmin(E)
             best_N_0: np.int_ = neighborhood_N_0[best_E_index]
             if best_N_0 == N_0:
