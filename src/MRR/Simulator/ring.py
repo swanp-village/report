@@ -1,6 +1,4 @@
 from itertools import combinations_with_replacement
-from math import ceil
-from random import choice, randrange, sample, uniform
 from typing import Union
 
 import numpy as np
@@ -42,7 +40,7 @@ class Ring:
         self.number_of_rings = config.number_of_rings
         self.n_g = np.float_(config.n_g)
         self.n_eff = np.float_(config.n_eff)
-        self.rng = np.random.default_rng()
+        self.rng = config.root_rng
 
     @property
     def min_N(self) -> np.float_:
@@ -113,4 +111,4 @@ class Ring:
         return N
 
     def init_K(self) -> npt.NDArray[np.float_]:
-        return np.array([uniform(0, self.eta) for _ in range(self.number_of_rings + 1)])
+        return np.array([self.rng.uniform(0, self.eta) for _ in range(self.number_of_rings + 1)])

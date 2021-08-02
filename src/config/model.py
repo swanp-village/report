@@ -1,11 +1,13 @@
 from dataclasses import dataclass, field
-
+from typing import Int, Sequence, Union
 import numpy as np
 import numpy.typing as npt
 
 
 @dataclass
 class BaseConfig:
+    entropy: Union[None, Int, Sequence[Int]] = None
+
     eta: float = 0.996
     alpha: float = 52.96
     n_eff: float = 2.2
@@ -21,6 +23,14 @@ class BaseConfig:
     H_s: float = -60
     H_i: float = -10
     r_max: float = 5
+
+    @property
+    def seedsequence(self) -> np.random.SeedSequence:
+        return np.random.SeedSequence(self.entropy)
+
+    @property
+    def root_rng(self):
+        return np.random.Generator(np.random.PCG64DXSM(self.seedsequence.spawn(1)))
 
 
 @dataclass
