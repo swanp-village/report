@@ -28,9 +28,8 @@ class BaseConfig:
     def seedsequence(self) -> np.random.SeedSequence:
         return np.random.SeedSequence(self.entropy)
 
-    @property
-    def root_rng(self):
-        return np.random.Generator(np.random.PCG64DXSM(self.seedsequence.spawn(1)))
+    def get_root_rng(self):
+        return np.random.Generator(np.random.PCG64DXSM(self.seedsequence))
 
 
 @dataclass
