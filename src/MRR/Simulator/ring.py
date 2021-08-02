@@ -40,7 +40,7 @@ class Ring:
         self.number_of_rings = config.number_of_rings
         self.n_g = np.float_(config.n_g)
         self.n_eff = np.float_(config.n_eff)
-        self.rng = config.root_rng
+        self.rng = config.get_root_rng()
 
     @property
     def min_N(self) -> np.float_:
