@@ -48,7 +48,7 @@ class Model:
         self.Evaluator = build_Evaluator(config)
         self.TransferFunction = build_TransferFunction(config)
         self.skip_plot = skip_plot
-        self.rng = config.root_rng
+        self.rng = config.get_root_rng()
         self.graph = Gragh()
 
     def optimize_L(self) -> tuple[npt.NDArray[np.int_], npt.NDArray[np.float_], float]:
