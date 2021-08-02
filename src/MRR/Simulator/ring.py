@@ -62,6 +62,10 @@ class Ring:
     def calculate_practical_FSR_from_L(self, L: npt.NDArray[np.float_]) -> np.float_:
         return self.calculate_practical_FSR(self.calculate_N(L))
 
+    def calculate_min_N_0(self, ratio: npt.NDArray[np.int_]) -> np.int_:
+        result = np.ceil(self.min_N / ratio).min()
+        return np.int_(result)
+
     def init_ratio(self, number_of_rings: int) -> npt.NDArray[np.int_]:
         p = [
             norm.cdf(-2),
@@ -82,24 +86,20 @@ class Ring:
 
     def optimize_N(self, number_of_rings: int) -> npt.NDArray[np.int_]:
         ratio = self.init_ratio(number_of_rings)
-        min_N_0 = np.ceil(self.min_N / ratio).min().astype(np.int_)
-        N_0 = self.rng.integers(min_N_0, 100, dtype=np.int_)
+        min_N_0 = self.calculate_min_N_0(ratio)
+        N_0 = np.int_(self.rng.integers(min_N_0, 100))
 
         for _ in range(10000):
-            a = np.power(np.arange(3), 4)
-            neighborhood_N_0 = np.concatenate((-np.flip(a)[: a.size - 1], a)) + N_0
+            a = np.int_(np.power(np.arange(3), 4))
+            neighborhood_N_0: npt.NDArray[np.int_] = np.concatenate(-np.flip(a)[: a.size - 1], a, dtype=np.int_) + N_0
             neighborhood_N_0 = neighborhood_N_0[neighborhood_N_0 >= min_N_0]
-            E = []
-            for n_0 in np.nditer(neighborhood_N_0):
-                N = ratio * n_0
-                FSR = self.calculate_practical_FSR(N)
-                E.append(np.square(FSR - self.FSR))
-
+            neighborhood_N: npt.NDArray[np.int_] = neighborhood_N_0.reshape(1, -1).T * ratio
+            E = [np.square(self.calculate_practical_FSR(n) - self.FSR) for n in np.nditer(neighborhood_N)]
             best_E_index = np.argmin(E)
-            best_N_0 = neighborhood_N_0[best_E_index]
+            best_N_0: np.int_ = neighborhood_N_0[best_E_index]
             if best_N_0 == N_0:
                 break
             else:
                 N_0 = best_N_0
-        N = ratio * N_0
+        N: npt.NDArray[np.int_] = ratio * N_0
         return N
