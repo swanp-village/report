@@ -1,15 +1,9 @@
-from itertools import combinations_with_replacement
-from math import ceil
-from random import choice, randrange, sample, uniform
-from typing import Union
-
 import numpy as np
 import numpy.typing as npt
 from scipy.stats import norm
 
-from config.model import OptimizationConfig, SimulationConfig
-
-from .mymath import lcm
+from config.model import BaseConfig
+from MRR.Simulator.mymath import lcm
 
 
 class Ring:
@@ -21,7 +15,6 @@ class Ring:
                 eta (float): The coupling loss coefficient.
                 FSR (float): The required FSR.
                 min_ring_length (float): The minimum round-trip length.
-                number_of_rings (int): Number of rings. The ring order.
                 n_g (float): The group index.
                 n_eff (float): The equivalent refractive index.
     Attributes:
@@ -29,17 +22,15 @@ class Ring:
         eta (float): The coupling loss coefficient.
         FSR (float): The required FSR.
         min_ring_length (float): The minimum round-trip length.
-        number_of_rings (int): Number of rings. The ring order.
         n_g (float): The group index.
         n_eff (float): The equivalent refractive index.
     """
 
-    def __init__(self, config: Union[SimulationConfig, OptimizationConfig]):
+    def __init__(self, config: BaseConfig):
         self.center_wavelength = np.float_(config.center_wavelength)
         self.eta = np.float_(config.eta)
         self.FSR = np.float_(config.FSR)
         self.min_ring_length = np.float_(config.min_ring_length)
-        self.number_of_rings = config.number_of_rings
         self.n_g = np.float_(config.n_g)
         self.n_eff = np.float_(config.n_eff)
         self.rng = np.random.default_rng()
@@ -57,7 +48,7 @@ class Ring:
         )
 
     def calculate_ring_length(self, N: npt.NDArray[np.int_]) -> npt.NDArray[np.float_]:
-        return N * self.center_wavelength / self.n_eff
+        return np.float_(N) * self.center_wavelength / self.n_eff
 
     def calculate_FSR(self, N: npt.NDArray[np.int_]) -> npt.NDArray[np.float_]:
         return self.center_wavelength * self.n_eff / (self.n_g * N)
@@ -71,25 +62,26 @@ class Ring:
     def calculate_practical_FSR_from_L(self, L: npt.NDArray[np.float_]) -> np.float_:
         return self.calculate_practical_FSR(self.calculate_N(L))
 
-    def init_ratio(self) -> npt.NDArray[np.int_]:
-        n = self.number_of_rings
+    def init_ratio(self, number_of_rings: int) -> npt.NDArray[np.int_]:
         p = [
             norm.cdf(-2),
-            *[(norm.cdf(2 / (n - 2) * (x + 1)) - norm.cdf(2 / (n - 2) * x)) * 2 for x in range(n - 2)],
+            *[
+                (norm.cdf(2 / (number_of_rings - 2) * (x + 1)) - norm.cdf(2 / (number_of_rings - 2) * x)) * 2
+                for x in range(number_of_rings - 2)
+            ],
             norm.cdf(-2),
         ]
-        a = np.arange(1, n + 1)
+        a = np.arange(1, number_of_rings + 1)
         number_of_types = self.rng.choice(a, p=p)
         base = self.rng.choice(np.arange(2, 30), number_of_types, replace=False)
-        reciprocal_of_ratio: npt.NDArray[np.int_] = self.rng.choice(base, n)
+        reciprocal_of_ratio: npt.NDArray[np.int_] = self.rng.choice(base, number_of_rings)
         while np.unique(reciprocal_of_ratio).size != number_of_types:
-            reciprocal_of_ratio = self.rng.choice(base, n)
+            reciprocal_of_ratio = self.rng.choice(base, number_of_rings)
         ratio: npt.NDArray[np.int_] = (np.lcm.reduce(reciprocal_of_ratio) / reciprocal_of_ratio).astype(np.int_)
-
         return ratio
 
-    def optimize_N(self) -> npt.NDArray[np.int_]:
-        ratio = self.init_ratio()
+    def optimize_N(self, number_of_rings: int) -> npt.NDArray[np.int_]:
+        ratio = self.init_ratio(number_of_rings)
         min_N_0 = np.ceil(self.min_N / ratio).min().astype(np.int_)
         N_0 = self.rng.integers(min_N_0, 100, dtype=np.int_)
 
@@ -111,6 +103,3 @@ class Ring:
                 N_0 = best_N_0
         N = ratio * N_0
         return N
-
-    def init_K(self) -> npt.NDArray[np.float_]:
-        return np.array([uniform(0, self.eta) for _ in range(self.number_of_rings + 1)])
