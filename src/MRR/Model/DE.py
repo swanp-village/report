@@ -174,7 +174,7 @@ class Model:
         self.logger.save_evaluation_value(best_E_list, method_list)
         print("end")
         if E > 0 and not self.skip_plot:
-            graph = Gragh()
+            graph = Gragh().create()
             graph.plot(x, y, self.number_of_rings)
             graph.show(self.logger.generate_image_path())
 
