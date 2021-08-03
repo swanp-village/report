@@ -25,7 +25,7 @@ class Simulator:
         N = ring.calculate_N(config.L)
         FSR = ring.calculate_practical_FSR(N)
 
-        if config.lambda_limit_is_defined():
+        if config.lambda_limit_is_defined:
             x = config.lambda_limit
             y = mrr.simulate(x)
         else:
