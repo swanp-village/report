@@ -1,5 +1,3 @@
-from random import uniform
-
 import numpy as np
 import numpy.typing as npt
 
@@ -56,9 +54,10 @@ class Model:
         self.L_list = []
         self.K_list = []
         self.Q_list = []
+        self.rng = config.get_multi_start_local_search_rng()
 
     def init_K(self) -> npt.NDArray[np.float_]:
-        return np.array([uniform(0, self.eta) for _ in range(self.number_of_rings + 1)])
+        return np.array([self.rng.uniform(0, self.eta) for _ in range(self.number_of_rings + 1)])
 
     def optimize_L(self):
         for i in range(100):

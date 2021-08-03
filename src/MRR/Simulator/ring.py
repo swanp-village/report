@@ -35,7 +35,7 @@ class Ring:
         self.min_ring_length = np.float_(config.min_ring_length)
         self.n_g = np.float_(config.n_g)
         self.n_eff = np.float_(config.n_eff)
-        self.rng = np.random.default_rng()
+        self.rng = config.get_ring_rng()
 
     @property
     def min_N(self) -> np.float_:
