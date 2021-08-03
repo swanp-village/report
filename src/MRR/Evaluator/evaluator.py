@@ -1,3 +1,5 @@
+from typing import Optional
+
 import numpy as np
 import numpy.typing as npt
 from scipy.signal import argrelmax, argrelmin
@@ -30,12 +32,11 @@ class Evaluator:
         self,
         x: npt.NDArray[np.float_],
         y: npt.NDArray[np.float_],
-        weight: npt.NDArray[np.float_],
         config: BaseConfig,
+        weight: Optional[list[float]],
     ) -> None:
         self.x = x
         self.y = y
-        self.weight = weight
         self.distance = x[1] - x[0]
         self.center_wavelength = config.center_wavelength
         self.max_crosstalk = config.max_crosstalk
@@ -44,6 +45,10 @@ class Evaluator:
         self.H_i = config.H_i
         self.r_max = config.r_max
         self.length_of_3db_band = config.length_of_3db_band
+        if weight:
+            self.weight = weight
+        else:
+            self.weight = config.weight
 
     def calculate_pass_band_range(self) -> np.float_:
         pass_band_range = []

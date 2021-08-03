@@ -40,8 +40,8 @@ test_rank_list = np.array([d.rank for d in test])
 
 
 def train_data(weight):
-    train_evaluate_result = np.array([Evaluator(d.x, d.y, weight, config).evaluate_band() for d in train])
-    test_evaluate_result = np.array([Evaluator(d.x, d.y, weight, config).evaluate_band() for d in test])
+    train_evaluate_result = np.array([Evaluator(d.x, d.y, config, weight).evaluate_band() for d in train])
+    test_evaluate_result = np.array([Evaluator(d.x, d.y, config, weight).evaluate_band() for d in test])
     train_evaluate_result = np.array(train_evaluate_result).reshape(-1, 1)
     test_evaluate_result = np.array(test_evaluate_result).reshape(-1, 1)
     X_train = train_evaluate_result
@@ -72,7 +72,7 @@ def train_evaluator():
 
 def show_data(skip_plot):
     for data_i in all_data:
-        evaluator = Evaluator(data_i.x, data_i.y, config.weight, config)
+        evaluator = Evaluator(data_i.x, data_i.y, config)
         print(evaluator.evaluate_band())
         data_i.export_gragh(skip_plot)
 

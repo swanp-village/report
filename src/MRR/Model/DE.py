@@ -179,6 +179,6 @@ def optimize_K_func(K: npt.NDArray[np.float_], model: Model, L: npt.NDArray[np.f
     mrr = TransferFunction(L, K, model.config)
     x = model.ring.calculate_x(FSR)
     y = mrr.simulate(x)
-    evaluator = Evaluator(x, y, model.config.weight, model.config)
+    evaluator = Evaluator(x, y, model.config)
 
     return -evaluator.evaluate_band()

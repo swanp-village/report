@@ -31,7 +31,7 @@ class Simulator:
         else:
             x = ring.calculate_x(FSR)
             y = mrr.simulate(x)
-            evaluator = Evaluator(x, y, config.weight, config)
+            evaluator = Evaluator(x, y, config)
             result = evaluator.evaluate_band()
             print(result)
 
