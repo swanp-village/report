@@ -8,7 +8,7 @@ git clone https://github.com/nimiusrd/MRR.git
 cd MRR || exit
 
 # Python environment setup
-python3 -m venv .venv
+python3.9 -m venv .venv
 # shellcheck disable=SC1091
 . .venv/bin/activate
 pip install --upgrade pip

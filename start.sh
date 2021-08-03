@@ -1,6 +1,6 @@
 #!/bin/bash
 # Python environment setup
-python3 -m venv .venv
+python3.9 -m venv .venv
 # shellcheck disable=SC1091
 . .venv/bin/activate
 pip install --upgrade pip
