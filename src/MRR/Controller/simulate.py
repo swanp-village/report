@@ -2,7 +2,7 @@ import numpy as np
 import numpy.typing as npt
 
 from config.model import SimulationConfig
-from MRR.Evaluator import build_Evaluator
+from MRR.Evaluator import Evaluator
 from MRR.gragh import Gragh
 from MRR.logger import Logger
 from MRR.Simulator import Ring, TransferFunction
@@ -17,7 +17,6 @@ class Simulator:
         self.graph = Gragh(is_focus)
 
     def simulate(self, config: SimulationConfig) -> None:
-        Evaluator = build_Evaluator(config)
         mrr = TransferFunction(config.L, config.K, config)
         mrr.print_parameters()
         print("K:", config.K.tolist())
@@ -32,7 +31,7 @@ class Simulator:
         else:
             x = ring.calculate_x(FSR)
             y = mrr.simulate(x)
-            evaluator = Evaluator(x, y)
+            evaluator = Evaluator(x, y, config.weight, config)
             result = evaluator.evaluate_band()
             print(result)
 

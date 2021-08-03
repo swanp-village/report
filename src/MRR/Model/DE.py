@@ -3,10 +3,10 @@ import numpy.typing as npt
 from scipy.optimize import differential_evolution
 
 from config.model import OptimizationConfig
-from MRR.Evaluator import build_Evaluator
+from MRR.Evaluator import Evaluator
 from MRR.gragh import Gragh
 from MRR.logger import Logger
-from MRR.Simulator import Ring, TransferFunction, build_TransferFunction
+from MRR.Simulator import Ring, TransferFunction
 
 
 class Model:
@@ -38,6 +38,7 @@ class Model:
     """
 
     def __init__(self, config: OptimizationConfig, skip_plot: bool = False) -> None:
+        self.config = config
         self.eta = config.eta
         self.number_of_generations = config.number_of_episodes_in_L
         self.number_of_rings = config.number_of_rings
@@ -45,8 +46,6 @@ class Model:
         self.logger = Logger()
         self.logger.save_config(config)
         self.ring = Ring(config)
-        self.Evaluator = build_Evaluator(config)
-        self.TransferFunction = build_TransferFunction(config)
         self.skip_plot = skip_plot
         self.rng = config.get_ring_rng()
 
@@ -159,7 +158,7 @@ class Model:
         K = K_list[max_index]
         FSR = FSR_list[max_index]
         E = E_list[max_index]
-        mrr: TransferFunction = self.TransferFunction(L, K)
+        mrr = TransferFunction(L, K, self.config)
         x = self.ring.calculate_x(FSR)
         y = mrr.simulate(x)
         print("result")
@@ -175,9 +174,9 @@ class Model:
 
 
 def optimize_K_func(K: npt.NDArray[np.float_], model: Model, L: npt.NDArray[np.float_], FSR: float) -> float:
-    mrr = model.TransferFunction(L, K)
+    mrr = TransferFunction(L, K, model.config)
     x = model.ring.calculate_x(FSR)
     y = mrr.simulate(x)
-    evaluator = model.Evaluator(x, y)
+    evaluator = Evaluator(x, y, model.config.weight, model.config)
 
     return -evaluator.evaluate_band()

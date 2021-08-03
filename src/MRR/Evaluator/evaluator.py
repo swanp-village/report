@@ -197,24 +197,3 @@ class Evaluator:
         if E < 0.5:
             return (E, False)
         return (E, True)
-
-
-class build_Evaluator_Factory:
-    def __init__(self, weight, config):
-        self.weight = weight
-        self.config = config
-
-    def create(self, L, K):
-        return Evaluator(L, K, self.weight, self.config)
-
-
-def build_Evaluator(config, weight=[1.0, 3.5, 1.0, 5.0, 3.5, 1.0, 1.0, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5]):
-    """Partial-apply config to Evaluator
-
-    Args:
-        config (Dict[str, Any]): Configuration of the Evaluator
-
-    Returns:
-        Evaluator_with_config: Evaluator that is partial-applied config to.
-    """
-    return build_Evaluator_Factory(weight, config).create

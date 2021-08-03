@@ -1,7 +1,7 @@
 import numpy as np
 import numpy.typing as npt
 
-from config.model import SimulationConfig
+from config.model import BaseConfig
 
 
 class TransferFunction:
@@ -25,7 +25,7 @@ class TransferFunction:
         a (List[float]): List of the propagation loss.
     """
 
-    def __init__(self, L: npt.ArrayLike, K: npt.ArrayLike, config: SimulationConfig) -> None:
+    def __init__(self, L: npt.ArrayLike, K: npt.ArrayLike, config: BaseConfig) -> None:
         self.L: npt.NDArray[np.float64] = np.array(L)
         self.K: npt.NDArray[np.float64] = np.array(K)
         self.center_wavelength: float = config.center_wavelength
@@ -80,23 +80,3 @@ class TransferFunction:
     def simulate(self, wavelength: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
         y: npt.NDArray[np.float64] = 20 * np.log10(np.abs(self._D(wavelength)))
         return y.reshape(y.size)
-
-
-class build_TransferFunction_Factory:
-    def __init__(self, config: SimulationConfig) -> None:
-        self.config = config
-
-    def create(self, L: npt.ArrayLike, K: npt.ArrayLike) -> TransferFunction:
-        return TransferFunction(L, K, self.config)
-
-
-def build_TransferFunction(config: SimulationConfig) -> TransferFunction:
-    """Partial-apply config to TransferFunction
-
-    Args:
-        config (Dict[str, Any]): Configuration of the TransferFunction
-
-    Returns:
-        TransferFunction_with_config: TransferFunction that is partial-applied config to.
-    """
-    return build_TransferFunction_Factory(config).create

@@ -1,1 +1,1 @@
-from .evaluator import build_Evaluator, Evaluator
+from .evaluator import Evaluator
