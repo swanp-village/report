@@ -48,8 +48,7 @@ class Model:
         self.Evaluator = build_Evaluator(config)
         self.TransferFunction = build_TransferFunction(config)
         self.skip_plot = skip_plot
-        self.rng = config.get_root_rng()
-        self.graph = Gragh()
+        self.rng = config.get_ring_rng()
 
     def optimize_L(self) -> tuple[npt.NDArray[np.int_], npt.NDArray[np.float_], float]:
         for i in range(100):
@@ -74,7 +73,7 @@ class Model:
             workers=-1,
             updating="deferred",
             popsize=20,
-            maxiter=500,
+            maxiter=1,
             seed=self.rng,
         )
         E: float = -result.fun
@@ -175,6 +174,7 @@ class Model:
         self.logger.save_evaluation_value(best_E_list, method_list)
         print("end")
         if E > 0 and not self.skip_plot:
+            self.graph = Gragh()
             self.graph.plot(x, y, self.number_of_rings)
             self.graph.show(self.logger.generate_image_path())
 

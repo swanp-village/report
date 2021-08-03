@@ -54,7 +54,7 @@ class Model:
         self.L_list = []
         self.K_list = []
         self.Q_list = []
-        self.rng = config.get_root_rng()
+        self.rng = config.get_multi_start_local_search_rng()
 
     def init_K(self) -> npt.NDArray[np.float_]:
         return np.array([self.rng.uniform(0, self.eta) for _ in range(self.number_of_rings + 1)])
