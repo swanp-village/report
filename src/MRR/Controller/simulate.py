@@ -37,6 +37,7 @@ class Simulator:
 
         self.logger.save_data_as_csv(x, y, config.name)
         self.logger.typeset_pgfplots_graph(config.name)
+        self.graph.create()
         self.graph.plot(x, y, config.label)
 
     def show(self) -> None:
