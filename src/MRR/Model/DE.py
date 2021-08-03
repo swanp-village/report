@@ -49,7 +49,6 @@ class Model:
         self.TransferFunction = build_TransferFunction(config)
         self.skip_plot = skip_plot
         self.rng = np.random.default_rng()
-        self.graph = Gragh()
 
     def optimize_L(self) -> tuple[npt.NDArray[np.int_], npt.NDArray[np.float_], float]:
         for i in range(100):
@@ -174,8 +173,9 @@ class Model:
         self.logger.save_evaluation_value(best_E_list, method_list)
         print("end")
         if E > 0 and not self.skip_plot:
-            self.graph.plot(x, y, self.number_of_rings)
-            self.graph.show(self.logger.generate_image_path())
+            graph = Gragh()
+            graph.plot(x, y, self.number_of_rings)
+            graph.show(self.logger.generate_image_path())
 
 
 def optimize_K_func(K: npt.NDArray[np.float_], model: Model, L: npt.NDArray[np.float_], FSR: float) -> float:
