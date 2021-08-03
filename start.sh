@@ -1,4 +1,7 @@
 #!/bin/bash
+# Install or update needed software
+sudo apt-get update
+sudo apt-get install -yq git python3.9-venv
 # Python environment setup
 python3.9 -m venv .venv
 # shellcheck disable=SC1091
