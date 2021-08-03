@@ -99,10 +99,10 @@ class Model:
             if m < 10:
                 method: int = 4
             else:
-                _, counts = np.unique(best_E_list[:m], return_counts=True)  # type: ignore
-                max_counts: np.int_ = np.max(counts)  # type: ignore
-                if max_counts > 30:
-                    break
+                # _, counts = np.unique(best_E_list[:m], return_counts=True)  # type: ignore
+                # max_counts: np.int_ = np.max(counts)  # type: ignore
+                # if max_counts > 30:
+                #     break
                 method = self.rng.choice([1, 2, 3, 4], p=[0.03, 0.07, 0.2, 0.7])
 
             if method == 1:
@@ -168,8 +168,9 @@ class Model:
         self.logger.save_evaluation_value(best_E_list, method_list)
         print("end")
         if E > 0 and not self.skip_plot:
-            graph = Gragh().create()
-            graph.plot(x, y, self.number_of_rings)
+            graph = Gragh()
+            graph.create()
+            graph.plot(x, y)
             graph.show(self.logger.generate_image_path())
 
 

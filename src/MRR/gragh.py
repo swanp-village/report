@@ -1,3 +1,5 @@
+from typing import Optional
+
 import matplotlib.pyplot as plt
 import numpy as np
 import numpy.typing as npt
@@ -24,7 +26,7 @@ class Gragh:
         self,
         x: npt.NDArray[np.float64],
         y: npt.NDArray[np.float64],
-        label: str,
+        label: Optional[str] = None,
     ) -> None:
         self.ax.semilogx(x * 1e9, y, label=label)
 
