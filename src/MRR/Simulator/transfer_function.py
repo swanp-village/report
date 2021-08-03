@@ -76,8 +76,6 @@ class TransferFunction:
         print("n_eff:", self.n_eff)
         print("n_g:", self.n_g)
         print("a:", self.a)
-        print("K:", self.K.tolist())
-        print("L:", self.L.tolist())
 
     def simulate(self, wavelength: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
         y: npt.NDArray[np.float64] = 20 * np.log10(np.abs(self._D(wavelength)))

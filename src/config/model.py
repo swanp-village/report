@@ -24,6 +24,11 @@ class BaseConfig:
     H_s: float = -60
     H_i: float = -10
     r_max: float = 5
+    weight: list[float] = field(default_factory=list[float])
+
+    def __post_init__(self) -> None:
+        if len(self.weight) == 0:
+            self.weight = [1.0, 3.5, 1.0, 5.0, 3.5, 1.0, 1.0, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5]
 
     @property
     def seedsequence(self) -> np.random.SeedSequence:
@@ -46,14 +51,14 @@ class BaseConfig:
 class OptimizationConfig(BaseConfig):
     number_of_rings: int = 8
     number_of_episodes_in_L: int = 100
-    strategy: list[float] = field(default_factory=[0.03, 0.07, 0.2, 0.7])
+    strategy: list[float] = field(default_factory=list[float])
 
 
 @dataclass
 class SimulationConfig(BaseConfig):
-    K: npt.NDArray[np.float64] = field(default_factory=np.ndarray)
-    L: npt.NDArray[np.float64] = field(default_factory=np.ndarray)
-    lambda_limit: npt.NDArray[np.float64] = field(default_factory=np.ndarray)
+    K: npt.NDArray[np.float64] = field(default_factory=lambda: np.zeros(1))
+    L: npt.NDArray[np.float64] = field(default_factory=lambda: np.zeros(1))
+    lambda_limit: npt.NDArray[np.float64] = field(default_factory=lambda: np.zeros(1))
     name: str = ""
     label: str = ""
 

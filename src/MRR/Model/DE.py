@@ -6,7 +6,7 @@ from config.model import OptimizationConfig
 from MRR.Evaluator import build_Evaluator
 from MRR.gragh import Gragh
 from MRR.logger import Logger
-from MRR.Simulator import Ring, build_TransferFunction
+from MRR.Simulator import Ring, TransferFunction, build_TransferFunction
 
 
 class Model:
@@ -139,37 +139,32 @@ class Model:
             K_list[m] = K
             E_list[m] = E
             best_index = np.argmax(E_list)
+            best_N = N_list[best_index]
             best_L = L_list[best_index]
             best_K = K_list[best_index]
             best_FSR = FSR_list[best_index]
             best_E = E_list[best_index]
             print(m + 1)
-            print("L  : {}".format(L.tolist()))
-            print("K  : {}".format(K.tolist()))
-            print("FSR: {}".format(FSR))
-            print("E  : {}".format(E))
+            self.logger.print_parameters(K, L, N, FSR, E)
             print("==best==")
-            print("L  : {}".format(best_L.tolist()))
-            print("K  : {}".format(best_K.tolist()))
-            print("FSR: {}".format(best_FSR))
-            print("E  : {}".format(best_E))
+            self.logger.print_parameters(best_K, best_L, best_N, best_FSR, best_E)
             print("================")
 
             method_list[m] = method
             best_E_list[m] = best_E
 
         max_index = np.argmax(E_list)
+        N = N_list[max_index]
         L = L_list[max_index]
         K = K_list[max_index]
         FSR = FSR_list[max_index]
         E = E_list[max_index]
-        mrr = self.TransferFunction(L, K)
+        mrr: TransferFunction = self.TransferFunction(L, K)
         x = self.ring.calculate_x(FSR)
         y = mrr.simulate(x)
         print("result")
         mrr.print_parameters()
-        print("FSR: {}".format(FSR))
-        print("E: {}".format(E))
+        self.logger.print_parameters(K, L, N, FSR, E)
         self.logger.save_result(L.tolist(), K.tolist())
         self.logger.save_evaluation_value(best_E_list, method_list)
         print("end")

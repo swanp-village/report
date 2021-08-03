@@ -20,6 +20,8 @@ class Simulator:
         Evaluator = build_Evaluator(config)
         mrr = TransferFunction(config.L, config.K, config)
         mrr.print_parameters()
+        print("K:", config.K.tolist())
+        print("L:", config.L.tolist())
         ring = Ring(config)
         N = ring.calculate_N(config.L)
         FSR = ring.calculate_practical_FSR(N)

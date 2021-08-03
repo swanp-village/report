@@ -58,10 +58,19 @@ class Logger:
         import subprocess
         from importlib.resources import read_text
 
-        from . import templates
+        from MRR import templates
 
         tsv_path = f"{tsv_name}.tsv"
         template = read_text(templates, "pgfplots.tex").replace("data.txt", tsv_path)
         with open(self.target.joinpath("pgfplots.tex"), "w") as fp:
             fp.write(template)
         subprocess.run(["lualatex", "pgfplots"], cwd=self.target)
+
+    def print_parameters(
+        self, K: npt.NDArray[np.float_], L: npt.NDArray[np.float_], N: npt.NDArray[np.float_], FSR: float, E: float
+    ) -> None:
+        print("K  : {}".format(K.tolist()))
+        print("L  : {}".format(L.tolist()))
+        print("N  : {}".format(N.tolist()))
+        print("FSR: {}".format(FSR))
+        print("E  : {}".format(E))
