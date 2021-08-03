@@ -26,11 +26,11 @@ def _gcd(x: np.float_, y: np.float_) -> np.float_:
     x > y
     """
     n = 0
-    while y != 0 and not is_zero(x, y) and n < 10:
+    while y != 0 and not is_zero(x, y) and n <= 10:
         x, y = y, mod(x, y)
         n += 1
 
-    if is_zero(x, y):
+    if is_zero(x, y) or n > 10
         return y
     else:
         return x
