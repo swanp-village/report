@@ -53,18 +53,30 @@ class OptimizationConfig(BaseConfig):
     number_of_episodes_in_L: int = 100
     strategy: list[float] = field(default_factory=list[float])
 
+    def __post_init__(self) -> None:
+        super().__post_init__()
+        if len(self.strategy) == 0:
+            self.strategy = [0.03, 0.07, 0.2, 0.7]
+
 
 @dataclass
 class SimulationConfig(BaseConfig):
-    K: npt.NDArray[np.float64] = field(default_factory=lambda: np.zeros(1))
-    L: npt.NDArray[np.float64] = field(default_factory=lambda: np.zeros(1))
-    lambda_limit: npt.NDArray[np.float64] = field(default_factory=lambda: np.zeros(1))
+    K: npt.NDArray[np.float64] = field(default_factory=lambda: np.array([]))
+    L: npt.NDArray[np.float64] = field(default_factory=lambda: np.array([]))
+    lambda_limit: npt.NDArray[np.float64] = field(default_factory=lambda: np.array([]))
     name: str = ""
     label: str = ""
+
+    def __post_init__(self) -> None:
+        super().__post_init__()
+        self.K = np.array(self.K)
+        self.L = np.array(self.L)
+        self.lambda_limit = np.array(self.lambda_limit)
 
     @property
     def number_of_rings(self) -> int:
         return self.L.size
 
+    @property
     def lambda_limit_is_defined(self) -> bool:
         return self.lambda_limit.size > 0
