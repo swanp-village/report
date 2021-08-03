@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 from typing import Sequence, Union
+
 import numpy as np
 import numpy.typing as npt
 
@@ -32,13 +33,14 @@ class BaseConfig:
         return np.random.PCG64DXSM(self.seedsequence)
 
     def get_differential_evolution_rng(self) -> np.random.Generator:
-        np.random.Generator(self.get_root_bit_generator().jumped(1))
+        return np.random.Generator(self.get_root_bit_generator().jumped(1))
 
     def get_multi_start_local_search_rng(self) -> np.random.Generator:
-        np.random.Generator(self.get_root_bit_generator().jumped(2))
+        return np.random.Generator(self.get_root_bit_generator().jumped(2))
 
     def get_ring_rng(self) -> np.random.Generator:
-        np.random.Generator(self.get_root_bit_generator().jumped(3))
+        return np.random.Generator(self.get_root_bit_generator().jumped(3))
+
 
 @dataclass
 class OptimizationConfig(BaseConfig):
