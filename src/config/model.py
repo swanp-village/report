@@ -34,17 +34,17 @@ class BaseConfig:
     def seedsequence(self) -> np.random.SeedSequence:
         return np.random.SeedSequence(self.entropy)
 
-    def get_root_bit_generator(self) -> np.random.PCG64DXSM:
+    def __get_root_bit_generator(self) -> np.random.PCG64DXSM:
         return np.random.PCG64DXSM(self.seedsequence)
 
     def get_differential_evolution_rng(self) -> np.random.Generator:
-        return np.random.Generator(self.get_root_bit_generator().jumped(1))
+        return np.random.Generator(self.__get_root_bit_generator().jumped(1))
 
     def get_multi_start_local_search_rng(self) -> np.random.Generator:
-        return np.random.Generator(self.get_root_bit_generator().jumped(2))
+        return np.random.Generator(self.__get_root_bit_generator().jumped(2))
 
     def get_ring_rng(self) -> np.random.Generator:
-        return np.random.Generator(self.get_root_bit_generator().jumped(3))
+        return np.random.Generator(self.__get_root_bit_generator().jumped(3))
 
 
 @dataclass

@@ -47,7 +47,8 @@ class Model:
         self.logger.save_config(config)
         self.ring = Ring(config)
         self.skip_plot = skip_plot
-        self.rng = config.get_ring_rng()
+        self.rng = config.get_differential_evolution_rng()
+        self.strategy = config.strategy
 
     def optimize_L(self) -> tuple[npt.NDArray[np.int_], npt.NDArray[np.float_], float]:
         for i in range(100):
@@ -103,7 +104,7 @@ class Model:
                 # max_counts: np.int_ = np.max(counts)  # type: ignore
                 # if max_counts > 30:
                 #     break
-                method = self.rng.choice([1, 2, 3, 4], p=[0.03, 0.07, 0.2, 0.7])
+                method = self.rng.choice([1, 2, 3, 4], p=self.strategy)
 
             if method == 1:
                 max_index = np.argmax(E_list)
