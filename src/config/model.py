@@ -1,12 +1,12 @@
 from dataclasses import dataclass, field
-from typing import Int, Sequence, Union
+from typing import Sequence, Union
 import numpy as np
 import numpy.typing as npt
 
 
 @dataclass
 class BaseConfig:
-    entropy: Union[None, Int, Sequence[Int]] = None
+    entropy: Union[None, int, Sequence[int]] = None
 
     eta: float = 0.996
     alpha: float = 52.96
