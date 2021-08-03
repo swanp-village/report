@@ -1,3 +1,5 @@
+from typing import cast
+
 import numpy as np
 import numpy.typing as npt
 from scipy.stats import norm
@@ -48,17 +50,16 @@ class Ring:
         )
 
     def calculate_ring_length(self, N: npt.NDArray[np.int_]) -> npt.NDArray[np.float_]:
-        return np.float_(N) * self.center_wavelength / self.n_eff
+        return np.float_(N) * self.center_wavelength / self.n_eff  # type: ignore
 
     def calculate_FSR(self, N: npt.NDArray[np.int_]) -> npt.NDArray[np.float_]:
-        return self.center_wavelength * self.n_eff / (self.n_g * N)
+        return self.center_wavelength * self.n_eff / (self.n_g * N)  # type: ignore
 
     def calculate_N(self, L: npt.NDArray[np.float_]) -> npt.NDArray[np.int_]:
-        return np.round(L * self.n_eff / self.center_wavelength)
+        return np.round(L * self.n_eff / self.center_wavelength)  # type: ignore
 
     def calculate_practical_FSR(self, N: npt.NDArray[np.int_]) -> np.float_:
-        print(N)
-        return lcm(self.calculate_FSR(N))
+        return lcm(self.calculate_FSR(N))  # type: ignore
 
     def calculate_practical_FSR_from_L(self, L: npt.NDArray[np.float_]) -> np.float_:
         return self.calculate_practical_FSR(self.calculate_N(L))
@@ -80,7 +81,7 @@ class Ring:
         number_of_types = self.rng.choice(a, p=p)
         base = self.rng.choice(np.arange(2, 30), number_of_types, replace=False)
         reciprocal_of_ratio: npt.NDArray[np.int_] = self.rng.choice(base, number_of_rings)
-        while np.unique(reciprocal_of_ratio).size != number_of_types:
+        while np.unique(reciprocal_of_ratio).size != number_of_types:  # type: ignore
             reciprocal_of_ratio = self.rng.choice(base, number_of_rings)
         ratio: npt.NDArray[np.int_] = (np.lcm.reduce(reciprocal_of_ratio) / reciprocal_of_ratio).astype(np.int_)
         return ratio
@@ -92,7 +93,7 @@ class Ring:
 
         for _ in range(10000):
             a: npt.NDArray[np.int_] = np.power(np.arange(3, dtype=np.int_), 4)
-            neighborhood_N_0: npt.NDArray[np.int_] = np.concatenate((-np.flip(a)[: a.size - 1], a)) + N_0
+            neighborhood_N_0: npt.NDArray[np.int_] = np.concatenate((-np.flip(a)[: a.size - 1], a)) + N_0  # type: ignore
             neighborhood_N_0 = neighborhood_N_0[neighborhood_N_0 >= min_N_0]
             neighborhood_N: npt.NDArray[np.int_] = neighborhood_N_0.reshape(1, -1).T * ratio
             E = [np.square(self.calculate_practical_FSR(n) - self.FSR) for n in neighborhood_N]

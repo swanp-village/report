@@ -174,9 +174,9 @@ class Model:
         self.logger.save_evaluation_value(best_E_list, method_list)
         print("end")
         if E > 0 and not self.skip_plot:
-            self.graph = Gragh()
-            self.graph.plot(x, y, self.number_of_rings)
-            self.graph.show(self.logger.generate_image_path())
+            graph = Gragh()
+            graph.plot(x, y, self.number_of_rings)
+            graph.show(self.logger.generate_image_path())
 
 
 def optimize_K_func(K: npt.NDArray[np.float_], model: Model, L: npt.NDArray[np.float_], FSR: float) -> float:

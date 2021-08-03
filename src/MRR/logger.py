@@ -43,13 +43,13 @@ class Logger:
 
     def save_result(self, L: npt.NDArray[np.float64], K: npt.NDArray[np.float64]) -> None:
         result = {
-            "eta": self.config["eta"],
-            "alpha": self.config["alpha"],
+            "eta": self.config.eta,
+            "alpha": self.config.alpha,
             "K": K,
             "L": L,
-            "n_eff": self.config["n_eff"],
-            "n_g": self.config["n_g"],
-            "center_wavelength": self.config["center_wavelength"],
+            "n_eff": self.config.n_eff,
+            "n_g": self.config.n_g,
+            "center_wavelength": self.config.center_wavelength,
         }
         src = json.dumps(result, indent=4)
         self.target.joinpath("result.json").write_text(src)
@@ -57,10 +57,11 @@ class Logger:
     def typeset_pgfplots_graph(self, tsv_name: str = "out") -> None:
         import subprocess
         from importlib.resources import read_text
+
         from . import templates
 
         tsv_path = f"{tsv_name}.tsv"
         template = read_text(templates, "pgfplots.tex").replace("data.txt", tsv_path)
-        with open(self.target.joinpath("pgfplots.tex"), 'w') as fp:
+        with open(self.target.joinpath("pgfplots.tex"), "w") as fp:
             fp.write(template)
-        subprocess.run(['lualatex', 'pgfplots'], cwd=self.target)
+        subprocess.run(["lualatex", "pgfplots"], cwd=self.target)
