@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 
 from config.model import OptimizationConfig
 from MRR.logger import Logger
-from MRR.Simulator import Ring
+from MRR.simulator import Ring
 
 
 class BaseModel(ABC):
