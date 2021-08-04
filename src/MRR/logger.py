@@ -27,21 +27,21 @@ class Logger:
     def generate_image_path(self, name: str = "out") -> Path:
         return self.target.joinpath(f"{name}.pdf")
 
-    def save_data_as_csv(self, x: npt.NDArray[np.float64], y: npt.NDArray[np.float64], name: str = "out") -> None:
+    def save_data_as_csv(self, x: npt.NDArray[np.float_], y: npt.NDArray[np.float_], name: str = "out") -> None:
         path = self.target.joinpath(f"{name}.tsv")
         with open(path, "w") as tsvfile:
             tsv_writer = csv.writer(tsvfile, delimiter="\t")
             tsv_writer.writerows(zip(x.tolist(), y.tolist()))
 
     def save_evaluation_value(
-        self, E_list: npt.NDArray[np.float64], method_list: list[int], name: str = "evaluation_value"
+        self, E_list: list[float], method_list: list[int], name: str = "evaluation_value"
     ) -> None:
         path = self.target.joinpath(f"{name}.tsv")
         with open(path, "w") as tsvfile:
             tsv_writer = csv.writer(tsvfile, delimiter="\t")
             tsv_writer.writerows(zip(E_list, method_list))
 
-    def save_result(self, L: npt.NDArray[np.float64], K: npt.NDArray[np.float64]) -> None:
+    def save_result(self, L: npt.NDArray[np.float_], K: npt.NDArray[np.float_]) -> None:
         result = {
             "eta": self.config.eta,
             "alpha": self.config.alpha,
@@ -67,7 +67,7 @@ class Logger:
         subprocess.run(["lualatex", "pgfplots"], cwd=self.target)
 
     def print_parameters(
-        self, K: npt.NDArray[np.float_], L: npt.NDArray[np.float_], N: npt.NDArray[np.float_], FSR: float, E: float
+        self, K: npt.NDArray[np.float_], L: npt.NDArray[np.float_], N: npt.NDArray[np.int_], FSR: float, E: float
     ) -> None:
         print("K  : {}".format(K.tolist()))
         print("L  : {}".format(L.tolist()))

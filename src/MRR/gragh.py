@@ -4,12 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import numpy.typing as npt
 from matplotlib import rc
-from matplotlib.ticker import (
-    AutoLocator,
-    FormatStrFormatter,
-    MultipleLocator,
-    NullFormatter,
-)
+from matplotlib.ticker import AutoLocator, FormatStrFormatter, MultipleLocator
 
 rc("text", usetex=True)
 rc("font", size=16)
@@ -40,11 +35,10 @@ class Gragh:
 
         if self.is_focus:
             self.ax.set_xlim([1549, 1551])
+            self.ax.set_ylim([-12, 0])
             self.ax.xaxis.set_major_formatter(FormatStrFormatter("%.1f"))
             self.ax.xaxis.set_minor_formatter(FormatStrFormatter("%.1f"))
             self.ax.xaxis.set_minor_locator(MultipleLocator(0.5))
-            self.ax.xaxis.set_minor_formatter(NullFormatter())
-            self.ax.set_ylim([-12, 0])
             self.ax.yaxis.set_major_locator(MultipleLocator(2))
         else:
             self.ax.xaxis.set_major_formatter(FormatStrFormatter("%d"))

@@ -33,11 +33,11 @@ class Evaluator:
         x: npt.NDArray[np.float_],
         y: npt.NDArray[np.float_],
         config: BaseConfig,
-        weight: Optional[list[float]],
+        weight: Optional[list[float]] = None,
     ) -> None:
         self.x = x
         self.y = y
-        self.distance = x[1] - x[0]
+        self.distance: np.float_ = x[1] - x[0]
         self.center_wavelength = config.center_wavelength
         self.max_crosstalk = config.max_crosstalk
         self.H_p = config.H_p
@@ -45,10 +45,10 @@ class Evaluator:
         self.H_i = config.H_i
         self.r_max = config.r_max
         self.length_of_3db_band = config.length_of_3db_band
-        if weight:
-            self.weight = weight
+        if weight is None:
+            self.weight = np.array(config.weight, dtype=np.float_)
         else:
-            self.weight = config.weight
+            self.weight = np.array(weight, dtype=np.float_)
 
     def calculate_pass_band_range(self) -> np.float_:
         pass_band_range = []
@@ -67,7 +67,7 @@ class Evaluator:
 
         return pass_band_range
 
-    def get_pass_band(self):
+    def get_pass_band(self) -> (npt.ArrayLike, npt.ArrayLike):
         pass_band = []
         cross_talk = []
         for start, end in self.calculate_pass_band_range():
@@ -81,18 +81,19 @@ class Evaluator:
 
         return pass_band, cross_talk
 
-    def get_3db_band(self, start, end):
-        border = np.max(self.y) - 3
+    def get_3db_band(self, start: int, end: int) -> npt.ArrayLike:
+        border: np.float_ = self.y.max() - 3
         a = np.where(self.y[start:end] <= border, True, False)
         b = np.append(a[1:], a[-1])
         index = np.where(np.logical_xor(a, b))[0]
+        print(index)
 
         return index
 
-    def evaluate_band(self):
+    def evaluate_band(self) -> np.float_:
         pass_band, _ = self.get_pass_band()
         if pass_band.shape[0] != 1:
-            return 0
+            return np.float_(0)
 
         start = pass_band[0][0]
         end = pass_band[0][1]
@@ -108,8 +109,8 @@ class Evaluator:
         n_eval = len(result)
         W_c = self.weight[:n_eval]
         W_b = self.weight[n_eval:]
-        E_c = 0
-        E_b = 1
+        E_c = np.float_(0)
+        E_b = np.float_(1)
         for i in range(n_eval):
             E_c += result[i][0] * W_c[i]
             if not result[i][1]:
@@ -118,7 +119,7 @@ class Evaluator:
 
         return E
 
-    def evaluate_pass_band(self, start, end):
+    def evaluate_pass_band(self, start: int, end: int) -> tuple[np.float_, bool]:
         a = abs(self.H_p * (self.x[end] - self.x[start]))
 
         if a == 0:
@@ -129,7 +130,7 @@ class Evaluator:
 
         return (E, True)
 
-    def evaluate_stop_band(self, start, end):
+    def evaluate_stop_band(self, start: int, end: int) -> tuple[np.float_, bool]:
         c = abs((self.H_s - self.H_p) * ((self.x[start] - self.x[0]) + (self.x[-1] - self.x[end])))
 
         if c == 0:
@@ -144,7 +145,7 @@ class Evaluator:
 
         return (E, True)
 
-    def evaluate_cross_talk(self, pass_band_start, pass_band_end):
+    def evaluate_cross_talk(self, pass_band_start: int, pass_band_end: int) -> tuple[np.float_, bool]:
         start = self.y[:pass_band_start]
         end = self.y[pass_band_end:]
         maxid_start = np.append(0, argrelmax(start))
@@ -157,14 +158,14 @@ class Evaluator:
             return (0, False)
         return (0, True)
 
-    def evaluate_insertion_loss(self):
+    def evaluate_insertion_loss(self) -> tuple[np.float_, bool]:
         insertion_loss = self.y[self.x == self.center_wavelength]
         if insertion_loss[0] < self.H_i:
             return (0, False)
         E = 1 - insertion_loss[0] / self.H_i
         return (E, True)
 
-    def evaluate_ripple(self, start, end):
+    def evaluate_ripple(self, start: int, end: int) -> tuple[np.float_, bool]:
         pass_band = self.y[start:end]
         index = self.get_3db_band(start, end)
         if index.size <= 1:
@@ -182,7 +183,7 @@ class Evaluator:
         E = 1 - dif / self.r_max
         return (E, True)
 
-    def evaluate_3db_band(self, start, end):
+    def evaluate_3db_band(self, start: int, end: int) -> tuple[np.float_, bool]:
         index = self.get_3db_band(start, end)
         if index.size <= 1:
             return (0, False)
@@ -194,7 +195,7 @@ class Evaluator:
         E = E ** 3
         return (E, True)
 
-    def evaluate_shape_factor(self, start, end):
+    def evaluate_shape_factor(self, start: int, end: int) -> tuple[np.float_, bool]:
         index = self.get_3db_band(start, end)
         if index.size <= 1:
             return (0, False)

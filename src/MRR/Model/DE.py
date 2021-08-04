@@ -3,13 +3,13 @@ import numpy.typing as npt
 from scipy.optimize import differential_evolution
 
 from config.model import OptimizationConfig
-from MRR.Evaluator import Evaluator
+from MRR.Evaluator.evaluator import Evaluator
 from MRR.gragh import Gragh
-from MRR.logger import Logger
-from MRR.Simulator import Ring, TransferFunction
+from MRR.model.base import BaseModel
+from MRR.Simulator.transfer_function import TransferFunction
 
 
-class Model:
+class Model(BaseModel):
     """
     Args:
         config (Dict[str, Any]): Configuration of the MRR.
@@ -38,15 +38,11 @@ class Model:
     """
 
     def __init__(self, config: OptimizationConfig, skip_plot: bool = False) -> None:
-        self.config = config
+        super().__init__(config, skip_plot)
         self.eta = config.eta
         self.number_of_generations = config.number_of_episodes_in_L
         self.number_of_rings = config.number_of_rings
         self.required_FSR = config.FSR
-        self.logger = Logger()
-        self.logger.save_config(config)
-        self.ring = Ring(config)
-        self.skip_plot = skip_plot
         self.rng = config.get_differential_evolution_rng()
         self.strategy = config.strategy
 
@@ -175,10 +171,10 @@ class Model:
             graph.show(self.logger.generate_image_path())
 
 
-def optimize_K_func(K: npt.NDArray[np.float_], model: Model, L: npt.NDArray[np.float_], FSR: float) -> float:
+def optimize_K_func(K: npt.NDArray[np.float_], model: Model, L: npt.NDArray[np.float_], FSR: np.float_) -> np.float_:
     mrr = TransferFunction(L, K, model.config)
     x = model.ring.calculate_x(FSR)
     y = mrr.simulate(x)
     evaluator = Evaluator(x, y, model.config)
 
-    return -evaluator.evaluate_band()
+    return -evaluator.evaluate_band()  # type: ignore

@@ -66,6 +66,7 @@ class SimulationConfig(BaseConfig):
     lambda_limit: npt.NDArray[np.float64] = field(default_factory=lambda: np.array([]))
     name: str = ""
     label: str = ""
+    format: bool = False
 
     def __post_init__(self) -> None:
         super().__post_init__()

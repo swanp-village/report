@@ -15,12 +15,17 @@ class Simulator:
         self.ys: list[npt.NDArray[np.float64]] = []
         self.number_of_rings: int = 0
         self.graph = Gragh(is_focus)
+        self.graph.create()
 
     def simulate(self, config: SimulationConfig) -> None:
         mrr = TransferFunction(config.L, config.K, config)
         mrr.print_parameters()
-        print("K:", config.K.tolist())
-        print("L:", config.L.tolist())
+        if config.format:
+            print("K:", config.K.round(2).tolist())
+            print("L:", (config.L * 1e6).round(1).tolist())
+        else:
+            print("K:", config.K.tolist())
+            print("L:", config.L.tolist())
         ring = Ring(config)
         N = ring.calculate_N(config.L)
         FSR = ring.calculate_practical_FSR(N)
@@ -36,8 +41,7 @@ class Simulator:
             print(result)
 
         self.logger.save_data_as_csv(x, y, config.name)
-        self.logger.typeset_pgfplots_graph(config.name)
-        self.graph.create()
+        # self.logger.typeset_pgfplots_graph(config.name)
         self.graph.plot(x, y, config.label)
 
     def show(self) -> None:
