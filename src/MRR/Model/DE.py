@@ -177,4 +177,4 @@ def optimize_K_func(K: npt.NDArray[np.float_], model: Model, L: npt.NDArray[np.f
     y = mrr.simulate(x)
     evaluator = Evaluator(x, y, model.config)
 
-    return -evaluator.evaluate_band()  # type: ignore
+    return -evaluator.evaluate_band()

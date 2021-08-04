@@ -1,3 +1,4 @@
+from pathlib import Path
 from typing import Optional
 
 import matplotlib.pyplot as plt
@@ -27,7 +28,7 @@ class Gragh:
 
     def show(
         self,
-        img_path: str = "img/out.pdf",
+        img_path: Path = Path("img/out.pdf"),
     ) -> None:
         self.ax.set_xlabel("Wavelength (nm)", fontsize=24)
         self.ax.set_ylabel("Drop Port Power (dB)", fontsize=24)
