@@ -3,9 +3,9 @@ from importlib import import_module
 
 from config.base import config
 from config.model import SimulationConfig
-from MRR.Controller.simulate import Simulator
 from MRR.Evaluator.Model.train import show_data, train_evaluator
 from MRR.model.DE import Model
+from MRR.simulate import Simulator
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
