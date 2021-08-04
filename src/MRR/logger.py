@@ -14,21 +14,22 @@ from config.model import OptimizationConfig, SimulationConfig
 class Logger:
     def __init__(self) -> None:
         format = "%Y-%m-%d-%H-%M-%S"
-        self.result_path = Path.cwd().parent.joinpath("result")
+        self.result_path = Path.cwd().parent / "result"
         self.result_path.mkdir(exist_ok=True)
-        self.target = self.result_path.joinpath(datetime.now().strftime(format))
+        self.target = self.result_path / datetime.now().strftime(format)
         self.target.mkdir()
 
     def save_config(self, config: Union[OptimizationConfig, SimulationConfig]) -> None:
         self.config = config
         src = json.dumps(asdict(config), indent=4)
-        self.target.joinpath("config.json").write_text(src)
+        path = self.target / "config.json"
+        path.write_text(src)
 
     def generate_image_path(self, name: str = "out") -> Path:
-        return self.target.joinpath(f"{name}.pdf")
+        return self.target / f"{name}.pdf"
 
     def save_data_as_csv(self, x: npt.NDArray[np.float_], y: npt.NDArray[np.float_], name: str = "out") -> None:
-        path = self.target.joinpath(f"{name}.tsv")
+        path = self.target / f"{name}.tsv"
         with open(path, "w") as tsvfile:
             tsv_writer = csv.writer(tsvfile, delimiter="\t")
             tsv_writer.writerows(zip(x.tolist(), y.tolist()))
@@ -36,7 +37,7 @@ class Logger:
     def save_evaluation_value(
         self, E_list: list[float], method_list: list[int], name: str = "evaluation_value"
     ) -> None:
-        path = self.target.joinpath(f"{name}.tsv")
+        path = self.target / f"{name}.tsv"
         with open(path, "w") as tsvfile:
             tsv_writer = csv.writer(tsvfile, delimiter="\t")
             tsv_writer.writerows(zip(E_list, method_list))
@@ -52,7 +53,8 @@ class Logger:
             "center_wavelength": self.config.center_wavelength,
         }
         src = json.dumps(result, indent=4)
-        self.target.joinpath("result.json").write_text(src)
+        path = self.target / "result.json"
+        path.write_text(src)
 
     def typeset_pgfplots_graph(self, tsv_name: str = "out") -> None:
         import subprocess
