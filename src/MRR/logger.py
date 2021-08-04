@@ -3,7 +3,7 @@ import json
 from dataclasses import asdict
 from datetime import datetime
 from pathlib import Path
-from typing import Union
+from typing import Optional, Union
 
 import numpy as np
 import numpy.typing as npt
@@ -56,7 +56,7 @@ class Logger:
         path = self.target / "result.json"
         path.write_text(src)
 
-    def typeset_pgfplots_graph(self, tsv_name: str = "out") -> None:
+    def typeset_pgfplots_graph(self, tsv_name: Optional[str] = "out") -> None:
         import subprocess
         from importlib.resources import read_text
 

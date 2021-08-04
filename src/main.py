@@ -5,7 +5,7 @@ from config.base import config
 from config.model import SimulationConfig
 from MRR.Evaluator.Model.train import show_data, train_evaluator
 from MRR.model.DE import Model
-from MRR.simulate import Simulator
+from MRR.simulator import Simulator
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
