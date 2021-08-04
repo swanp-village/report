@@ -6,7 +6,7 @@ from config.model import OptimizationConfig
 from MRR.Evaluator.evaluator import Evaluator
 from MRR.gragh import Gragh
 from MRR.model.base import BaseModel
-from MRR.Simulator.transfer_function import TransferFunction
+from MRR.transfer_function import TransferFunction
 
 
 class Model(BaseModel):

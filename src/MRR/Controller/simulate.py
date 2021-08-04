@@ -2,10 +2,11 @@ import numpy as np
 import numpy.typing as npt
 
 from config.model import SimulationConfig
-from MRR.Evaluator import Evaluator
+from MRR.Evaluator.evaluator import Evaluator
 from MRR.gragh import Gragh
 from MRR.logger import Logger
-from MRR.Simulator import Ring, TransferFunction
+from MRR.ring import Ring
+from MRR.transfer_function import TransferFunction
 
 
 class Simulator:

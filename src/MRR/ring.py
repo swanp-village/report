@@ -3,7 +3,7 @@ import numpy.typing as npt
 from scipy.stats import norm
 
 from config.model import BaseConfig
-from MRR.Simulator.mymath import lcm
+from MRR.mymath import lcm
 
 
 class Ring:
@@ -57,7 +57,7 @@ class Ring:
         return np.round(L * self.n_eff / self.center_wavelength)  # type: ignore
 
     def calculate_practical_FSR(self, N: npt.NDArray[np.int_]) -> np.float_:
-        return lcm(self.calculate_FSR(N))  # type: ignore
+        return lcm(self.calculate_FSR(N))
 
     def calculate_practical_FSR_from_L(self, L: npt.NDArray[np.float_]) -> np.float_:
         return self.calculate_practical_FSR(self.calculate_N(L))
