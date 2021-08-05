@@ -56,7 +56,7 @@ class Logger:
         path = self.target / "result.json"
         path.write_text(src)
 
-    def typeset_pgfplots_graph(self, tsv_name: Optional[str] = "out", legent_text: str = "{}{\\(1\\text{--}10^\\text{th}(p=[0.03,0.07,0.2,0.7])\\)}") -> None:
+    def typeset_pgfplots_graph(self, tsv_name: Optional[str] = "out", legent_text: str = "") -> None:
         import subprocess
         from importlib.resources import read_text
 
