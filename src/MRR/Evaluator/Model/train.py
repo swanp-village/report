@@ -1,59 +1,47 @@
-from .data import all_data, get_splited_data
-from MRR.Evaluator.evaluator import build_Evaluator
-import numpy as np
-from .config import config
-from itertools import product
-from scipy.cluster.vq import kmeans, whiten
-from sklearn.svm import SVC
-from sklearn.model_selection import cross_validate
 import json
-from pathlib import Path
+from itertools import product
 from multiprocessing import Pool
+from pathlib import Path
+
+import numpy as np
+from scipy.cluster.vq import kmeans, whiten
+from sklearn.model_selection import cross_validate
+from sklearn.svm import SVC
+
+from MRR.Evaluator.evaluator import Evaluator
+
+from .config import config
+from .data import all_data, get_splited_data
 
 weight_of_binary_evaluation = np.array([0.5])
-weight_list = list(product(
-    *[
-        np.arange(1, 6, 0.5),
-        np.arange(1, 6, 0.5),
-        np.arange(1, 6, 0.5),
-        np.arange(1, 6, 0.5),
-        np.arange(1, 6, 0.5),
-        np.array([1]),
-        np.arange(1, 6, 0.5),
-        weight_of_binary_evaluation,
-        weight_of_binary_evaluation,
-        weight_of_binary_evaluation,
-        weight_of_binary_evaluation,
-        weight_of_binary_evaluation,
-        weight_of_binary_evaluation,
-        weight_of_binary_evaluation,
-    ]
-))
+weight_list = list(
+    product(
+        *[
+            np.arange(1, 6, 0.5),
+            np.arange(1, 6, 0.5),
+            np.arange(1, 6, 0.5),
+            np.arange(1, 6, 0.5),
+            np.arange(1, 6, 0.5),
+            np.array([1]),
+            np.arange(1, 6, 0.5),
+            weight_of_binary_evaluation,
+            weight_of_binary_evaluation,
+            weight_of_binary_evaluation,
+            weight_of_binary_evaluation,
+            weight_of_binary_evaluation,
+            weight_of_binary_evaluation,
+            weight_of_binary_evaluation,
+        ]
+    )
+)
 train, test = get_splited_data(0.3)
-train_rank_list = np.array([
-    d.rank
-    for d in train
-])
-test_rank_list = np.array([
-    d.rank
-    for d in test
-])
+train_rank_list = np.array([d.rank for d in train])
+test_rank_list = np.array([d.rank for d in test])
+
+
 def train_data(weight):
-    Evaluator = build_Evaluator(config, weight)
-    train_evaluate_result = np.array([
-        Evaluator(
-            d.x,
-            d.y
-        ).evaluate_band()
-        for d in train
-    ])
-    test_evaluate_result = np.array([
-        Evaluator(
-            d.x,
-            d.y
-        ).evaluate_band()
-        for d in test
-    ])
+    train_evaluate_result = np.array([Evaluator(d.x, d.y, config, weight).evaluate_band() for d in train])
+    test_evaluate_result = np.array([Evaluator(d.x, d.y, config, weight).evaluate_band() for d in test])
     train_evaluate_result = np.array(train_evaluate_result).reshape(-1, 1)
     test_evaluate_result = np.array(test_evaluate_result).reshape(-1, 1)
     X_train = train_evaluate_result
@@ -83,21 +71,14 @@ def train_evaluator():
 
 
 def show_data(skip_plot):
-    Evaluator = build_Evaluator(config)
     for data_i in all_data:
-        evaluator = Evaluator(
-            data_i.x,
-            data_i.y
-        )
+        evaluator = Evaluator(data_i.x, data_i.y, config)
         print(evaluator.evaluate_band())
         data_i.export_gragh(skip_plot)
 
 
 def save_result(score, weight):
-    p = Path.cwd().joinpath('MRR', 'Evaluator', 'Model', 'result.json')
-    result = {
-        'score': score,
-        'weights': weight
-    }
+    p = Path.cwd().joinpath("MRR", "Evaluator", "Model", "result.json")
+    result = {"score": score, "weights": weight}
     src = json.dumps(result, indent=4)
     p.write_text(src)

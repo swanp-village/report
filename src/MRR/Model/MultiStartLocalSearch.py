@@ -1,9 +1,10 @@
 import numpy as np
-from random import uniform
-from MRR.Simulator import build_TransferFunction, Ring
-from MRR.gragh import plot
+import numpy.typing as npt
+
 from MRR.Evaluator import build_Evaluator
+from MRR.gragh import plot
 from MRR.logger import Logger
+from MRR.Simulator import Ring, build_TransferFunction
 
 
 class Model:
@@ -37,16 +38,14 @@ class Model:
         Evaluator (Evaluator): Evaluator.
         MRR (MRR): MRR.
     """
-    def __init__(
-        self,
-        config
-    ):
-        self.eta = config['eta']
-        self.number_of_episodes_in_L = config['number_of_episodes_in_L']
-        self.number_of_episodes_in_K = config['number_of_episodes_in_K']
-        self.number_of_steps = config['number_of_steps']
-        self.number_of_rings = config['number_of_rings']
-        self.required_FSR = config['FSR']
+
+    def __init__(self, config):
+        self.eta = config["eta"]
+        self.number_of_episodes_in_L = config["number_of_episodes_in_L"]
+        self.number_of_episodes_in_K = config["number_of_episodes_in_K"]
+        self.number_of_steps = config["number_of_steps"]
+        self.number_of_rings = config["number_of_rings"]
+        self.required_FSR = config["FSR"]
         self.logger = Logger()
         self.logger.save_config(config)
         self.ring = Ring(config)
@@ -55,6 +54,10 @@ class Model:
         self.L_list = []
         self.K_list = []
         self.Q_list = []
+        self.rng = config.get_multi_start_local_search_rng()
+
+    def init_K(self) -> npt.NDArray[np.float_]:
+        return np.array([self.rng.uniform(0, self.eta) for _ in range(self.number_of_rings + 1)])
 
     def optimize_L(self):
         for i in range(100):
@@ -64,23 +67,20 @@ class Model:
             if FSR > self.required_FSR and FSR < self.required_FSR * 1.05 and np.all(L < 0.1):
                 break
         if i == 99:
-            raise Exception('required_FSR is too big')
+            raise Exception("required_FSR is too big")
 
         print(L, FSR)
         self.L = L
         self.FSR = FSR
 
     def optimize_K(self, m_L):
-        self.K = self.ring.init_K()
+        self.K = self.init_K()
         action = self.generate_action()
 
         for t in range(self.number_of_steps):
-            print('step {}'.format(t + 1))
+            print("step {}".format(t + 1))
             print(self.K)
-            Q = [
-                self.calc_Q(a)
-                for a in action
-            ]
+            Q = [self.calc_Q(a) for a in action]
             print(np.max(Q))
             if np.max(Q) <= 0 or np.argmax(Q) == 0:
                 break
@@ -97,28 +97,16 @@ class Model:
         for i in range(self.number_of_rings + 1):
             a_i = v.T * I[i]
             action.extend(a_i.tolist())
-        action.extend([
-            [
-                uniform(-1, 1)
-                for _ in range(self.number_of_rings + 1)
-            ]
-            for _ in range(5)
-        ])
+        action.extend([[uniform(-1, 1) for _ in range(self.number_of_rings + 1)] for _ in range(5)])
 
         return action
 
     def calc_Q(self, a):
         if np.all(np.where((self.K + a > 0) & (self.K + a < self.eta), True, False)):
-            mrr = self.TransferFunction(
-                self.L,
-                self.K + a
-            )
+            mrr = self.TransferFunction(self.L, self.K + a)
             x = self.ring.calculate_x(self.FSR)
             y = mrr.simulate(x)
-            evaluator = self.Evaluator(
-                x,
-                y
-            )
+            evaluator = self.Evaluator(x, y)
             result = evaluator.evaluate_band()
         else:
             result = 0
@@ -132,7 +120,7 @@ class Model:
             self.Q_list.append([])
 
             for m_K in range(self.number_of_episodes_in_K):
-                print('episode {}-{}'.format(m_L + 1, m_K + 1))
+                print("episode {}-{}".format(m_L + 1, m_K + 1))
                 self.optimize_K(m_L)
             self.L_list.append(self.L)
             max_index = np.argmax(self.Q_list[m_L])
@@ -141,19 +129,13 @@ class Model:
 
         L = self.L_list[np.argmax(self.Q_list)]
         K = self.K_list[np.argmax(self.Q_list)]
-        mrr = self.TransferFunction(
-            L,
-            K
-        )
+        mrr = self.TransferFunction(L, K)
         x = self.ring.calculate_x(self.FSR)
         y = mrr.simulate(x)
-        evaluator = self.Evaluator(
-            x,
-            y
-        )
+        evaluator = self.Evaluator(x, y)
         result = evaluator.evaluate_band()
         print(result)
-        print('end')
+        print("end")
         if result > 0:
             mrr.print_parameters()
             plot(x, y, L.size, self.logger.generate_image_path())
