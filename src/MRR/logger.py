@@ -64,7 +64,7 @@ class Logger:
 
         tsv_path = f"{tsv_name}.tsv"
         template = read_text(templates, "pgfplots.tex").replace("data.txt", tsv_path).replace("Legend Text", legent_text)
-        with open(self.target.joinpath("pgfplots.tex"), 'w') as fp:
+        with open(self.target.joinpath("pgfplots.tex"), "w") as fp:
             fp.write(template)
         subprocess.run(["lualatex", "pgfplots"], cwd=self.target)
 
