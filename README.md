@@ -41,12 +41,21 @@ Run this command before execution.
 
 ## Install modules
 
+When you use M1 Mac,
+
+```bash
+brew install openblas
+pip install cython pybind11 pythran numpy
+OPENBLAS=$(brew --prefix openblas) CFLAGS="-falign-functions=8 ${CFLAGS}" pip install --no-use-pep517 scipy scikit-learn
+```
+
 This program uses numpy, matplotlib, and so on.
 Need to install modules from pip.
 
 ```bash
 pip3 install -r requirements.txt
 ```
+
 ## 実行 / execute
 
 ### 最適化 / optimize
