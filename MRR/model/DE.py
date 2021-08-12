@@ -66,7 +66,7 @@ class Model(BaseModel):
             bounds,
             args=(self, L, FSR),
             strategy="currenttobest1bin",
-            workers=-1,
+            workers=1,
             updating="deferred",
             popsize=20,
             maxiter=1,
