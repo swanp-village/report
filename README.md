@@ -63,7 +63,6 @@ pip3 install -r requirements.txt
 configuration file: `src/config/base.py`
 
 ```bash
-cd src
 python main.py
 ```
 
