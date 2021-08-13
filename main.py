@@ -1,5 +1,6 @@
 import argparse
 from importlib import import_module
+from typing import Any
 
 from config.base import config
 from config.model import SimulationConfig
@@ -21,18 +22,18 @@ if __name__ == "__main__":
     format = args["format"]
     if args["config"]:
         simulator = Simulator(is_focus)
-        try:
-            for name in args["config"]:
-                imported_config = import_module(f"config.simulate.{name}").config
+        for name in args["config"]:
+            try:
+                imported_module = import_module(f"config.simulate.{name}")
+                imported_config = getattr(imported_module, "config")
                 simulation_config = SimulationConfig(**imported_config)
                 simulation_config.name = name
                 simulation_config.format = format
                 simulator.simulate(simulation_config)
-            if not skip_plot:
-                simulator.show()
-        except ModuleNotFoundError as e:
-            print(e)
-            parser.print_help()
+            except ModuleNotFoundError as e:
+                print(e)
+        if not skip_plot:
+            simulator.show()
     elif args["train_evaluator"]:
         train_evaluator()
     elif args["show_data"]:

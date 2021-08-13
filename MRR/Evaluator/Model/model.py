@@ -1,4 +1,4 @@
-from os.path import join
+from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -28,7 +28,7 @@ class Model:
             )
         )
         self.y = np.repeat(0, self.x.size)
-        self.img_path = join("MRR/Evaluator/Model/figure", f"{name}.pdf")
+        self.img_path = Path("MRR/Evaluator/Model/figure") / f"{name}.pdf"
         self.set_rank(1)
         self.validate()
 
