@@ -17,10 +17,12 @@ if __name__ == "__main__":
     parser.add_argument("--skip-plot", action="store_true")
     parser.add_argument("--format", action="store_true")
     parser.add_argument("-f", "--focus", action="store_true")
+    parser.add_argument("-s", "--simulate-one-cycle", action="store_true")
     args = vars(parser.parse_args())
     skip_plot = args["skip_plot"]
     is_focus = args["focus"]
     format = args["format"]
+    simulate_one_cycle = args["simulate_one_cycle"]
     if args["config"]:
         results: list[SimulatorResult] = []
         simulator = Simulator(is_focus)
@@ -31,6 +33,7 @@ if __name__ == "__main__":
                 simulation_config = SimulationConfig(**imported_config)
                 simulation_config.name = name
                 simulation_config.format = format
+                simulation_config.simulate_one_cycle = simulate_one_cycle
                 result = simulator.simulate(simulation_config)
                 results.append(result)
             except ModuleNotFoundError as e:

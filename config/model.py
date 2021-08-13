@@ -67,6 +67,7 @@ class SimulationConfig(BaseConfig):
     name: str = ""
     label: str = ""
     format: bool = False
+    simulate_one_cycle = False
 
     def __post_init__(self) -> None:
         super().__post_init__()
@@ -77,7 +78,3 @@ class SimulationConfig(BaseConfig):
     @property
     def number_of_rings(self) -> int:
         return self.L.size
-
-    @property
-    def lambda_limit_is_defined(self) -> bool:
-        return self.lambda_limit.size > 0
