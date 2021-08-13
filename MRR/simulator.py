@@ -42,15 +42,15 @@ class Simulator:
         N = ring.calculate_N(config.L)
         FSR = ring.calculate_practical_FSR(N)
 
-        if config.lambda_limit_is_defined:
-            x = config.lambda_limit
-            y = mrr.simulate(x)
-        else:
+        if config.simulate_one_cycle:
             x = ring.calculate_x(FSR)
             y = mrr.simulate(x)
             evaluator = Evaluator(x, y, config)
             result = evaluator.evaluate_band()
             print(result)
+        else:
+            x = config.lambda_limit
+            y = mrr.simulate(x)
 
         self.logger.save_data_as_csv(x, y, config.name)
         self.graph.plot(x, y, config.label)
@@ -145,7 +145,7 @@ class Ring:
 
         for _ in range(10000):
             a: npt.NDArray[np.int_] = np.power(np.arange(3, dtype=np.int_), 4)
-            neighborhood_N_0: npt.NDArray[np.int_] = np.concatenate((-np.flip(a)[: a.size - 1], a)) + N_0  # type: ignore
+            neighborhood_N_0: npt.NDArray[np.int_] = np.concatenate((-np.flip(a)[: a.size - 1], a)) + N_0  # type:ignore
             neighborhood_N_0 = neighborhood_N_0[neighborhood_N_0 >= min_N_0]
             neighborhood_N: npt.NDArray[np.int_] = neighborhood_N_0.reshape(1, -1).T * ratio
             E = [np.square(self.calculate_practical_FSR(n) - self.FSR) for n in neighborhood_N]
