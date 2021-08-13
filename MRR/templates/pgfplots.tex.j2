@@ -16,7 +16,11 @@
   ylabel near ticks,
   legend entries={{legends}},
   legend pos=south east,
-  cycle list name=color,{% if is_focus %}
+  legend style={fill=none},
+  cycle list={
+    red,
+    green
+  },{% if is_focus %}
   ytick={
     -12,
     -10,
