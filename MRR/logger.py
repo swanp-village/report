@@ -14,7 +14,7 @@ from config.model import OptimizationConfig, SimulationConfig
 class Logger:
     def __init__(self) -> None:
         format = "%Y-%m-%d-%H-%M-%S"
-        self.result_path = Path.cwd().parent / "result"
+        self.result_path = Path.cwd() / "result"
         self.result_path.mkdir(exist_ok=True)
         self.target = self.result_path / datetime.now().strftime(format)
         self.target.mkdir()
