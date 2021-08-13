@@ -56,14 +56,14 @@ class Logger:
         path = self.target / "result.json"
         path.write_text(src)
 
-    def typeset_pgfplots_graph(self, tsv_name: Optional[str] = "out") -> None:
+    def typeset_pgfplots_graph(self, tsv_name: Optional[str] = "out", label: str = "") -> None:
         import subprocess
         from importlib.resources import read_text
 
         from MRR import templates
 
         tsv_path = f"{tsv_name}.tsv"
-        template = read_text(templates, "pgfplots.tex").replace("data.txt", tsv_path)
+        template = read_text(templates, "pgfplots.tex").replace("data.txt", tsv_path).replace("Legend Text", label)
         with open(self.target.joinpath("pgfplots.tex"), "w") as fp:
             fp.write(template)
         subprocess.run(["lualatex", "pgfplots"], cwd=self.target)
