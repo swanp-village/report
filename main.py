@@ -1,13 +1,36 @@
 import argparse
 import csv
+import subprocess
 from importlib import import_module
+from pathlib import Path
 from typing import Any
+
+from jinja2 import Environment, PackageLoader
 
 from config.base import config
 from config.model import SimulationConfig
 from MRR.Evaluator.Model.train import show_data, train_evaluator
 from MRR.model.DE import Model
 from MRR.simulator import Simulator, SimulatorResult
+
+
+def plot_with_pgfplots(basedir: Path, results: list[SimulatorResult]) -> None:
+    steps = [(1 if len(result.x) < 500 else len(result.x) // 500) for result in results]
+    for result, step in zip(results, steps):
+        with open(f"{basedir}/{result.name}_pgfplots.tsv", "w") as tsvfile:
+            x = result.x[::step]
+            y = result.y[::step]
+            tsv_writer = csv.writer(tsvfile, delimiter="\t")
+            tsv_writer.writerows(zip(x.tolist(), y.tolist()))
+
+    env = Environment(loader=PackageLoader("MRR"))
+    template = env.get_template("pgfplots.tex.j2")
+    legends = "{" + ",".join([result.label for result in results]) + "}"
+    tsvnames = ["{" + result.name + "_pgfplots.tsv}" for result in results]
+    with open(basedir / "pgfplots.tex", "w") as fp:
+        fp.write(template.render(tsvnames=tsvnames, legends=legends))
+    subprocess.run(["lualatex", "pgfplots"], cwd=basedir)
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -36,27 +59,7 @@ if __name__ == "__main__":
             except ModuleNotFoundError as e:
                 print(e)
 
-        # Plot with PGFPlots
-        basedir = simulator.logger.target
-        steps = [(1 if len(result.x) < 500 else len(result.x) // 500) for result in results]
-        for result, step in zip(results, steps):
-            with open(f"{basedir}/{result.name}_pgfplots.tsv", "w") as tsvfile:
-                x = result.x[::step]
-                y = result.y[::step]
-                tsv_writer = csv.writer(tsvfile, delimiter="\t")
-                tsv_writer.writerows(zip(x.tolist(), y.tolist()))
-        import subprocess
-
-        from jinja2 import Environment, PackageLoader
-
-        env = Environment(loader=PackageLoader("MRR"))
-        template = env.get_template("pgfplots.tex.j2")
-        legends = "{" + ",".join([result.label for result in results]) + "}"
-        tsvnames = ["{" + result.name + "_pgfplots.tsv}" for result in results]
-        with open(basedir / "pgfplots.tex", "w") as fp:
-            fp.write(template.render(tsvnames=tsvnames, legends=legends))
-        subprocess.run(["lualatex", "pgfplots"], cwd=basedir)
-        # End of plot with PGFPlots
+        plot_with_pgfplots(simulator.logger.target, results)
 
         if not skip_plot:
             simulator.show()
