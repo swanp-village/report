@@ -14,8 +14,9 @@ from MRR.model.DE import Model
 from MRR.simulator import Simulator, SimulatorResult
 
 
-def plot_with_pgfplots(basedir: Path, results: list[SimulatorResult]) -> None:
-    steps = [(1 if len(result.x) < 500 else len(result.x) // 500) for result in results]
+def plot_with_pgfplots(basedir: Path, results: list[SimulatorResult], is_focus: bool) -> None:
+    max_points = 2500
+    steps = [(1 if len(result.x) < max_points else len(result.x) // max_points) for result in results]
     for result, step in zip(results, steps):
         with open(f"{basedir}/{result.name}_pgfplots.tsv", "w") as tsvfile:
             x = result.x[::step]
@@ -28,7 +29,7 @@ def plot_with_pgfplots(basedir: Path, results: list[SimulatorResult]) -> None:
     legends = "{" + ",".join([result.label for result in results]) + "}"
     tsvnames = ["{" + result.name + "_pgfplots.tsv}" for result in results]
     with open(basedir / "pgfplots.tex", "w") as fp:
-        fp.write(template.render(tsvnames=tsvnames, legends=legends))
+        fp.write(template.render(tsvnames=tsvnames, legends=legends, is_focus=is_focus))
     subprocess.run(["lualatex", "pgfplots"], cwd=basedir)
 
 
@@ -62,7 +63,7 @@ if __name__ == "__main__":
             except ModuleNotFoundError as e:
                 print(e)
 
-        plot_with_pgfplots(simulator.logger.target, results)
+        plot_with_pgfplots(simulator.logger.target, results, simulator.graph.is_focus)
 
         if not skip_plot:
             simulator.show()

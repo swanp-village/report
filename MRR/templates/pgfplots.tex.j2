@@ -14,9 +14,22 @@
   ylabel={Drop Port Power (dB)},
   xlabel near ticks,
   ylabel near ticks,
-  ymin=-60,
-  ymax=0,
+  legend entries={{legends}},
+  legend pos=south east,
+  cycle list name=color,{% if is_focus %}
   ytick={
+    -12,
+    -10,
+    -8,
+    -6,
+    -4,
+    -2,
+    0
+  },
+  ymin=-12,
+  ymax=0,
+  xmin=1549,
+  xmax=1551,{% else %}ytick={
     -60,
     -50,
     -40,
@@ -25,12 +38,11 @@
     -10,
     0
   },
-  legend entries={{legends}},
-  legend pos=south east,
-  cycle list name=color,
+  ymin=-60,
+  ymax=0,{% endif %}
 ]
   {% for tsvname in tsvnames %}
-  \addplot+[no markers] table[x expr={\thisrowno{0} * 1e9}] {{tsvname}};
+  \addplot+[no markers,smooth,very thick] table[x expr={\thisrowno{0} * 1e9}] {{tsvname}};
   {% endfor %}
 \end{axis}
 \end{tikzpicture}
