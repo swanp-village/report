@@ -16,13 +16,13 @@ from MRR.simulator import Simulator, SimulatorResult
 
 def plot_with_pgfplots(basedir: Path, results: list[SimulatorResult], is_focus: bool) -> None:
     max_points = 2500
-    steps = [(1 if len(result.x) < max_points else len(result.x) // max_points) for result in results]
+    steps = [(1 if result.x.size < max_points else result.x.size // max_points) for result in results]
     for result, step in zip(results, steps):
         with open(f"{basedir}/{result.name}_pgfplots.tsv", "w") as tsvfile:
             x = result.x[::step]
             y = result.y[::step]
             tsv_writer = csv.writer(tsvfile, delimiter="\t")
-            tsv_writer.writerows(zip(x.tolist(), y.tolist()))
+            tsv_writer.writerows(zip(x, y))
 
     env = Environment(loader=PackageLoader("MRR"))
     template = env.get_template("pgfplots.tex.j2")
