@@ -1,4 +1,5 @@
 import argparse
+import csv
 from importlib import import_module
 from typing import Any
 
@@ -6,7 +7,7 @@ from config.base import config
 from config.model import SimulationConfig
 from MRR.Evaluator.Model.train import show_data, train_evaluator
 from MRR.model.DE import Model
-from MRR.simulator import Simulator
+from MRR.simulator import Simulator, SimulatorResult
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -21,6 +22,7 @@ if __name__ == "__main__":
     is_focus = args["focus"]
     format = args["format"]
     if args["config"]:
+        results: list[SimulatorResult] = []
         simulator = Simulator(is_focus)
         for name in args["config"]:
             try:
@@ -29,9 +31,33 @@ if __name__ == "__main__":
                 simulation_config = SimulationConfig(**imported_config)
                 simulation_config.name = name
                 simulation_config.format = format
-                simulator.simulate(simulation_config)
+                result = simulator.simulate(simulation_config)
+                results.append(result)
             except ModuleNotFoundError as e:
                 print(e)
+
+        # Plot with PGFPlots
+        basedir = simulator.logger.target
+        steps = [(1 if len(result.x) < 500 else len(result.x) // 500) for result in results]
+        for result, step in zip(results, steps):
+            with open(f"{basedir}/{result.name}_pgfplots.tsv", "w") as tsvfile:
+                x = result.x[::step]
+                y = result.y[::step]
+                tsv_writer = csv.writer(tsvfile, delimiter="\t")
+                tsv_writer.writerows(zip(x.tolist(), y.tolist()))
+        import subprocess
+
+        from jinja2 import Environment, PackageLoader
+
+        env = Environment(loader=PackageLoader("MRR"))
+        template = env.get_template("pgfplots.tex.j2")
+        legends = "{" + ",".join([result.label for result in results]) + "}"
+        tsvnames = ["{" + result.name + "_pgfplots.tsv}" for result in results]
+        with open(basedir / "pgfplots.tex", "w") as fp:
+            fp.write(template.render(tsvnames=tsvnames, legends=legends))
+        subprocess.run(["lualatex", "pgfplots"], cwd=basedir)
+        # End of plot with PGFPlots
+
         if not skip_plot:
             simulator.show()
     elif args["train_evaluator"]:

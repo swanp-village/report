@@ -1,3 +1,6 @@
+from dataclasses import dataclass
+from pathlib import Path
+
 import numpy as np
 import numpy.typing as npt
 from scipy.stats import norm
@@ -9,6 +12,14 @@ from MRR.logger import Logger
 from MRR.mymath import lcm
 
 
+@dataclass
+class SimulatorResult:
+    name: str
+    x: npt.NDArray[np.float64]
+    y: npt.NDArray[np.float64]
+    label: str
+
+
 class Simulator:
     def __init__(self, is_focus: bool = False) -> None:
         self.logger = Logger()
@@ -18,7 +29,7 @@ class Simulator:
         self.graph = Gragh(is_focus)
         self.graph.create()
 
-    def simulate(self, config: SimulationConfig) -> None:
+    def simulate(self, config: SimulationConfig) -> SimulatorResult:
         mrr = TransferFunction(config.L, config.K, config)
         mrr.print_parameters()
         if config.format:
@@ -42,10 +53,8 @@ class Simulator:
             print(result)
 
         self.logger.save_data_as_csv(x, y, config.name)
-        step = 1 if len(x) < 500 else len(x) // 500
-        self.logger.save_data_as_csv(x[::step], y[::step], f"{config.name}_pgfplots")
-        # self.logger.typeset_pgfplots_graph(f"{config.name}_pgfplots", config.label)
         self.graph.plot(x, y, config.label)
+        return SimulatorResult(config.name, x, y, config.label)
 
     def show(self) -> None:
         self.graph.show(self.logger.generate_image_path())

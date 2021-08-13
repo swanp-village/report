@@ -25,10 +25,13 @@
     -10,
     0
   },
-  legend entries=Legend Text,
+  legend entries={{legends}},
   legend pos=south east,
+  cycle list name=color,
 ]
-  \addplot[smooth, blue] table[x expr={\thisrowno{0} * 1e9}] {data.txt};
+  {% for tsvname in tsvnames %}
+  \addplot+[no markers] table[x expr={\thisrowno{0} * 1e9}] {{tsvname}};
+  {% endfor %}
 \end{axis}
 \end{tikzpicture}
 \end{document}
