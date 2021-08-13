@@ -1,5 +1,6 @@
 \documentclass[tikz]{standalone}
 \usepackage{pgfplots}
+\usepackage{xcolor-solarized}
 \tikzset{
   /pgf/number format/.cd,
   1000 sep={},
@@ -18,8 +19,11 @@
   legend pos=south east,
   legend style={fill=none},
   cycle list={
-    red,
-    green
+    solarized-blue,
+    solarized-cyan,
+    solarized-violet,
+    solarized-red,
+    solarized-green,
   },{% if is_focus %}
   ytick={
     -12,
