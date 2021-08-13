@@ -44,7 +44,7 @@ class Simulator:
         self.logger.save_data_as_csv(x, y, config.name)
         step = 1 if len(x) < 500 else len(x) // 500
         self.logger.save_data_as_csv(x[::step], y[::step], f"{config.name}_pgfplots")
-        self.logger.typeset_pgfplots_graph(f"{config.name}_pgfplots", config.label)
+        # self.logger.typeset_pgfplots_graph(f"{config.name}_pgfplots", config.label)
         self.graph.plot(x, y, config.label)
 
     def show(self) -> None:
