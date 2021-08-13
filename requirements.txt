@@ -8,3 +8,4 @@ scipy
 scikit-learn
 black
 isort
+jinja2
