@@ -1,5 +1,6 @@
 \documentclass[tikz]{standalone}
 \usepackage{pgfplots}
+\usepackage{xcolor-solarized}
 \tikzset{
   /pgf/number format/.cd,
   1000 sep={},
@@ -14,8 +15,31 @@
   ylabel={Drop Port Power (dB)},
   xlabel near ticks,
   ylabel near ticks,
-  ymin=-60,
+  legend entries={{legends}},
+  legend pos=south east,
+  legend style={fill=none},
+  cycle list={
+    solarized-blue,
+    solarized-cyan,
+    solarized-violet,
+    solarized-red,
+    solarized-green
+  },
+  {%- if is_focus -%}
+  ytick={
+    -12,
+    -10,
+    -8,
+    -6,
+    -4,
+    -2,
+    0
+  },
+  ymin=-12,
   ymax=0,
+  xmin=1549,
+  xmax=1551,
+  {%- else -%}
   ytick={
     -60,
     -50,
@@ -25,12 +49,12 @@
     -10,
     0
   },
-  legend entries={{legends}},
-  legend pos=south east,
-  cycle list name=color,
+  ymin=-60,
+  ymax=0,
+  {%- endif -%}
 ]
   {% for tsvname in tsvnames %}
-  \addplot+[no markers] table[x expr={\thisrowno{0} * 1e9}] {{tsvname}};
+  \addplot+[no markers,{% if is_focus %},very thick{% endif %}] table[x expr={\thisrowno{0} * 1e9}] {{tsvname}};
   {% endfor %}
 \end{axis}
 \end{tikzpicture}
