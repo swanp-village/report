@@ -2,9 +2,8 @@ from typing import Optional
 
 import numpy as np
 import numpy.typing as npt
-from scipy.signal import argrelmax, argrelmin
-
 from config.model import BaseConfig
+from scipy.signal import argrelmax, argrelmin
 
 
 class Evaluator:
@@ -86,7 +85,6 @@ class Evaluator:
         a = np.where(self.y[start:end] <= border, True, False)
         b = np.append(a[1:], a[-1])
         index = np.where(np.logical_xor(a, b))[0]
-        print(index)
 
         return index
 
