@@ -36,7 +36,7 @@ config = {
     "n_g": 4.4,  # 群屈折率
     "center_wavelength": 1550e-9,
     "lambda_limit": np.arange(1520e-9, 1560e-9, 1e-12),
-    "label": "{}{\\(3\\textrm{--}12^\\textrm{th}(p=[0.03,0.07,0.2,0.7])\\)}",
+    "label": r"{}{\(12^\textrm{th}\)}",
 }
 
 """
