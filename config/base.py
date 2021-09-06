@@ -17,5 +17,5 @@ config = OptimizationConfig(
     weight=[1.0, 3.5, 1.0, 5.0, 3.5, 1.0, 1.0, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5],
     min_ring_length=50e-6,
     number_of_episodes_in_L=100,
-    strategy=[0.2, 0.03, 0.07, 0.7],
+    strategy=[0.03, 0.07, 0.2, 0.7],
 )
