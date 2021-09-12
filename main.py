@@ -3,7 +3,6 @@ import csv
 import subprocess
 from importlib import import_module
 from pathlib import Path
-from typing import Any
 
 from jinja2 import Environment, PackageLoader
 

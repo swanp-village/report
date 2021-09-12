@@ -18,6 +18,7 @@ class SimulatorResult:
     x: npt.NDArray[np.float64]
     y: npt.NDArray[np.float64]
     label: str
+    evaluation_result: np.float_
 
 
 class Simulator:
@@ -29,7 +30,7 @@ class Simulator:
         self.graph = Gragh(is_focus)
         self.graph.create()
 
-    def simulate(self, config: SimulationConfig) -> SimulatorResult:
+    def simulate(self, config: SimulationConfig, skip_gragh: bool = False) -> SimulatorResult:
         mrr = TransferFunction(config.L, config.K, config)
         mrr.print_parameters()
         if config.format:
@@ -41,20 +42,23 @@ class Simulator:
         ring = Ring(config)
         N = ring.calculate_N(config.L)
         FSR = ring.calculate_practical_FSR(N)
+        print(FSR)
 
         if config.simulate_one_cycle:
             x = ring.calculate_x(FSR)
             y = mrr.simulate(x)
             evaluator = Evaluator(x, y, config)
-            result = evaluator.evaluate_band()
-            print(result)
+            evaluation_result = evaluator.evaluate_band()
+            print(evaluation_result)
         else:
             x = config.lambda_limit
             y = mrr.simulate(x)
+            evaluation_result = np.float_(0)
 
-        self.logger.save_data_as_csv(x, y, config.name)
-        self.graph.plot(x, y, config.label)
-        return SimulatorResult(config.name, x, y, config.label)
+        if not skip_gragh:
+            self.logger.save_data_as_csv(x, y, config.name)
+            self.graph.plot(x, y, config.label)
+        return SimulatorResult(config.name, x, y, config.label, evaluation_result)
 
     def show(self) -> None:
         self.graph.show(self.logger.generate_image_path())
