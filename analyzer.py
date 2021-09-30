@@ -53,29 +53,24 @@ def add_design_error(rng, k: float, eta: float) -> float:
     while True:
         if 0 < result < eta:
             return result
-        # if 0 < k < 0.1:
-        #     result = rng.normal(k, 0.01)
-        # elif 0.1 <= k <= 0.9:
-        #     result = rng.normal(k, 0.2)
-        # else:
-        #     result = rng.normal(k, 0.01)
-        result = rng.normal(k, 0.1)
+        result = rng.normal(k, 0.1 / 3)
 
 
 result = []
-for _ in range(1000):
+for _ in range(10000):
+    print(_)
     config = SimulationConfig(**base_config)
     config.simulate_one_cycle = True
-    # dif_l = rng.normal(config.L, config.L * 0.1, config.L.shape)
-    # config.L = dif_l
+    dif_l = rng.normal(config.L, config.L * 0.01 / 3, config.L.shape)
+    config.L = dif_l
     dif_k = np.array([add_design_error(rng, k, config.eta) for k in config.K])
     config.K = dif_k
     result.append(mrr.simulate(config, True).evaluation_result)
 
-with open("result/analyzer_result_k.txt", "w") as fp:
-    tsv_writer = csv.writer(fp, delimiter="\t")
-    tsv_writer.writerows(zip(result))
+# with open("result/analyzer_result_l2.txt", "w") as fp:
+#     tsv_writer = csv.writer(fp, delimiter="\t")
+#     tsv_writer.writerows(zip(result))
 
-plt.hist(result)
-plt.savefig("result/analyzer_result_k.jpg")
+plt.hist(result, range=(0, 15), bins=15 * 4)
+# plt.savefig("result/analyzer_result_l2.jpg")
 plt.show()
