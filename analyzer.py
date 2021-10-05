@@ -19,7 +19,9 @@ def analyze(config: SimulationConfig) -> None:
         tsv_writer = csv.writer(fp, delimiter="\t")
         tsv_writer.writerows(zip(result))
 
-    plt.hist(result, range=(0, 15), bins=15 * 4)
+    normalized_result = np.array(result)
+    normalized_result[normalized_result < 0] = np.float_(0.0)
+    plt.hist(normalized_result, range=(0, 15), bins=15 * 4)
     plt.savefig(mrr.logger.target / "analyzer_result.jpg")
     plt.show()
 
