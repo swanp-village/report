@@ -15,7 +15,7 @@ def analyze(config: SimulationConfig) -> None:
     mrr.logger.save_simulation_config(config)
 
     with Pool() as pool:
-        result = pool.map(simulate_with_error, ((config.get_analyzer_rng(i), mrr, config) for i in range(10)))
+        result = pool.map(simulate_with_error, ((config.get_analyzer_rng(i), mrr, config) for i in range(10000)))
 
     with open(mrr.logger.target / "analyzer_result.txt", "w") as fp:
         tsv_writer = csv.writer(fp, delimiter="\t")
