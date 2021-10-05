@@ -1,6 +1,6 @@
-# coding: utf-8
-
+import argparse
 import csv
+from importlib import import_module
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -8,69 +8,48 @@ import numpy as np
 from config.model import SimulationConfig
 from MRR.simulator import Simulator
 
-base_config = {
-    "eta": 0.996,  # 結合損
-    "alpha": 52.96,  # 伝搬損失係数
-    "K": [
-        0.6843076241067676,
-        0.13216441410521854,
-        0.06880118310062745,
-        0.04020737891166124,
-        0.0462118513719252,
-        0.12904667330266356,
-        0.4606181759014707,
-        0.27652315122370236,
-        0.03910018568630988,
-        0.07683629850124549,
-        0.5880439816223341,
-    ],  # 結合率
-    "L": [
-        8.243181818181816e-05,
-        8.243181818181816e-05,
-        8.243181818181816e-05,
-        5.495454545454545e-05,
-        8.243181818181816e-05,
-        5.495454545454545e-05,
-        5.495454545454545e-05,
-        5.495454545454545e-05,
-        5.495454545454545e-05,
-        8.243181818181816e-05,
-    ],  # リング周長
-    "n_eff": 2.2,  # 実行屈折率
-    "n_g": 4.4,  # 群屈折率
-    "center_wavelength": 1550e-9,
-    "lambda_limit": np.arange(1520e-9, 1560e-9, 1e-12),
-    "label": "{}{\\(2\\textrm{--}10^\\textrm{th}(p=[0.03,0.07,0.2,0.7])\\)}",
-}
+
+def analyze(config: SimulationConfig) -> None:
+    mrr = Simulator()
+    mrr.logger.save_simulation_config(config)
+    rng = np.random.default_rng()
+    result = [simulate_with_error(rng, mrr, config) for _ in range(10000)]
+
+    with open(mrr.logger.target / "analyzer_result.txt", "w") as fp:
+        tsv_writer = csv.writer(fp, delimiter="\t")
+        tsv_writer.writerows(zip(result))
+
+    plt.hist(result, range=(0, 15), bins=15 * 4)
+    plt.savefig(mrr.logger.target / "analyzer_result.jpg")
+    plt.show()
 
 
-mrr = Simulator()
-rng = np.random.default_rng()
+def simulate_with_error(rng: np.random.Generator, mrr: Simulator, config: SimulationConfig) -> np.float_:
+    dif_l = rng.normal(config.L, config.L * np.float_(0.01 / 3), config.L.shape)
+    config.L = dif_l
+    dif_k = np.array([add_design_error(rng, k, config.eta) for k in config.K])
+    config.K = dif_k
+    return mrr.simulate(config, True).evaluation_result
 
 
-def add_design_error(rng, k: float, eta: float) -> float:
-    result = -1
+def add_design_error(rng: np.random.Generator, k: float, eta: float) -> float:
+    result = -1.0
     while True:
         if 0 < result < eta:
             return result
         result = rng.normal(k, 0.1 / 3)
 
 
-result = []
-for _ in range(10000):
-    print(_)
-    config = SimulationConfig(**base_config)
-    config.simulate_one_cycle = True
-    dif_l = rng.normal(config.L, config.L * 0.01 / 3, config.L.shape)
-    config.L = dif_l
-    dif_k = np.array([add_design_error(rng, k, config.eta) for k in config.K])
-    config.K = dif_k
-    result.append(mrr.simulate(config, True).evaluation_result)
-
-# with open("result/analyzer_result_l2.txt", "w") as fp:
-#     tsv_writer = csv.writer(fp, delimiter="\t")
-#     tsv_writer.writerows(zip(result))
-
-plt.hist(result, range=(0, 15), bins=15 * 4)
-# plt.savefig("result/analyzer_result_l2.jpg")
-plt.show()
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("config", type=str)
+    args = parser.parse_args()
+    config_name: str = args.config
+    try:
+        imported_module = import_module(f"config.simulate.{config_name}")
+        imported_config = getattr(imported_module, "config")
+        simulation_config = SimulationConfig(**imported_config)
+        simulation_config.simulate_one_cycle = True
+        analyze(simulation_config)
+    except ModuleNotFoundError as e:
+        print(e)
