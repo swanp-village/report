@@ -1,6 +1,7 @@
 import argparse
 import csv
 from importlib import import_module
+from multiprocessing import Pool
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -12,8 +13,9 @@ from MRR.simulator import Simulator
 def analyze(config: SimulationConfig) -> None:
     mrr = Simulator()
     mrr.logger.save_simulation_config(config)
-    rng = np.random.default_rng()
-    result = [simulate_with_error(rng, mrr, config) for _ in range(10000)]
+
+    with Pool() as pool:
+        result = [pool.apply(simulate_with_error, (config.get_analyzer_rng(), mrr, config)) for i in range(10)]
 
     with open(mrr.logger.target / "analyzer_result.txt", "w") as fp:
         tsv_writer = csv.writer(fp, delimiter="\t")
