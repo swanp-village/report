@@ -47,7 +47,7 @@ class Model:
         self.number_of_rings = config["number_of_rings"]
         self.required_FSR = config["FSR"]
         self.logger = Logger()
-        self.logger.save_config(config)
+        self.logger.save_optimization_config(config)
         self.ring = Ring(config)
         self.Evaluator = build_Evaluator(config)
         self.TransferFunction = build_TransferFunction(config)

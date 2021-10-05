@@ -19,9 +19,18 @@ class Logger:
         self.target = self.result_path / datetime.now().strftime(format)
         self.target.mkdir()
 
-    def save_config(self, config: Union[OptimizationConfig, SimulationConfig]) -> None:
+    def save_optimization_config(self, config: OptimizationConfig) -> None:
         self.config = config
         src = json.dumps(asdict(config), indent=4)
+        path = self.target / "config.json"
+        path.write_text(src)
+
+    def save_simulation_config(self, config: SimulationConfig) -> None:
+        self.config = config
+        src = json.dumps(
+            {**asdict(config), "K": config.K.tolist(), "L": config.L.tolist(), "lambda_limit": []},
+            indent=4,
+        )
         path = self.target / "config.json"
         path.write_text(src)
 

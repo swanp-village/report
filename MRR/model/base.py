@@ -9,7 +9,7 @@ class BaseModel(ABC):
     def __init__(self, config: OptimizationConfig, skip_plot: bool = False) -> None:
         self.config = config
         self.logger = Logger()
-        self.logger.save_config(config)
+        self.logger.save_optimization_config(config)
         self.ring = Ring(config)
         self.skip_plot = skip_plot
 
