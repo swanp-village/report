@@ -15,7 +15,7 @@ def analyze(config: SimulationConfig) -> None:
     mrr.logger.save_simulation_config(config)
 
     with Pool() as pool:
-        result = [pool.apply(simulate_with_error, (config.get_analyzer_rng(), mrr, config)) for _ in range(10)]
+        result = pool.map(simulate_with_error, ((config.get_analyzer_rng(i), mrr, config) for i in range(10)))
 
     with open(mrr.logger.target / "analyzer_result.txt", "w") as fp:
         tsv_writer = csv.writer(fp, delimiter="\t")
@@ -28,7 +28,11 @@ def analyze(config: SimulationConfig) -> None:
     plt.show()
 
 
-def simulate_with_error(rng: np.random.Generator, mrr: Simulator, config: SimulationConfig) -> np.float_:
+SimulateWithErrorParams = tuple[np.random.Generator, Simulator, SimulationConfig]
+
+
+def simulate_with_error(params: SimulateWithErrorParams) -> np.float_:
+    rng, mrr, config = params
     dif_l = rng.normal(config.L, config.L * np.float_(0.01 / 3), config.L.shape)
     config.L = dif_l
     dif_k = np.array([add_design_error(rng, k, config.eta) for k in config.K])

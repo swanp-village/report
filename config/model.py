@@ -46,8 +46,8 @@ class BaseConfig:
     def get_ring_rng(self) -> np.random.Generator:
         return np.random.Generator(self.__get_root_bit_generator().jumped(3))
 
-    def get_analyzer_rng(self) -> np.random.Generator:
-        return np.random.Generator(self.__get_root_bit_generator().jumped(4))
+    def get_analyzer_rng(self, jumps: int) -> np.random.Generator:
+        return np.random.Generator(self.__get_root_bit_generator().jumped(4 * jumps))
 
 
 @dataclass
