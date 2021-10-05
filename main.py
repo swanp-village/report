@@ -29,7 +29,7 @@ def plot_with_pgfplots(basedir: Path, results: list[SimulatorResult], is_focus: 
     tsvnames = ["{" + result.name + "_pgfplots.tsv}" for result in results]
     with open(basedir / "pgfplots.tex", "w") as fp:
         fp.write(template.render(tsvnames=tsvnames, legends=legends, is_focus=is_focus))
-    subprocess.run(["lualatex", "pgfplots"], cwd=basedir)
+    subprocess.run(["lualatex", "pgfplots"], cwd=basedir, stdout=subprocess.DEVNULL)
 
 
 if __name__ == "__main__":

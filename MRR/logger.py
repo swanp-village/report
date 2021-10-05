@@ -75,7 +75,7 @@ class Logger:
         template = read_text(templates, "pgfplots.tex").replace("data.txt", tsv_path).replace("Legend Text", label)
         with open(self.target.joinpath("pgfplots.tex"), "w") as fp:
             fp.write(template)
-        subprocess.run(["lualatex", "pgfplots"], cwd=self.target)
+        subprocess.run(["lualatex", "pgfplots"], cwd=self.target, stdout=subprocess.DEVNULL)
 
     def print_parameters(
         self, K: npt.NDArray[np.float_], L: npt.NDArray[np.float_], N: npt.NDArray[np.int_], FSR: float, E: float
