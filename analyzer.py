@@ -58,6 +58,7 @@ if __name__ == "__main__":
         imported_config = getattr(imported_module, "config")
         simulation_config = SimulationConfig(**imported_config)
         simulation_config.simulate_one_cycle = True
+        simulation_config.entropy = 5
         analyze(simulation_config)
     except ModuleNotFoundError as e:
         print(e)

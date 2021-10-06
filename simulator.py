@@ -51,7 +51,7 @@ if __name__ == "__main__":
     if ls:
         print("\t".join([os.path.splitext(os.path.basename(p))[0] for p in sorted(glob("config/simulate/*.py"))]))
     else:
-        for name in args["config"]:
+        for name in args["NAME"]:
             try:
                 imported_module = import_module(f"config.simulate.{name}")
                 imported_config = getattr(imported_module, "config")
