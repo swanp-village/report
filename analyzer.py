@@ -15,7 +15,7 @@ def analyze(config: SimulationConfig) -> None:
     mrr.logger.save_simulation_config(config)
 
     with Pool() as pool:
-        result = pool.map(simulate_with_error, ((config.get_analyzer_rng(i), mrr, config) for i in range(10000)))
+        result = pool.map(simulate_with_error, ((config.get_analyzer_rng(i), mrr, config) for i in range(1)))
 
     with open(mrr.logger.target / "analyzer_result.txt", "w") as fp:
         tsv_writer = csv.writer(fp, delimiter="\t")
@@ -24,7 +24,7 @@ def analyze(config: SimulationConfig) -> None:
     normalized_result = np.array(result)
     normalized_result[normalized_result < 0] = np.float_(0.0)
     plt.hist(normalized_result, range=(0, 15), bins=15 * 4)
-    plt.savefig(mrr.logger.target / "analyzer_result.jpg")
+    plt.savefig(mrr.logger.target / "analyzer_result.png")
     plt.show()
 
 
@@ -58,7 +58,7 @@ if __name__ == "__main__":
         imported_config = getattr(imported_module, "config")
         simulation_config = SimulationConfig(**imported_config)
         simulation_config.simulate_one_cycle = True
-        simulation_config.entropy = 5
+        simulation_config.entropy = 6
         analyze(simulation_config)
     except ModuleNotFoundError as e:
         print(e)
