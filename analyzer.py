@@ -24,6 +24,8 @@ def analyze(config: SimulationConfig) -> None:
     normalized_result = np.array(result)
     normalized_result[normalized_result < 0] = np.float_(0.0)
     plt.hist(normalized_result, range=(0, 15), bins=15 * 4)
+    plt.ylabel("frequency", size=20)
+    plt.xlabel("evaluation function value", size=20)
     plt.savefig(mrr.logger.target / "analyzer_result.png")
     plt.show()
 
@@ -45,7 +47,7 @@ def add_design_error(rng: np.random.Generator, k: float, eta: float) -> float:
     while True:
         if 0 < result < eta:
             return result
-        result = rng.normal(k, 0.1 / 3)
+        result = rng.normal(k, k * 0.1 / 3)
 
 
 if __name__ == "__main__":
