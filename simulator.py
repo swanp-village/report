@@ -59,13 +59,13 @@ if __name__ == "__main__":
                 simulation_config.name = name
                 simulation_config.format = format
                 simulation_config.simulate_one_cycle = simulate_one_cycle
-                result = simulator.simulate(simulation_config)
+                result = simulator.simulate(simulation_config, skip_evaluation=not simulate_one_cycle)
                 results.append(result)
                 print("E:", result.evaluation_result)
             except ModuleNotFoundError as e:
                 print(e)
 
-        plot_with_pgfplots(simulator.logger.target, results, simulator.graph.is_focus)
+        # plot_with_pgfplots(simulator.logger.target, results, simulator.graph.is_focus)
 
         if not skip_plot:
             simulator.show()

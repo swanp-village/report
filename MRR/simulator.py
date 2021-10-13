@@ -30,7 +30,9 @@ class Simulator:
         self.graph = Gragh(is_focus)
         self.graph.create()
 
-    def simulate(self, config: SimulationConfig, skip_gragh: bool = False) -> SimulatorResult:
+    def simulate(
+        self, config: SimulationConfig, skip_gragh: bool = False, skip_evaluation: bool = False
+    ) -> SimulatorResult:
         mrr = TransferFunction(config.L, config.K, config)
         mrr.print_parameters()
         if config.format:
@@ -42,18 +44,21 @@ class Simulator:
         ring = Ring(config)
         N = ring.calculate_N(config.L)
         FSR = ring.calculate_practical_FSR(N)
-        print(FSR)
+        print("FSR:", FSR)
 
         if config.simulate_one_cycle:
             x = ring.calculate_x(FSR)
-            y = mrr.simulate(x)
-            evaluator = Evaluator(x, y, config)
-            evaluation_result = evaluator.evaluate_band()
-            print(evaluation_result)
         else:
             x = config.lambda_limit
-            y = mrr.simulate(x)
+
+        y = mrr.simulate(x)
+
+        if skip_evaluation:
             evaluation_result = np.float_(0)
+        else:
+            evaluator = Evaluator(x, y, config)
+            evaluation_result = evaluator.evaluate_band()
+            print("E:", evaluation_result)
 
         if not skip_gragh:
             self.logger.save_data_as_csv(x, y, config.name)
