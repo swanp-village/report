@@ -18,7 +18,7 @@ def analyze(config: SimulationConfig) -> None:
     config.simulate_one_cycle = False
     mrr.logger.save_simulation_config(config)
 
-    with Pool(processes=4) as pool:
+    with Pool() as pool:
         result_with_L_and_K = pool.map(
             simulate_with_error, ((config.get_analyzer_rng(i), mrr, config) for i in range(10))
         )
