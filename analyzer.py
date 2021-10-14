@@ -9,6 +9,8 @@ import numpy as np
 from config.model import SimulationConfig
 from MRR.simulator import Simulator
 
+# 10_DE4 8_DE29 6_DE7 4_DE18
+
 
 def analyze(config: SimulationConfig) -> None:
     mrr = Simulator()
@@ -20,7 +22,7 @@ def analyze(config: SimulationConfig) -> None:
 
     with Pool() as pool:
         result_with_L_and_K = pool.map(
-            simulate_with_error, ((config.get_analyzer_rng(i), mrr, config) for i in range(10))
+            simulate_with_error, ((config.get_analyzer_rng(i), mrr, config) for i in range(10000))
         )
 
     with open(mrr.logger.target / "analyzer_sigma.txt", "w") as fp:
