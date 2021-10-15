@@ -126,7 +126,7 @@ class Ring:
         return self.calculate_practical_FSR(self.calculate_N(L))
 
     def calculate_min_N_0(self, ratio: npt.NDArray[np.int_]) -> np.int_:
-        result = np.ceil(self.min_N / ratio).min()
+        result = np.ceil(self.min_N / ratio).max()
         return np.int_(result)
 
     def init_ratio(self, number_of_rings: int) -> npt.NDArray[np.int_]:
