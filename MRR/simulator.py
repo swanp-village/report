@@ -44,7 +44,6 @@ class Simulator:
         ring = Ring(config)
         N = ring.calculate_N(config.L)
         FSR = ring.calculate_practical_FSR(N)
-        print("FSR:", FSR)
 
         if config.simulate_one_cycle:
             x = ring.calculate_x(FSR)
@@ -207,14 +206,16 @@ class TransferFunction:
         return C
 
     def _R(self, a_k: float, L_k: float, wavelength: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
+        N_k = np.round(L_k * self.n_eff / self.center_wavelength)
+        shifted_center_wavelength = L_k * self.n_eff / (N_k + 0)
         x = (
             1j
             * np.pi
             * L_k
             * self.n_g
-            * (wavelength - self.center_wavelength)
-            / self.center_wavelength
-            / self.center_wavelength
+            * (wavelength - shifted_center_wavelength)
+            / shifted_center_wavelength
+            / shifted_center_wavelength
         )
         return np.array([[np.exp(x) / np.sqrt(a_k), 0], [0, np.exp(-x) * np.sqrt(a_k)]], dtype="object")
 
