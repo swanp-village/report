@@ -207,7 +207,7 @@ class TransferFunction:
 
     def _R(self, a_k: float, L_k: float, wavelength: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
         N_k = np.round(L_k * self.n_eff / self.center_wavelength)
-        shifted_center_wavelength = L_k * self.n_eff / (N_k + 0)
+        shifted_center_wavelength = L_k * self.n_eff / N_k
         x = (
             1j
             * np.pi

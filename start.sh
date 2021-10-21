@@ -12,4 +12,5 @@ pip install -r requirements.txt
 ulimit -n 8096
 python main.py --skip-plot
 # python main.py --train-evaluator
+gsutil cp -r result gs://mrr-result
 sudo poweroff
