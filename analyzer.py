@@ -11,6 +11,10 @@ from MRR.simulator import Simulator
 
 # 10_DE4 8_DE29 6_DE7 4_DE18
 
+n = 1
+sigma_L = 0.01 / 3
+sigma_K = 0.1 / 3
+
 
 def analyze(config: SimulationConfig) -> None:
     mrr = Simulator()
@@ -22,7 +26,7 @@ def analyze(config: SimulationConfig) -> None:
 
     with Pool() as pool:
         result_with_L_and_K = pool.map(
-            simulate_with_error, ((config.get_analyzer_rng(i), mrr, config) for i in range(10000))
+            simulate_with_error, ((config.get_analyzer_rng(i), mrr, config) for i in range(n))
         )
 
     with open(mrr.logger.target / "analyzer_sigma.txt", "w") as fp:
@@ -49,8 +53,6 @@ def analyze(config: SimulationConfig) -> None:
 
 
 SimulateWithErrorParams = tuple[np.random.Generator, Simulator, SimulationConfig]
-sigma_L = 0.01 / 3
-sigma_K = 0.1 / 3
 
 
 def simulate_with_error(params: SimulateWithErrorParams) -> tuple[np.float_, list[np.float_], list[np.float_]]:
@@ -59,7 +61,8 @@ def simulate_with_error(params: SimulateWithErrorParams) -> tuple[np.float_, lis
     config.L = dif_l
     dif_k = np.array([add_design_error(rng, k, config.eta) for k in config.K])
     config.K = dif_k
-    return (mrr.simulate(config, True).evaluation_result, config.K.tolist(), config.L.tolist())
+    result = mrr.simulate(config, True)
+    return (result.evaluation_result, config.K.tolist(), config.L.tolist())
 
 
 def add_design_error(rng: np.random.Generator, k: float, eta: float) -> float:
