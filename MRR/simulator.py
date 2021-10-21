@@ -149,7 +149,7 @@ class Ring:
     def optimize_N(self, number_of_rings: int) -> npt.NDArray[np.int_]:
         ratio = self.init_ratio(number_of_rings)
         min_N_0 = self.calculate_min_N_0(ratio)
-        N_0 = np.int_(self.rng.integers(min_N_0, 100))
+        N_0 = np.int_(self.rng.integers(min_N_0, min_N_0 + 200))
 
         for _ in range(10000):
             a: npt.NDArray[np.int_] = np.power(np.arange(3, dtype=np.int_), 4)
