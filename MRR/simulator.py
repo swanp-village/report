@@ -22,13 +22,14 @@ class SimulatorResult:
 
 
 class Simulator:
-    def __init__(self, is_focus: bool = False) -> None:
+    def __init__(self, is_focus: bool = False, init_graph: bool = True) -> None:
         self.logger = Logger()
         self.xs: list[npt.NDArray[np.float64]] = []
         self.ys: list[npt.NDArray[np.float64]] = []
         self.number_of_rings: int = 0
-        self.graph = Gragh(is_focus)
-        self.graph.create()
+        if init_graph:
+            self.graph = Gragh(is_focus)
+            self.graph.create()
 
     def simulate(
         self, config: SimulationConfig, skip_gragh: bool = False, skip_evaluation: bool = False
