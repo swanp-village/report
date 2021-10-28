@@ -227,10 +227,6 @@ class TransferFunction:
         )
         return np.array([[np.exp(x) / np.sqrt(a_k), 0], [0, np.exp(-x) * np.sqrt(a_k)]], dtype="object")
 
-    def _reverse(self, arr: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
-        revesed_arr: npt.NDArray[np.float64] = arr[::-1]
-        return revesed_arr
-
     def _M(self, wavelength: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
         a = self.a[::-1]
         L = self.L[::-1]
