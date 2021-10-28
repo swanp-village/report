@@ -61,7 +61,7 @@ def simulate_with_error(params: SimulateWithErrorParams) -> tuple[np.float_, lis
     config.L = dif_l
     dif_k = np.array([add_design_error(rng, k, config.eta) for k in config.K])
     config.K = dif_k
-    result = mrr.simulate(config, True, True)
+    result = mrr.simulate(config, True, False, True)
     return (result.evaluation_result, config.K.tolist(), config.L.tolist())
 
 
