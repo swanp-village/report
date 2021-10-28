@@ -31,7 +31,11 @@ class Simulator:
         self.graph.create()
 
     def simulate(
-        self, config: SimulationConfig, skip_gragh: bool = False, skip_evaluation: bool = False
+        self,
+        config: SimulationConfig,
+        skip_gragh: bool = False,
+        skip_evaluation: bool = False,
+        ignore_binary_evaluation: bool = False,
     ) -> SimulatorResult:
         mrr = TransferFunction(config.L, config.K, config)
         mrr.print_parameters()
@@ -56,7 +60,7 @@ class Simulator:
             evaluation_result = np.float_(0)
         else:
             evaluator = Evaluator(x, y, config)
-            evaluation_result = evaluator.evaluate_band()
+            evaluation_result = evaluator.evaluate_band(ignore_binary_evaluation)
             print("E:", evaluation_result)
 
         if not skip_gragh:

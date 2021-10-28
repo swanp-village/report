@@ -2,8 +2,9 @@ from typing import Optional
 
 import numpy as np
 import numpy.typing as npt
-from config.model import BaseConfig
 from scipy.signal import argrelmax, argrelmin
+
+from config.model import BaseConfig
 
 
 class Evaluator:
@@ -88,7 +89,7 @@ class Evaluator:
 
         return index
 
-    def evaluate_band(self) -> np.float_:
+    def evaluate_band(self, ignore_binary_evaluation=False) -> np.float_:
         pass_band, _ = self.get_pass_band()
         if pass_band.shape[0] != 1:
             return np.float_(0)
@@ -113,6 +114,8 @@ class Evaluator:
             E_c += result[i][0] * W_c[i]
             if not result[i][1]:
                 E_b *= W_b[i]
+        if ignore_binary_evaluation:
+            return E_c
         E = E_c * E_b
 
         return E
