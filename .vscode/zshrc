@@ -1,0 +1,19 @@
+export A=1
+echo $A
+
+autoload -U compinit
+compinit
+
+__python_workdir=$(pwd)
+
+_python() {
+    _arguments '*: :__python_files'
+}
+
+__python_files() {
+    _files
+    _files -W ${__python_workdir}/config/simulate
+}
+
+compdef _python python
+
