@@ -17,7 +17,7 @@ sigma_K = 0.1 / 3
 
 
 def analyze(config: SimulationConfig) -> None:
-    mrr = Simulator()
+    mrr = Simulator(init_graph=False)
     config.simulate_one_cycle = True
     base_result = mrr.simulate(config, True)
     config.lambda_limit = base_result.x
