@@ -202,21 +202,25 @@ class TransferFunction:
         self.a: npt.NDArray[np.float64] = np.exp(-config.alpha * L)
 
     def _C(self, K_k: float) -> npt.NDArray[np.float64]:
+        eta = self.eta
         C: npt.NDArray[np.float64] = (
             1
-            / (-1j * self.eta * np.sqrt(K_k))
-            * np.array([[1, -self.eta * np.sqrt(self.eta - K_k)], [np.sqrt(self.eta - K_k) * self.eta, -self.eta ** 2]])
+            / (-1j * eta * np.sqrt(K_k))
+            * np.array([[1, -eta * np.sqrt(eta - K_k)], [np.sqrt(eta - K_k) * eta, -(eta ** 2)]])
         )
         return C
 
     def _R(self, a_k: float, L_k: float, wavelength: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
-        N_k = np.round(L_k * self.n_eff / self.center_wavelength)
-        shifted_center_wavelength = L_k * self.n_eff / N_k
+        n_eff = self.n_eff
+        n_g = self.n_g
+        center_wavelength = self.center_wavelength
+        N_k = np.round(L_k * n_eff / center_wavelength)
+        shifted_center_wavelength = L_k * n_eff / N_k
         x = (
             1j
             * np.pi
             * L_k
-            * self.n_g
+            * n_g
             * (wavelength - shifted_center_wavelength)
             / shifted_center_wavelength
             / shifted_center_wavelength
@@ -228,11 +232,14 @@ class TransferFunction:
         return revesed_arr
 
     def _M(self, wavelength: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
+        a = self.a[::-1]
+        L = self.L[::-1]
+        K = self.K[::-1]
         product = np.identity(2)
-        for _K, _a, _L in zip(self._reverse(self.K[1:]), self._reverse(self.a), self._reverse(self.L)):
-            product = np.dot(product, self._C(_K))
-            product = np.dot(product, self._R(_a, _L, wavelength))
-        product = np.dot(product, self._C(self.K[0]))
+        for K_k, a_k, L_k in zip(K[:-1], a, L):
+            product = np.dot(product, self._C(K_k))
+            product = np.dot(product, self._R(a_k, L_k, wavelength))
+        product = np.dot(product, self._C(K[-1]))
         return product
 
     def _D(self, wavelength: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
