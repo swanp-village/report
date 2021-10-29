@@ -1,6 +1,3 @@
-export A=1
-echo $A
-
 autoload -U compinit
 compinit
 
