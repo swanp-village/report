@@ -15,5 +15,15 @@
     "autoDocstring.docstringFormat": "numpy",
     "python.sortImports.args": [
         "--settings-path=${workspaceFolder}/pyproject.toml"
-    ]
+    ],
+    "terminal.integrated.profiles.osx": {
+        "myZsh": {
+            "path": "${workspaceFolder}/.vscode/zshi",
+            "args": [
+                "${workspaceFolder}/.vscode/zshrc",
+                "-l"
+            ]
+        }
+    },
+    "terminal.integrated.defaultProfile.osx": "myZsh"
 }

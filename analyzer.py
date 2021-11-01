@@ -78,6 +78,8 @@ if __name__ == "__main__":
     parser.add_argument("config", type=str)
     args = parser.parse_args()
     config_name: str = args.config
+    if config_name[-3:] == ".py":
+        config_name = config_name[:-3]
     try:
         imported_module = import_module(f"config.simulate.{config_name}")
         imported_config = getattr(imported_module, "config")
