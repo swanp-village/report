@@ -1,11 +1,11 @@
 from dataclasses import dataclass
-from pathlib import Path
+from typing import Sequence, Union
 
 import numpy as np
 import numpy.typing as npt
 from scipy.stats import norm
 
-from config.model import BaseConfig, SimulationConfig
+from config.random import get_ring_rng
 from MRR.Evaluator.evaluator import Evaluator
 from MRR.gragh import Gragh
 from MRR.logger import Logger
@@ -31,46 +31,65 @@ class Simulator:
             self.graph = Gragh(is_focus)
             self.graph.create()
 
-    def simulate(
-        self,
-        config: SimulationConfig,
-        skip_gragh: bool = False,
-        skip_evaluation: bool = False,
-        ignore_binary_evaluation: bool = False,
-    ) -> SimulatorResult:
-        mrr = TransferFunction(config.L, config.K, config)
-        mrr.print_parameters()
-        if config.format:
-            print("K:", config.K.round(2).tolist())
-            print("L:", (config.L * 1e6).round(1).tolist())
-        else:
-            print("K:", config.K.tolist())
-            print("L:", config.L.tolist())
-        ring = Ring(config)
-        N = ring.calculate_N(config.L)
-        FSR = ring.calculate_practical_FSR(N)
-
-        if config.simulate_one_cycle:
-            x = ring.calculate_x(FSR)
-        else:
-            x = config.lambda_limit
-
-        y = mrr.simulate(x)
-
-        if skip_evaluation:
-            evaluation_result = np.float_(0)
-        else:
-            evaluator = Evaluator(x, y, config)
-            evaluation_result = evaluator.evaluate_band(ignore_binary_evaluation)
-            print("E:", evaluation_result)
-
-        if not skip_gragh:
-            self.logger.save_data_as_csv(x, y, config.name)
-            self.graph.plot(x, y, config.label)
-        return SimulatorResult(config.name, x, y, config.label, evaluation_result)
-
     def show(self) -> None:
         self.graph.show(self.logger.generate_image_path())
+
+
+def simulate(
+    simulator: Simulator,
+    L: npt.NDArray[np.float64],
+    K: npt.NDArray[np.float64],
+    n_g: float,
+    n_eff: float,
+    eta: float,
+    alpha: float,
+    center_wavelength: float,
+    FSR: float,
+    min_ring_length: float,
+    format: bool = False,
+    simulate_one_cycle: bool = True,
+    lambda_limit: npt.NDArray[np.float64] = np.array([]),
+    name: str = "",
+    label: str = "",
+    skip_gragh: bool = False,
+    skip_evaluation: bool = False,
+    ignore_binary_evaluation: bool = False,
+    seedsequence: np.random.SeedSequence = np.random.SeedSequence(),
+    **config,
+) -> SimulatorResult:
+    mrr = TransferFunction()
+    print("eta:", eta)
+    print("center_wavelength:", center_wavelength)
+    print("n_eff:", n_eff)
+    print("n_g:", n_g)
+    if format:
+        print("K:", K.round(2).tolist())
+        print("L:", (L * 1e6).round(1).tolist())
+    else:
+        print("K:", K.tolist())
+        print("L:", L.tolist())
+    ring = Ring(center_wavelength, eta, FSR, min_ring_length, n_g, n_eff, seedsequence)
+    N = ring.calculate_N(L)
+    practical_FSR = ring.calculate_practical_FSR(N)
+
+    if simulate_one_cycle:
+        x = ring.calculate_x(practical_FSR)
+    else:
+        x = lambda_limit
+
+    y = mrr.simulate(x, L, K, alpha, eta, n_eff, n_g, center_wavelength)
+
+    if skip_evaluation:
+        evaluation_result = np.float_(0)
+    else:
+        evaluator = Evaluator(x, y, config)
+        evaluation_result = evaluator.evaluate_band(ignore_binary_evaluation)
+        print("E:", evaluation_result)
+
+    if not skip_gragh:
+        simulator.logger.save_data_as_csv(x, y, name)
+        simulator.graph.plot(x, y, label)
+    return SimulatorResult(name, x, y, label, evaluation_result)
 
 
 class Ring:
@@ -93,14 +112,24 @@ class Ring:
         n_eff (float): The equivalent refractive index.
     """
 
-    def __init__(self, config: BaseConfig):
-        self.center_wavelength = np.float_(config.center_wavelength)
-        self.eta = np.float_(config.eta)
-        self.FSR = np.float_(config.FSR)
-        self.min_ring_length = np.float_(config.min_ring_length)
-        self.n_g = np.float_(config.n_g)
-        self.n_eff = np.float_(config.n_eff)
-        self.rng = config.get_ring_rng()
+    def __init__(
+        self,
+        center_wavelength: float,
+        eta: float,
+        FSR: float,
+        min_ring_length: float,
+        n_g: float,
+        n_eff: float,
+        seedsequence: np.random.SeedSequence = np.random.SeedSequence(),
+        **kwargs,
+    ):
+        self.center_wavelength = np.float_(center_wavelength)
+        self.eta = np.float_(eta)
+        self.FSR = np.float_(FSR)
+        self.min_ring_length = np.float_(min_ring_length)
+        self.n_g = np.float_(n_g)
+        self.n_eff = np.float_(n_eff)
+        self.rng = get_ring_rng(seedsequence)
 
     @property
     def min_N(self) -> np.float_:
@@ -193,17 +222,7 @@ class TransferFunction:
         a (List[float]): List of the propagation loss.
     """
 
-    def __init__(self, L: npt.ArrayLike, K: npt.ArrayLike, config: BaseConfig) -> None:
-        self.L: npt.NDArray[np.float64] = np.array(L)
-        self.K: npt.NDArray[np.float64] = np.array(K)
-        self.center_wavelength: float = config.center_wavelength
-        self.eta: float = config.eta
-        self.n_eff: float = config.n_eff
-        self.n_g: float = config.n_g
-        self.a: npt.NDArray[np.float64] = np.exp(-config.alpha * L)
-
-    def _C(self, K_k: float) -> npt.NDArray[np.float64]:
-        eta = self.eta
+    def _C(self, K_k: float, eta: float) -> npt.NDArray[np.float64]:
         C: npt.NDArray[np.float64] = (
             1
             / (-1j * eta * np.sqrt(K_k))
@@ -211,10 +230,15 @@ class TransferFunction:
         )
         return C
 
-    def _R(self, a_k: float, L_k: float, wavelength: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
-        n_eff = self.n_eff
-        n_g = self.n_g
-        center_wavelength = self.center_wavelength
+    def _R(
+        self,
+        a_k: float,
+        L_k: float,
+        wavelength: npt.NDArray[np.float64],
+        n_eff: float,
+        n_g: float,
+        center_wavelength: float,
+    ) -> npt.NDArray[np.float64]:
         N_k = np.round(L_k * n_eff / center_wavelength)
         shifted_center_wavelength = L_k * n_eff / N_k
         x = (
@@ -228,28 +252,53 @@ class TransferFunction:
         )
         return np.array([[np.exp(x) / np.sqrt(a_k), 0], [0, np.exp(-x) * np.sqrt(a_k)]], dtype="object")
 
-    def _M(self, wavelength: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
-        a = self.a[::-1]
-        L = self.L[::-1]
-        K = self.K[::-1]
+    def _M(
+        self,
+        L: npt.ArrayLike,
+        K: npt.ArrayLike,
+        alpha: float,
+        wavelength: npt.NDArray[np.float64],
+        eta: float,
+        n_eff: float,
+        n_g: float,
+        center_wavelength: float,
+    ) -> npt.NDArray[np.float64]:
+        L: npt.NDArray[np.float64] = np.array(L)[::-1]
+        K: npt.NDArray[np.float64] = np.array(K)[::-1]
+        a: npt.NDArray[np.float64] = np.exp(-alpha * L)
         product = np.identity(2)
         for K_k, a_k, L_k in zip(K[:-1], a, L):
-            product = np.dot(product, self._C(K_k))
-            product = np.dot(product, self._R(a_k, L_k, wavelength))
-        product = np.dot(product, self._C(K[-1]))
+            product = np.dot(product, self._C(K_k, eta))
+            product = np.dot(product, self._R(a_k, L_k, wavelength, n_eff, n_g, center_wavelength))
+        product = np.dot(product, self._C(K[-1], eta))
         return product
 
-    def _D(self, wavelength: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
-        D: npt.NDArray[np.float64] = 1 / self._M(wavelength)[0, 0]
+    def _D(
+        self,
+        L: npt.ArrayLike,
+        K: npt.ArrayLike,
+        alpha: float,
+        wavelength: npt.NDArray[np.float64],
+        eta: float,
+        n_eff: float,
+        n_g: float,
+        center_wavelength: float,
+    ) -> npt.NDArray[np.float64]:
+        D: npt.NDArray[np.float64] = 1 / self._M(L, K, alpha, wavelength, eta, n_eff, n_g, center_wavelength)[0, 0]
         return D
 
-    def print_parameters(self) -> None:
-        print("eta:", self.eta)
-        print("center_wavelength:", self.center_wavelength)
-        print("n_eff:", self.n_eff)
-        print("n_g:", self.n_g)
-        print("a:", self.a)
-
-    def simulate(self, wavelength: npt.NDArray[np.float64]) -> npt.NDArray[np.float64]:
-        y: npt.NDArray[np.float64] = 20 * np.log10(np.abs(self._D(wavelength)))
+    def simulate(
+        self,
+        wavelength: npt.NDArray[np.float64],
+        L: npt.ArrayLike,
+        K: npt.ArrayLike,
+        alpha: float,
+        eta: float,
+        n_eff: float,
+        n_g: float,
+        center_wavelength: float,
+    ) -> npt.NDArray[np.float64]:
+        y: npt.NDArray[np.float64] = 20 * np.log10(
+            np.abs(self._D(L, K, alpha, wavelength, eta, n_eff, n_g, center_wavelength))
+        )
         return y.reshape(y.size)
