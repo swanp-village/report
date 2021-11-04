@@ -5,7 +5,7 @@ import numpy.typing as npt
 from scipy.stats import norm
 
 from config.random import get_ring_rng
-from MRR.Evaluator.evaluator import Evaluator
+from MRR.Evaluator.evaluator import evaluate_band
 from MRR.gragh import Gragh
 from MRR.logger import Logger
 from MRR.mymath import lcm
@@ -44,10 +44,17 @@ def simulate_MRR(
     eta: float,
     alpha: float,
     center_wavelength: float,
+    length_of_3db_band: float,
     FSR: float,
+    max_crosstalk: float,
+    H_p: float,
+    H_s: float,
+    H_i: float,
+    r_max: float,
+    weight: list[float],
     min_ring_length: float,
     format: bool = False,
-    simulate_one_cycle: bool = True,
+    simulate_one_cycle: bool = False,
     lambda_limit: npt.NDArray[np.float64] = np.array([]),
     name: str = "",
     label: str = "",
@@ -55,7 +62,7 @@ def simulate_MRR(
     skip_evaluation: bool = False,
     ignore_binary_evaluation: bool = False,
     seedsequence: np.random.SeedSequence = np.random.SeedSequence(),
-    **config,
+    **kwargs,
 ) -> SimulatorResult:
     print("eta:", eta)
     print("center_wavelength:", center_wavelength)
@@ -83,8 +90,19 @@ def simulate_MRR(
     if skip_evaluation:
         evaluation_result = np.float_(0)
     else:
-        evaluator = Evaluator(x, y, config)
-        evaluation_result = evaluator.evaluate_band(ignore_binary_evaluation)
+        evaluation_result = evaluate_band(
+            x=x,
+            y=y,
+            center_wavelength=center_wavelength,
+            length_of_3db_band=length_of_3db_band,
+            max_crosstalk=max_crosstalk,
+            H_p=H_p,
+            H_s=H_s,
+            H_i=H_i,
+            r_max=r_max,
+            weight=weight,
+            ignore_binary_evaluation=ignore_binary_evaluation,
+        )
         print("E:", evaluation_result)
 
     if not skip_gragh:

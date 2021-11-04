@@ -66,6 +66,7 @@ if __name__ == "__main__":
                     simulator,
                     **asdict(simulation_config),
                     seedsequence=simulation_config.seedsequence,
+                    simulate_one_cycle=simulate_one_cycle,
                     skip_evaluation=not simulate_one_cycle,
                 )
                 results.append(result)
