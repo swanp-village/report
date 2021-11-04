@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from typing import Sequence, Union
 
 import numpy as np
 import numpy.typing as npt
@@ -10,6 +9,7 @@ from MRR.Evaluator.evaluator import Evaluator
 from MRR.gragh import Gragh
 from MRR.logger import Logger
 from MRR.mymath import lcm
+from MRR.transfer_function import simulate_transfer_function
 
 
 @dataclass
@@ -35,7 +35,7 @@ class Simulator:
         self.graph.show(self.logger.generate_image_path())
 
 
-def simulate(
+def simulate_MRR(
     simulator: Simulator,
     L: npt.NDArray[np.float64],
     K: npt.NDArray[np.float64],
@@ -57,7 +57,6 @@ def simulate(
     seedsequence: np.random.SeedSequence = np.random.SeedSequence(),
     **config,
 ) -> SimulatorResult:
-    mrr = TransferFunction()
     print("eta:", eta)
     print("center_wavelength:", center_wavelength)
     print("n_eff:", n_eff)
@@ -77,7 +76,9 @@ def simulate(
     else:
         x = lambda_limit
 
-    y = mrr.simulate(x, L, K, alpha, eta, n_eff, n_g, center_wavelength)
+    y = simulate_transfer_function(
+        wavelength=x, L=L, K=K, alpha=alpha, eta=eta, n_eff=n_eff, n_g=n_g, center_wavelength=center_wavelength
+    )
 
     if skip_evaluation:
         evaluation_result = np.float_(0)
@@ -199,106 +200,3 @@ class Ring:
                 N_0 = best_N_0
         N: npt.NDArray[np.int_] = ratio * N_0
         return N
-
-
-class TransferFunction:
-    """Simulator of the transfer function of the MRR filter.
-
-    Args:
-        L (List[float]): List of the round-trip length.
-        K (List[float]): List of the coupling rate.
-        config (Dict[str, Any]): Configuration of the MRR.
-            Keys:
-                eta (float): The coupling loss coefficient.
-                n_eff (float): The effective refractive index.
-                n_g (float): The group index.
-                alpha (float): The propagation loss coefficient.
-    Attributes:
-        L (List[float]): List of the round-trip length.
-        K (List[float]): List of the coupling rate.
-        eta (float): The coupling loss coefficient.
-        n_eff (float): The effective refractive index.
-        n_g (float): The group index.
-        a (List[float]): List of the propagation loss.
-    """
-
-    def _C(self, K_k: float, eta: float) -> npt.NDArray[np.float64]:
-        C: npt.NDArray[np.float64] = (
-            1
-            / (-1j * eta * np.sqrt(K_k))
-            * np.array([[1, -eta * np.sqrt(eta - K_k)], [np.sqrt(eta - K_k) * eta, -(eta ** 2)]])
-        )
-        return C
-
-    def _R(
-        self,
-        a_k: float,
-        L_k: float,
-        wavelength: npt.NDArray[np.float64],
-        n_eff: float,
-        n_g: float,
-        center_wavelength: float,
-    ) -> npt.NDArray[np.float64]:
-        N_k = np.round(L_k * n_eff / center_wavelength)
-        shifted_center_wavelength = L_k * n_eff / N_k
-        x = (
-            1j
-            * np.pi
-            * L_k
-            * n_g
-            * (wavelength - shifted_center_wavelength)
-            / shifted_center_wavelength
-            / shifted_center_wavelength
-        )
-        return np.array([[np.exp(x) / np.sqrt(a_k), 0], [0, np.exp(-x) * np.sqrt(a_k)]], dtype="object")
-
-    def _M(
-        self,
-        L: npt.ArrayLike,
-        K: npt.ArrayLike,
-        alpha: float,
-        wavelength: npt.NDArray[np.float64],
-        eta: float,
-        n_eff: float,
-        n_g: float,
-        center_wavelength: float,
-    ) -> npt.NDArray[np.float64]:
-        L: npt.NDArray[np.float64] = np.array(L)[::-1]
-        K: npt.NDArray[np.float64] = np.array(K)[::-1]
-        a: npt.NDArray[np.float64] = np.exp(-alpha * L)
-        product = np.identity(2)
-        for K_k, a_k, L_k in zip(K[:-1], a, L):
-            product = np.dot(product, self._C(K_k, eta))
-            product = np.dot(product, self._R(a_k, L_k, wavelength, n_eff, n_g, center_wavelength))
-        product = np.dot(product, self._C(K[-1], eta))
-        return product
-
-    def _D(
-        self,
-        L: npt.ArrayLike,
-        K: npt.ArrayLike,
-        alpha: float,
-        wavelength: npt.NDArray[np.float64],
-        eta: float,
-        n_eff: float,
-        n_g: float,
-        center_wavelength: float,
-    ) -> npt.NDArray[np.float64]:
-        D: npt.NDArray[np.float64] = 1 / self._M(L, K, alpha, wavelength, eta, n_eff, n_g, center_wavelength)[0, 0]
-        return D
-
-    def simulate(
-        self,
-        wavelength: npt.NDArray[np.float64],
-        L: npt.ArrayLike,
-        K: npt.ArrayLike,
-        alpha: float,
-        eta: float,
-        n_eff: float,
-        n_g: float,
-        center_wavelength: float,
-    ) -> npt.NDArray[np.float64]:
-        y: npt.NDArray[np.float64] = 20 * np.log10(
-            np.abs(self._D(L, K, alpha, wavelength, eta, n_eff, n_g, center_wavelength))
-        )
-        return y.reshape(y.size)

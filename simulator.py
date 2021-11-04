@@ -10,7 +10,7 @@ from pathlib import Path
 from jinja2 import Environment, PackageLoader
 
 from config.model import SimulationConfig
-from MRR.simulator import Simulator, SimulatorResult, simulate
+from MRR.simulator import Simulator, SimulatorResult, simulate_MRR
 
 
 def plot_with_pgfplots(basedir: Path, results: list[SimulatorResult], is_focus: bool) -> None:
@@ -62,7 +62,7 @@ if __name__ == "__main__":
                 simulation_config.name = name
                 simulation_config.format = format
                 simulation_config.simulate_one_cycle = simulate_one_cycle
-                result = simulate(
+                result = simulate_MRR(
                     simulator,
                     **asdict(simulation_config),
                     seedsequence=simulation_config.seedsequence,
