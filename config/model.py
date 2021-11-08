@@ -38,7 +38,7 @@ class BaseConfig:
 @dataclass
 class OptimizationConfig(BaseConfig):
     number_of_rings: int = 8
-    number_of_episodes_in_L: int = 100
+    number_of_generations: int = 100
     strategy: list[float] = field(default_factory=list[float])
 
     def __post_init__(self) -> None:

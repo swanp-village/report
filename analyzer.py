@@ -10,7 +10,7 @@ import numpy.typing as npt
 
 from config.model import SimulationConfig
 from config.random import get_analyzer_rng
-from MRR.simulator import Simulator, simulate_MRR
+from MRR.simulator import Accumulator, simulate_MRR
 
 # 10_DE4 8_DE29 6_DE7 4_DE18
 entropy = 5
@@ -43,9 +43,9 @@ def analyze(
     seedsequence: np.random.SeedSequence = np.random.SeedSequence(),
     **kwargs,
 ) -> None:
-    mrr = Simulator(init_graph=False)
+    accumulator = Accumulator(init_graph=False)
     base_result = simulate_MRR(
-        simulator=mrr,
+        accumulator=accumulator,
         L=L,
         K=K,
         n_g=n_g,
@@ -80,7 +80,7 @@ def analyze(
             simulate_with_error,
             (
                 SimulateWithErrorParams(
-                    simulator=mrr,
+                    accumulator=accumulator,
                     L=L,
                     K=K,
                     n_g=n_g,
@@ -111,17 +111,17 @@ def analyze(
             ),
         )
 
-    with open(mrr.logger.target / "analyzer_sigma.txt", "w") as fp:
+    with open(accumulator.logger.target / "analyzer_sigma.txt", "w") as fp:
         tsv_writer = csv.writer(fp, delimiter="\t")
         tsv_writer.writerows(zip([sigma_K, sigma_L]))
 
-    with open(mrr.logger.target / "analyzer_result_with_L_and_K.txt", "w") as fp:
+    with open(accumulator.logger.target / "analyzer_result_with_L_and_K.txt", "w") as fp:
         tsv_writer = csv.writer(fp, delimiter="\t")
         tsv_writer.writerows(zip(result_with_L_and_K))
 
     result = [x[0] for x in result_with_L_and_K]
 
-    with open(mrr.logger.target / "analyzer_result.txt", "w") as fp:
+    with open(accumulator.logger.target / "analyzer_result.txt", "w") as fp:
         tsv_writer = csv.writer(fp, delimiter="\t")
         tsv_writer.writerows(zip(result))
 
@@ -130,13 +130,13 @@ def analyze(
     plt.hist(normalized_result, range=(0, 15), bins=15 * 4)
     plt.ylabel("frequency", size=20)
     plt.xlabel("evaluation function value", size=20)
-    plt.savefig(mrr.logger.target / "analyzer_result.png")
+    plt.savefig(accumulator.logger.target / "analyzer_result.png")
     plt.show()
 
 
 @dataclass
 class SimulateWithErrorParams:
-    simulator: Simulator
+    accumulator: Accumulator
     L: npt.NDArray[np.float64]
     K: npt.NDArray[np.float64]
     n_g: float

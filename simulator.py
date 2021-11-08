@@ -10,7 +10,7 @@ from pathlib import Path
 from jinja2 import Environment, PackageLoader
 
 from config.model import SimulationConfig
-from MRR.simulator import Simulator, SimulatorResult, simulate_MRR
+from MRR.simulator import Accumulator, SimulatorResult, simulate_MRR
 
 
 def plot_with_pgfplots(basedir: Path, results: list[SimulatorResult], is_focus: bool) -> None:
@@ -48,7 +48,7 @@ if __name__ == "__main__":
     simulate_one_cycle = args["simulate_one_cycle"]
 
     results: list[SimulatorResult] = []
-    simulator = Simulator(is_focus)
+    accumulator = Accumulator(is_focus)
     if ls:
         print("\t".join([os.path.splitext(os.path.basename(p))[0] for p in sorted(glob("config/simulate/*.py"))]))
     else:
@@ -63,7 +63,7 @@ if __name__ == "__main__":
                 simulation_config.format = format
                 simulation_config.simulate_one_cycle = simulate_one_cycle
                 result = simulate_MRR(
-                    simulator,
+                    accumulator=accumulator,
                     **asdict(simulation_config),
                     seedsequence=simulation_config.seedsequence,
                     simulate_one_cycle=simulate_one_cycle,
@@ -77,4 +77,4 @@ if __name__ == "__main__":
         # plot_with_pgfplots(simulator.logger.target, results, simulator.graph.is_focus)
 
         if not skip_plot:
-            simulator.show()
+            accumulator.show()
