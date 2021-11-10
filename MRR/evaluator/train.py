@@ -4,8 +4,6 @@ from multiprocessing import Pool
 from pathlib import Path
 
 import numpy as np
-from scipy.cluster.vq import kmeans, whiten
-from sklearn.model_selection import cross_validate
 from sklearn.svm import SVC
 
 from MRR.evaluator import evaluate_band
@@ -40,8 +38,42 @@ test_rank_list = np.array([d.rank for d in test])
 
 
 def train_data(weight):
-    train_evaluate_result = np.array([Evaluator(d.x, d.y, config, weight).evaluate_band() for d in train])
-    test_evaluate_result = np.array([Evaluator(d.x, d.y, config, weight).evaluate_band() for d in test])
+    train_evaluate_result = np.array(
+        [
+            evaluate_band(
+                x=d.x,
+                y=d.y,
+                center_wavelength=config.center_wavelength,
+                length_of_3db_band=config.length_of_3db_band,
+                max_crosstalk=config.max_crosstalk,
+                H_i=config.H_i,
+                H_p=config.H_p,
+                H_s=config.H_s,
+                r_max=config.r_max,
+                weight=weight,
+                ignore_binary_evaluation=False,
+            )
+            for d in train
+        ]
+    )
+    test_evaluate_result = np.array(
+        [
+            evaluate_band(
+                x=d.x,
+                y=d.y,
+                center_wavelength=config.center_wavelength,
+                length_of_3db_band=config.length_of_3db_band,
+                max_crosstalk=config.max_crosstalk,
+                H_i=config.H_i,
+                H_p=config.H_p,
+                H_s=config.H_s,
+                r_max=config.r_max,
+                weight=weight,
+                ignore_binary_evaluation=False,
+            )
+            for d in test
+        ]
+    )
     train_evaluate_result = np.array(train_evaluate_result).reshape(-1, 1)
     test_evaluate_result = np.array(test_evaluate_result).reshape(-1, 1)
     X_train = train_evaluate_result
@@ -72,9 +104,21 @@ def train_evaluator():
 
 def show_data(skip_plot):
     for data_i in all_data:
-        evaluator = Evaluator(data_i.x, data_i.y, config)
-        print(evaluator.evaluate_band())
-        data_i.export_gragh(skip_plot)
+        result = evaluate_band(
+            x=data_i.x,
+            y=data_i.y,
+            center_wavelength=config.center_wavelength,
+            length_of_3db_band=config.length_of_3db_band,
+            max_crosstalk=config.max_crosstalk,
+            H_i=config.H_i,
+            H_p=config.H_p,
+            H_s=config.H_s,
+            r_max=config.r_max,
+            weight=config.weight,
+            ignore_binary_evaluation=False,
+        )
+        print(result)
+        data_i.export_graph(skip_plot)
 
 
 def save_result(score, weight):
