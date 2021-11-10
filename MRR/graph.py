@@ -11,7 +11,7 @@ rc("text", usetex=True)
 rc("font", size=16)
 
 
-class Gragh:
+class Graph:
     def __init__(self, is_focus: bool = False):
         self.is_focus = is_focus
 

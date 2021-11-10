@@ -5,7 +5,7 @@ import numpy.typing as npt
 from scipy.stats import norm
 
 from MRR.Evaluator.evaluator import evaluate_band
-from MRR.gragh import Gragh
+from MRR.graph import Graph
 from MRR.logger import Logger
 from MRR.mymath import lcm
 from MRR.transfer_function import simulate_transfer_function
@@ -25,7 +25,7 @@ class Accumulator:
         self.logger = Logger()
         self.number_of_rings: int = 0
         if init_graph:
-            self.graph = Gragh(is_focus)
+            self.graph = Graph(is_focus)
             self.graph.create()
 
     def show(self) -> None:

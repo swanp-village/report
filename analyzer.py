@@ -59,7 +59,6 @@ def analyze(
         H_i=H_i,
         r_max=r_max,
         weight=weight,
-        min_ring_length=min_ring_length,
         format=format,
         simulate_one_cycle=True,
         lambda_limit=lambda_limit,
@@ -68,7 +67,6 @@ def analyze(
         skip_graph=True,
         skip_evaluation=False,
         ignore_binary_evaluation=True,
-        seedsequence=seedsequence,
     )
     base_lambda_limit = base_result.x
     # mrr.logger.save_simulation_config(config)

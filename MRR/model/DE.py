@@ -6,7 +6,7 @@ from scipy.optimize import differential_evolution
 
 from config.random import get_differential_evolution_rng
 from MRR.Evaluator.evaluator import evaluate_band
-from MRR.gragh import Gragh
+from MRR.graph import Graph
 from MRR.logger import Logger
 from MRR.simulator import (
     calculate_practical_FSR,
@@ -227,7 +227,7 @@ def optimize(
     logger.save_evaluation_value(best_E_list, method_list)
     print("end")
     if E > 0 and not skip_plot:
-        graph = Gragh()
+        graph = Graph()
         graph.create()
         graph.plot(x, y)
         graph.show(logger.generate_image_path())
