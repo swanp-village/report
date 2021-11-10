@@ -5,7 +5,7 @@ import numpy.typing as npt
 from scipy.optimize import differential_evolution
 
 from config.random import get_differential_evolution_rng
-from MRR.Evaluator.evaluator import evaluate_band
+from MRR.evaluator import evaluate_band
 from MRR.graph import Graph
 from MRR.logger import Logger
 from MRR.simulator import (
