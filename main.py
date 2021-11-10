@@ -1,5 +1,4 @@
 import argparse
-from dataclasses import asdict
 
 from config.base import config
 from MRR.logger import Logger

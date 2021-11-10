@@ -5,7 +5,7 @@ import numpy as np
 import numpy.typing as npt
 from matplotlib.ticker import FuncFormatter
 
-from MRR.Evaluator.Model.config import config
+from MRR.evaluator.config import config
 
 
 @FuncFormatter  # type: ignore
@@ -32,7 +32,7 @@ class Model:
         self.set_rank(1)
         self.validate()
 
-    def export_gragh(self, skip_plot: bool = False) -> None:
+    def export_graph(self, skip_plot: bool = False) -> None:
         fig, ax = plt.subplots(figsize=(8, 6))
         ax.set_xlabel("Wavelength (nm)", fontsize=24)
         ax.set_ylabel("Drop Port Power (dB)", fontsize=24)

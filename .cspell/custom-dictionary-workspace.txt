@@ -1,8 +1,19 @@
 # Custom Dictionary Words
 arange
+asdict
 astype
 dtype
 hstack
+kmeans
 mymath
+pyplot
 scipy
+semilogx
+sklearn
 tolist
+xaxis
+xlabel
+xlim
+yaxis
+ylabel
+ylim

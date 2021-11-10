@@ -1,6 +1,6 @@
 import argparse
 
-from MRR.Evaluator.Model.train import show_data, train_evaluator
+from MRR.evaluator.train import show_data, train_evaluator
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

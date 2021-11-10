@@ -8,7 +8,7 @@ from scipy.cluster.vq import kmeans, whiten
 from sklearn.model_selection import cross_validate
 from sklearn.svm import SVC
 
-from MRR.Evaluator.evaluator import Evaluator
+from MRR.evaluator import evaluate_band
 
 from .config import config
 from .data import all_data, get_splited_data
