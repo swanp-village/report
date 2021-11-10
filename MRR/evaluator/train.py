@@ -11,7 +11,7 @@ from sklearn.svm import SVC
 from MRR.evaluator import evaluate_band
 
 from .config import config
-from .data import all_data, get_splited_data
+from .data import all_data, get_splitted_data
 
 weight_of_binary_evaluation = np.array([0.5])
 weight_list = list(
@@ -34,7 +34,7 @@ weight_list = list(
         ]
     )
 )
-train, test = get_splited_data(0.3)
+train, test = get_splitted_data(0.3)
 train_rank_list = np.array([d.rank for d in train])
 test_rank_list = np.array([d.rank for d in test])
 

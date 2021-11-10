@@ -17,6 +17,7 @@ all_data = [
     *three_db_band,
 ]
 
+
 def split(data, test_size):
     length = len(data)
     test_length = floor(length * test_size)
@@ -27,7 +28,7 @@ def split(data, test_size):
     return train, test
 
 
-def get_splited_data(test_size=0.25):
+def get_splitted_data(test_size=0.25):
     data = [
         crosstalk_pulse,
         crosstalk,
