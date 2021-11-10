@@ -25,5 +25,13 @@
             ]
         }
     },
-    "terminal.integrated.defaultProfile.osx": "myZsh"
+    "terminal.integrated.defaultProfile.osx": "myZsh",
+    "cSpell.customDictionaries": {
+        "custom-dictionary-workspace": {
+            "name": "custom-dictionary-workspace",
+            "path": "${workspaceFolder:MRR}/.cspell/custom-dictionary-workspace.txt",
+            "addWords": true,
+            "scope": "workspace"
+        }
+    }
 }
