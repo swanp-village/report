@@ -2,7 +2,6 @@ import argparse
 import csv
 import os.path
 import subprocess
-from dataclasses import asdict
 from glob import glob
 from importlib import import_module
 from pathlib import Path
@@ -64,9 +63,26 @@ if __name__ == "__main__":
                 simulation_config.simulate_one_cycle = simulate_one_cycle
                 result = simulate_MRR(
                     accumulator=accumulator,
-                    **asdict(simulation_config),
-                    seedsequence=simulation_config.seedsequence,
+                    L=simulation_config.L,
+                    K=simulation_config.K,
+                    n_eff=simulation_config.n_eff,
+                    n_g=simulation_config.n_g,
+                    eta=simulation_config.eta,
+                    alpha=simulation_config.alpha,
+                    center_wavelength=simulation_config.center_wavelength,
+                    length_of_3db_band=simulation_config.length_of_3db_band,
+                    max_crosstalk=simulation_config.max_crosstalk,
+                    H_p=simulation_config.H_p,
+                    H_i=simulation_config.H_i,
+                    H_s=simulation_config.H_s,
+                    r_max=simulation_config.r_max,
+                    weight=simulation_config.weight,
+                    format=simulation_config.format,
                     simulate_one_cycle=simulate_one_cycle,
+                    lambda_limit=simulation_config.lambda_limit,
+                    name=simulation_config.name,
+                    label=simulation_config.label,
+                    skip_graph=False,
                     skip_evaluation=not simulate_one_cycle,
                 )
                 results.append(result)

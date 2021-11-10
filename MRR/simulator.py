@@ -36,16 +36,16 @@ def simulate_MRR(
     accumulator: Accumulator,
     L: npt.NDArray[np.float64],
     K: npt.NDArray[np.float64],
-    n_g: float,
     n_eff: float,
+    n_g: float,
     eta: float,
     alpha: float,
     center_wavelength: float,
     length_of_3db_band: float,
     max_crosstalk: float,
+    H_i: float,
     H_p: float,
     H_s: float,
-    H_i: float,
     r_max: float,
     weight: list[float],
     format: bool = False,
@@ -53,10 +53,9 @@ def simulate_MRR(
     lambda_limit: npt.NDArray[np.float64] = np.array([]),
     name: str = "",
     label: str = "",
-    skip_gragh: bool = False,
+    skip_graph: bool = False,
     skip_evaluation: bool = False,
     ignore_binary_evaluation: bool = False,
-    **kwargs,
 ) -> SimulatorResult:
     print("eta:", eta)
     print("center_wavelength:", center_wavelength)
@@ -98,7 +97,7 @@ def simulate_MRR(
         )
         print("E:", evaluation_result)
 
-    if not skip_gragh:
+    if not skip_graph:
         accumulator.logger.save_data_as_csv(x, y, name)
         accumulator.graph.plot(x, y, label)
     return SimulatorResult(name, x, y, label, evaluation_result)

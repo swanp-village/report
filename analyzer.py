@@ -22,17 +22,17 @@ sigma_K = 0.1 / 3
 def analyze(
     L: npt.NDArray[np.float64],
     K: npt.NDArray[np.float64],
-    n_g: float,
     n_eff: float,
+    n_g: float,
     eta: float,
     alpha: float,
     center_wavelength: float,
     length_of_3db_band: float,
     FSR: float,
     max_crosstalk: float,
+    H_i: float,
     H_p: float,
     H_s: float,
-    H_i: float,
     r_max: float,
     weight: list[float],
     min_ring_length: float,
@@ -41,7 +41,6 @@ def analyze(
     name: str = "",
     label: str = "",
     seedsequence: np.random.SeedSequence = np.random.SeedSequence(),
-    **kwargs,
 ) -> None:
     accumulator = Accumulator(init_graph=False)
     base_result = simulate_MRR(
@@ -54,7 +53,6 @@ def analyze(
         alpha=alpha,
         center_wavelength=center_wavelength,
         length_of_3db_band=length_of_3db_band,
-        FSR=FSR,
         max_crosstalk=max_crosstalk,
         H_p=H_p,
         H_s=H_s,
@@ -67,7 +65,7 @@ def analyze(
         lambda_limit=lambda_limit,
         name=name,
         label=label,
-        skip_gragh=True,
+        skip_graph=True,
         skip_evaluation=False,
         ignore_binary_evaluation=True,
         seedsequence=seedsequence,
@@ -103,7 +101,7 @@ def analyze(
                     simulate_one_cycle=False,
                     name=name,
                     label=label,
-                    skip_gragh=True,
+                    skip_graph=True,
                     skip_evaluation=False,
                     ignore_binary_evaluation=True,
                 )
@@ -159,7 +157,7 @@ class SimulateWithErrorParams:
     simulate_one_cycle: bool = True
     name: str = ""
     label: str = ""
-    skip_gragh: bool = True
+    skip_graph: bool = True
     skip_evaluation: bool = False
     ignore_binary_evaluation: bool = True
 
@@ -192,6 +190,28 @@ if __name__ == "__main__":
         imported_module = import_module(f"config.simulate.{config_name}")
         imported_config = getattr(imported_module, "config")
         simulation_config = SimulationConfig(**imported_config, entropy=entropy)
-        analyze(**asdict(simulation_config), seedsequence=simulation_config.seedsequence)
+        analyze(
+            L=simulation_config.L,
+            K=simulation_config.K,
+            n_g=simulation_config.n_g,
+            n_eff=simulation_config.n_eff,
+            eta=simulation_config.eta,
+            alpha=simulation_config.alpha,
+            center_wavelength=simulation_config.center_wavelength,
+            length_of_3db_band=simulation_config.length_of_3db_band,
+            FSR=simulation_config.FSR,
+            max_crosstalk=simulation_config.max_crosstalk,
+            H_p=simulation_config.H_p,
+            H_s=simulation_config.H_s,
+            H_i=simulation_config.H_i,
+            r_max=simulation_config.r_max,
+            weight=simulation_config.weight,
+            min_ring_length=simulation_config.min_ring_length,
+            format=simulation_config.format,
+            lambda_limit=simulation_config.lambda_limit,
+            name=simulation_config.name,
+            label=simulation_config.label,
+            seedsequence=simulation_config.seedsequence,
+        )
     except ModuleNotFoundError as e:
         print(e)
