@@ -20,8 +20,8 @@ class Graph:
 
     def plot(
         self,
-        x: npt.NDArray[np.float64],
-        y: npt.NDArray[np.float64],
+        x: npt.NDArray[np.float_],
+        y: npt.NDArray[np.float_],
         label: Optional[str] = None,
     ) -> None:
         self.ax.semilogx(x * 1e9, y, label=label)

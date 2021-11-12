@@ -48,7 +48,7 @@ def optimize_L(
 
 @dataclass
 class OptimizeKParams:
-    L: npt.NDArray[np.float64]
+    L: npt.NDArray[np.float_]
     n_g: float
     n_eff: float
     eta: float

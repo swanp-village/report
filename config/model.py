@@ -49,9 +49,9 @@ class OptimizationConfig(BaseConfig):
 
 @dataclass
 class SimulationConfig(BaseConfig):
-    K: npt.NDArray[np.float64] = field(default_factory=lambda: np.array([]))
-    L: npt.NDArray[np.float64] = field(default_factory=lambda: np.array([]))
-    lambda_limit: npt.NDArray[np.float64] = field(default_factory=lambda: np.array([]))
+    K: npt.NDArray[np.float_] = field(default_factory=lambda: np.array([]))
+    L: npt.NDArray[np.float_] = field(default_factory=lambda: np.array([]))
+    lambda_limit: npt.NDArray[np.float_] = field(default_factory=lambda: np.array([]))
     name: str = ""
     label: str = ""
     format: bool = False

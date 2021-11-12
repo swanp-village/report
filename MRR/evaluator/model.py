@@ -53,7 +53,7 @@ class Model:
         if self.x[self.x.size // 2] != self.center_wavelength:
             print("The center value of x is not the center wavelength.")
 
-    def set_y(self, y: npt.NDArray[np.float64]) -> None:
+    def set_y(self, y: npt.NDArray[np.float_]) -> None:
         self.y = y
         self.validate()
 

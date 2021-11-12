@@ -14,8 +14,8 @@ from MRR.transfer_function import simulate_transfer_function
 @dataclass
 class SimulatorResult:
     name: str
-    x: npt.NDArray[np.float64]
-    y: npt.NDArray[np.float64]
+    x: npt.NDArray[np.float_]
+    y: npt.NDArray[np.float_]
     label: str
     evaluation_result: np.float_
 
@@ -34,8 +34,8 @@ class Accumulator:
 
 def simulate_MRR(
     accumulator: Accumulator,
-    L: npt.NDArray[np.float64],
-    K: npt.NDArray[np.float64],
+    L: npt.NDArray[np.float_],
+    K: npt.NDArray[np.float_],
     n_eff: float,
     n_g: float,
     eta: float,
@@ -50,7 +50,7 @@ def simulate_MRR(
     weight: list[float],
     format: bool = False,
     simulate_one_cycle: bool = False,
-    lambda_limit: npt.NDArray[np.float64] = np.array([]),
+    lambda_limit: npt.NDArray[np.float_] = np.array([]),
     name: str = "",
     label: str = "",
     skip_graph: bool = False,
