@@ -1,6 +1,6 @@
 import argparse
 import csv
-from dataclasses import asdict, dataclass
+from dataclasses import dataclass
 from importlib import import_module
 from multiprocessing import Pool
 
@@ -14,14 +14,14 @@ from MRR.simulator import Accumulator, simulate_MRR
 
 # 10_DE4 8_DE29 6_DE7 4_DE18
 entropy = 5
-n = 3
-sigma_L = 0.01 / 3
+n = 10000
+sigma_L = 0.001 / 3
 sigma_K = 0.1 / 3
 
 
 def analyze(
-    L: npt.NDArray[np.float64],
-    K: npt.NDArray[np.float64],
+    L: npt.NDArray[np.float_],
+    K: npt.NDArray[np.float_],
     n_eff: float,
     n_g: float,
     eta: float,
@@ -37,7 +37,7 @@ def analyze(
     weight: list[float],
     min_ring_length: float,
     format: bool = False,
-    lambda_limit: npt.NDArray[np.float64] = np.array([]),
+    lambda_limit: npt.NDArray[np.float_] = np.array([]),
     name: str = "",
     label: str = "",
     seedsequence: np.random.SeedSequence = np.random.SeedSequence(),
@@ -133,8 +133,8 @@ def analyze(
 @dataclass
 class SimulateWithErrorParams:
     accumulator: Accumulator
-    L: npt.NDArray[np.float64]
-    K: npt.NDArray[np.float64]
+    L: npt.NDArray[np.float_]
+    K: npt.NDArray[np.float_]
     n_g: float
     n_eff: float
     eta: float
@@ -149,7 +149,7 @@ class SimulateWithErrorParams:
     r_max: float
     weight: list[float]
     min_ring_length: float
-    lambda_limit: npt.NDArray[np.float64]
+    lambda_limit: npt.NDArray[np.float_]
     rng: np.random.Generator
     format: bool = False
     simulate_one_cycle: bool = True
@@ -161,20 +161,38 @@ class SimulateWithErrorParams:
 
 
 def simulate_with_error(params: SimulateWithErrorParams) -> tuple[np.float_, list[np.float_], list[np.float_]]:
-    dif_l = params.rng.normal(params.L, params.L * np.float_(sigma_L), params.L.shape)
-    params.L = dif_l
-    dif_k = np.array([add_design_error(params.rng, k, params.eta) for k in params.K])
-    params.K = dif_k
-    result = simulate_MRR(**asdict(params))
+    L_error_rate = params.rng.normal(1, sigma_L)
+    params.L = params.L * L_error_rate
+    K_with_error: npt.NDArray[np.float_] = params.K * np.float_(-1)
+    while (np.logical_or(0 >= K_with_error, K_with_error >= params.eta)).all():
+        K_with_error = params.K * params.rng.normal(1, sigma_K)
+    params.K = K_with_error
+    result = simulate_MRR(
+        accumulator=params.accumulator,
+        L=params.L,
+        K=params.K,
+        n_g=params.n_g,
+        n_eff=params.n_eff,
+        eta=params.eta,
+        alpha=params.alpha,
+        center_wavelength=params.center_wavelength,
+        length_of_3db_band=params.length_of_3db_band,
+        max_crosstalk=params.max_crosstalk,
+        H_p=params.H_p,
+        H_s=params.H_s,
+        H_i=params.H_i,
+        r_max=params.r_max,
+        weight=params.weight,
+        format=params.format,
+        simulate_one_cycle=True,
+        lambda_limit=params.lambda_limit,
+        name=params.name,
+        label=params.label,
+        skip_graph=True,
+        skip_evaluation=False,
+        ignore_binary_evaluation=True,
+    )
     return (result.evaluation_result, params.K.tolist(), params.L.tolist())
-
-
-def add_design_error(rng: np.random.Generator, k: float, eta: float) -> float:
-    result = -1.0
-    while True:
-        if 0 < result < eta:
-            return result
-        result = rng.normal(k, k * sigma_K)
 
 
 if __name__ == "__main__":
