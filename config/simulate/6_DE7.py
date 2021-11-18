@@ -27,5 +27,5 @@ config = {
     "n_eff": 2.2,  # 実行屈折率
     "n_g": 4.4,  # 群屈折率
     "center_wavelength": 1550e-9,
-    # 'lambda_limit': np.arange(1520e-9, 1560e-9, 1e-12)
+    "lambda_limit": np.arange(1520e-9, 1560e-9, 1e-12),
 }
