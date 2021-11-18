@@ -51,13 +51,12 @@ def _calculate_pass_band_range(
     x: npt.NDArray[np.float_],
     y: npt.NDArray[np.float_],
     H_p: float,
-) -> npt.ArrayLike:
-    pass_band_range = []
+) -> npt.NDArray[np.int_]:
     start = 0
     end = x.size - 1
-    a = np.where(y <= H_p, True, False)
-    b = np.append(a[1:], a[-1])
-    pass_band_range = np.where(np.logical_xor(a, b))[0]
+    a: npt.NDArray[np.bool_] = np.where(y <= H_p, True, False)
+    b: npt.NDArray[np.bool_] = np.append(a[1:], a[-1])
+    pass_band_range: npt.NDArray[np.int_] = np.where(np.logical_xor(a, b))[0]
     if pass_band_range.size == 0:
         return pass_band_range
     if not a[pass_band_range][0]:
