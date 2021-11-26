@@ -14,7 +14,7 @@ def evaluate_band(
     H_i: float,
     r_max: float,
     weight: list[float],
-    ignore_binary_evaluation=False,
+    ignore_binary_evaluation: bool = False,
 ) -> np.float_:
     pass_band, _ = _get_pass_band(x=x, y=y, H_p=H_p, center_wavelength=center_wavelength)
     if pass_band.shape[0] != 1:
