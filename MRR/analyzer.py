@@ -65,7 +65,7 @@ def analyze(
         ignore_binary_evaluation=True,
     )
     base_lambda_limit = base_result.x
-    # mrr.logger.save_simulation_config(config)
+    # accumulator.logger.save_simulation_config(config)
 
     with Pool() as pool:
         result_with_L_and_K = pool.map(
@@ -164,7 +164,7 @@ def simulate_with_error(params: SimulateWithErrorParams) -> tuple[np.float_, lis
     L_error_rate = params.rng.normal(1, params.sigma_L)
     params.L = params.L * L_error_rate
     K_with_error: npt.NDArray[np.float_] = params.K * np.float_(-1)
-    while (np.logical_or(0 >= K_with_error, K_with_error >= params.eta)).all():
+    while (np.logical_or(0 >= K_with_error, K_with_error >= params.eta)).any():
         K_with_error = params.K * params.rng.normal(1, params.sigma_K)
     params.K = K_with_error
     result = simulate_MRR(
