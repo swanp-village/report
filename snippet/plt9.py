@@ -36,11 +36,11 @@ with open("snippet/data/N10L01K10/analyzer_result.txt") as f:
     L01K10_hist, _ = np.histogram(L01K10, range=(0, 15), bins=15 * 4)
 
 
-plt.plot(bin_centers, L001K1_hist, label="10th K:1\% L:0.01\%")
-plt.plot(bin_centers, L001K10_hist, label="10th K:10\% L:0.01\%")
-plt.plot(bin_centers, L001K50_hist, label="10th K:50\% L:0.01\%")
-plt.plot(bin_centers, L001K100_hist, label="10th K:100\% L:0.01\%")
-plt.plot(bin_centers, L01K10_hist, label="10th K:10\% L:0.1\%")
+plt.plot(bin_centers, L001K1_hist, label="K\(\pm\)1\% L\(\pm\)0.01\%")
+plt.plot(bin_centers, L001K10_hist, label="K\(\pm\)10\% L\(\pm\)0.01\%")
+plt.plot(bin_centers, L001K50_hist, label="K\(\pm\)50\% L\(\pm\)0.01\%")
+plt.plot(bin_centers, L001K100_hist, label="K\(\pm\)100\% L\(\pm\)0.01\%")
+plt.plot(bin_centers, L01K10_hist, label="K\(\pm\)10\% L\(\pm\)0.1\%")
 plt.ylabel("frequency", size=20)
 plt.xlabel("evaluation function value", size=20)
 plt.legend(loc="best")

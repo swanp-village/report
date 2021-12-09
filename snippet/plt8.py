@@ -40,12 +40,12 @@ with open("snippet/data/N4L01K0/analyzer_result.txt") as f:
     ring4L01K0 = [float(row[0]) for row in reader]
     ring4L01K0_hist, _ = np.histogram(ring4L01K0, range=(0, 15), bins=15 * 4)
 
-# plt.plot(bin_centers, ring4L001K1_hist, label="4th K:1\% L:0.01\%")
-# plt.plot(bin_centers, ring4L001K10_hist, label="4th K:10\% L:0.01\%")
-# plt.plot(bin_centers, ring4L001K50_hist, label="4th K:50\% L:0.01\%")
-# plt.plot(bin_centers, ring4L001K100_hist, label="4th K:100\% L:0.01\%")
-plt.plot(bin_centers, ringN4L01K10_hist, label="4th K:10\% L:0.1\%")
-plt.plot(bin_centers, ring4L01K0_hist, label="4th K:0\% L:0.1\%")
+plt.plot(bin_centers, ring4L001K1_hist, label="K\(\pm\)1\% L\(\pm\)0.01\%")
+plt.plot(bin_centers, ring4L001K10_hist, label="K\(\pm\)10\% L\(\pm\)0.01\%")
+plt.plot(bin_centers, ring4L001K50_hist, label="K\(\pm\)50\% L\(\pm\)0.01\%")
+plt.plot(bin_centers, ring4L001K100_hist, label="K\(\pm\)100\% L\(\pm\)0.01\%")
+plt.plot(bin_centers, ringN4L01K10_hist, label="K\(\pm\)10\% L\(\pm\)0.1\%")
+# plt.plot(bin_centers, ring4L01K0_hist, label="K\(\pm\)0\% L\(\pm\)0.1\%")
 plt.ylabel("frequency", size=20)
 plt.xlabel("evaluation function value", size=20)
 plt.legend(loc="best")
