@@ -5,12 +5,15 @@ astype
 dtype
 hstack
 kmeans
+lualatex
 mymath
+pgfplots
 pyplot
 scipy
 semilogx
 sklearn
 tolist
+tsvfile
 xaxis
 xlabel
 xlim
