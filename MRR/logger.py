@@ -3,7 +3,7 @@ import json
 from dataclasses import asdict
 from datetime import datetime
 from pathlib import Path
-from typing import Optional
+from typing import Any, Optional
 
 import numpy as np
 import numpy.typing as npt
@@ -29,6 +29,20 @@ class Logger:
         self.config = config
         src = json.dumps(
             {**asdict(config), "K": config.K.tolist(), "L": config.L.tolist(), "lambda_limit": []},
+            indent=4,
+        )
+        path = self.target / "config.json"
+        path.write_text(src)
+
+    def save_config(
+        self,
+        L: npt.NDArray[np.float_],
+        K: npt.NDArray[np.float_],
+        lambda_limit: npt.NDArray[np.float_],
+        **kwargs: dict[str, Any],
+    ) -> None:
+        src = json.dumps(
+            {**kwargs, "K": K.tolist(), "L": L.tolist(), "lambda_limit": lambda_limit.tolist()},
             indent=4,
         )
         path = self.target / "config.json"
@@ -78,10 +92,20 @@ class Logger:
         subprocess.run(["lualatex", "pgfplots"], cwd=self.target, stdout=subprocess.DEVNULL)
 
     def print_parameters(
-        self, K: npt.NDArray[np.float_], L: npt.NDArray[np.float_], N: npt.NDArray[np.int_], FSR: float, E: float
+        self,
+        K: npt.NDArray[np.float_],
+        L: npt.NDArray[np.float_],
+        N: npt.NDArray[np.int_],
+        FSR: np.float_,
+        E: np.float_,
+        format: bool = False,
     ) -> None:
-        print("K  : {}".format(K.tolist()))
-        print("L  : {}".format(L.tolist()))
+        if format:
+            print("K  : {}".format(K.round(2).tolist()))
+            print("L  : {}".format((L * 1e6).round(1).tolist()))
+        else:
+            print("K  : {}".format(K.tolist()))
+            print("L  : {}".format(L.tolist()))
         print("N  : {}".format(N.tolist()))
         print("FSR: {}".format(FSR))
         print("E  : {}".format(E))

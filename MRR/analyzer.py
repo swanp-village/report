@@ -65,7 +65,30 @@ def analyze(
         ignore_binary_evaluation=True,
     )
     base_lambda_limit = base_result.x
-    # accumulator.logger.save_simulation_config(config)
+    accumulator.logger.save_config(
+        L=L,
+        K=K,
+        n_g=n_g,
+        n_eff=n_eff,
+        eta=eta,
+        alpha=alpha,
+        center_wavelength=center_wavelength,
+        length_of_3db_band=length_of_3db_band,
+        max_crosstalk=max_crosstalk,
+        H_p=H_p,
+        H_s=H_s,
+        H_i=H_i,
+        r_max=r_max,
+        weight=weight,
+        format=format,
+        simulate_one_cycle=True,
+        lambda_limit=lambda_limit,
+        name=name,
+        label=label,
+        skip_graph=True,
+        skip_evaluation=False,
+        ignore_binary_evaluation=True,
+    )
 
     with Pool() as pool:
         result_with_L_and_K = pool.map(

@@ -57,16 +57,6 @@ def simulate_MRR(
     skip_evaluation: bool = False,
     ignore_binary_evaluation: bool = False,
 ) -> SimulatorResult:
-    print("eta:", eta)
-    print("center_wavelength:", center_wavelength)
-    print("n_eff:", n_eff)
-    print("n_g:", n_g)
-    if format:
-        print("K:", K.round(2).tolist())
-        print("L:", (L * 1e6).round(1).tolist())
-    else:
-        print("K:", K.tolist())
-        print("L:", L.tolist())
     N = calculate_N(center_wavelength=center_wavelength, n_eff=n_eff, L=L)
     practical_FSR = calculate_practical_FSR(center_wavelength=center_wavelength, n_eff=n_eff, n_g=n_g, N=N)
 
@@ -95,7 +85,7 @@ def simulate_MRR(
             weight=weight,
             ignore_binary_evaluation=ignore_binary_evaluation,
         )
-        print("E:", evaluation_result)
+    accumulator.logger.print_parameters(K=K, L=L, N=N, FSR=practical_FSR, E=evaluation_result, format=format)
 
     if not skip_graph:
         accumulator.logger.save_data_as_csv(x, y, name)
