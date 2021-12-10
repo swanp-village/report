@@ -26,7 +26,7 @@ if __name__ == "__main__":
         imported_module = import_module(f"config.simulate.{config_name}")
         imported_config = getattr(imported_module, "config")
         simulation_config = SimulationConfig(**imported_config, entropy=entropy)
-        analyze(
+        result = analyze(
             n,
             L_error_rate=L_error_rate,
             K_error_rate=K_error_rate,
@@ -52,5 +52,6 @@ if __name__ == "__main__":
             label=simulation_config.label,
             seedsequence=simulation_config.seedsequence,
         )
+        print(result)
     except ModuleNotFoundError as e:
         print(e)
