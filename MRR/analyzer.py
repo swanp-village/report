@@ -35,7 +35,8 @@ def analyze(
     name: str = "",
     label: str = "",
     seedsequence: np.random.SeedSequence = np.random.SeedSequence(),
-) -> None:
+    skip_plot: bool = False,
+) -> float:
     sigma_L = L_error_rate / 3 / 100
     sigma_K = K_error_rate / 3 / 100
     accumulator = Accumulator(init_graph=False)
@@ -127,28 +128,30 @@ def analyze(
                 for i in range(n)
             ),
         )
-
-    with open(accumulator.logger.target / "analyzer_sigma.txt", "w") as fp:
-        tsv_writer = csv.writer(fp, delimiter="\t")
-        tsv_writer.writerows(zip([K_error_rate, L_error_rate]))
-
-    with open(accumulator.logger.target / "analyzer_result_with_L_and_K.txt", "w") as fp:
-        tsv_writer = csv.writer(fp, delimiter="\t")
-        tsv_writer.writerows(zip(result_with_L_and_K))
-
     result = [x[0] for x in result_with_L_and_K]
-
-    with open(accumulator.logger.target / "analyzer_result.txt", "w") as fp:
-        tsv_writer = csv.writer(fp, delimiter="\t")
-        tsv_writer.writerows(zip(result))
-
     normalized_result = np.array(result)
     normalized_result[normalized_result < 0] = np.float_(0.0)
-    plt.hist(normalized_result, range=(0, 15), bins=15 * 4)
-    plt.ylabel("frequency", size=20)
-    plt.xlabel("evaluation function value", size=20)
-    plt.savefig(accumulator.logger.target / "analyzer_result.png")
-    plt.show()
+
+    if not skip_plot:
+        with open(accumulator.logger.target / "analyzer_sigma.txt", "w") as fp:
+            tsv_writer = csv.writer(fp, delimiter="\t")
+            tsv_writer.writerows(zip([K_error_rate, L_error_rate]))
+
+        with open(accumulator.logger.target / "analyzer_result_with_L_and_K.txt", "w") as fp:
+            tsv_writer = csv.writer(fp, delimiter="\t")
+            tsv_writer.writerows(zip(result_with_L_and_K))
+
+        with open(accumulator.logger.target / "analyzer_result.txt", "w") as fp:
+            tsv_writer = csv.writer(fp, delimiter="\t")
+            tsv_writer.writerows(zip(result))
+
+        plt.hist(normalized_result, range=(0, 15), bins=15 * 4)
+        plt.ylabel("frequency", size=20)
+        plt.xlabel("evaluation function value", size=20)
+        plt.savefig(accumulator.logger.target / "analyzer_result.png")
+        plt.show()
+
+    return np.percentile(normalized_result, 25) / base_result.evaluation_result
 
 
 @dataclass

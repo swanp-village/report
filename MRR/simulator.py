@@ -172,7 +172,7 @@ def init_ratio(number_of_rings: int, rng: np.random.Generator) -> npt.NDArray[np
     ]
     a = np.arange(1, number_of_rings + 1)
     number_of_types = rng.choice(a, p=p)
-    base = rng.choice(np.arange(2, 30), number_of_types, replace=False)
+    base = rng.choice(np.arange(2, 10), number_of_types, replace=False)
     reciprocal_of_ratio: npt.NDArray[np.int_] = rng.choice(base, number_of_rings)
     while np.unique(reciprocal_of_ratio).size != number_of_types:  # type: ignore
         reciprocal_of_ratio = rng.choice(base, number_of_rings)
@@ -193,7 +193,7 @@ def optimize_N(
     min_N_0 = calculate_min_N_0(
         center_wavelength=center_wavelength, min_ring_length=min_ring_length, n_eff=n_eff, ratio=ratio
     )
-    N_0 = np.int_(rng.integers(min_N_0, min_N_0 + 200))
+    N_0 = np.int_(rng.integers(min_N_0, min_N_0 + 10))
 
     for _ in range(10000):
         a: npt.NDArray[np.int_] = np.power(np.arange(3, dtype=np.int_), 4)

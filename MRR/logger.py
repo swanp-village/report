@@ -69,8 +69,8 @@ class Logger:
         result = {
             "eta": self.config.eta,
             "alpha": self.config.alpha,
-            "K": K,
-            "L": L,
+            "K": K.tolist(),
+            "L": L.tolist(),
             "n_eff": self.config.n_eff,
             "n_g": self.config.n_g,
             "center_wavelength": self.config.center_wavelength,
@@ -78,6 +78,43 @@ class Logger:
         src = json.dumps(result, indent=4)
         path = self.target / "result.json"
         path.write_text(src)
+
+    def save_DE_data(
+        self,
+        N_list: list[npt.NDArray[np.int_]],
+        L_list: list[npt.NDArray[np.float_]],
+        K_list: list[npt.NDArray[np.float_]],
+        FSR_list: npt.NDArray[np.float_],
+        E_list: list[float],
+        method_list: list[int],
+        best_E_list: list[float],
+        analyze_score_list: list[float],
+    ):
+        n = range(len(N_list))
+        with open(self.target / "N_list.tsv", "w") as tsvfile:
+            tsv_writer = csv.writer(tsvfile, delimiter="\t")
+            tsv_writer.writerows(zip(n, N_list))
+        with open(self.target / "L_list.tsv", "w") as tsvfile:
+            tsv_writer = csv.writer(tsvfile, delimiter="\t")
+            tsv_writer.writerows(zip(n, L_list))
+        with open(self.target / "K_list.tsv", "w") as tsvfile:
+            tsv_writer = csv.writer(tsvfile, delimiter="\t")
+            tsv_writer.writerows(zip(n, K_list))
+        with open(self.target / "FSR_list.tsv", "w") as tsvfile:
+            tsv_writer = csv.writer(tsvfile, delimiter="\t")
+            tsv_writer.writerows(zip(n, FSR_list.tolist()))
+        with open(self.target / "E_list.tsv", "w") as tsvfile:
+            tsv_writer = csv.writer(tsvfile, delimiter="\t")
+            tsv_writer.writerows(zip(n, E_list))
+        with open(self.target / "method_list.tsv", "w") as tsvfile:
+            tsv_writer = csv.writer(tsvfile, delimiter="\t")
+            tsv_writer.writerows(zip(n, method_list))
+        with open(self.target / "best_E_list.tsv", "w") as tsvfile:
+            tsv_writer = csv.writer(tsvfile, delimiter="\t")
+            tsv_writer.writerows(zip(n, best_E_list))
+        with open(self.target / "analyze_score_list.tsv", "w") as tsvfile:
+            tsv_writer = csv.writer(tsvfile, delimiter="\t")
+            tsv_writer.writerows(zip(n, analyze_score_list))
 
     def typeset_pgfplots_graph(self, tsv_name: Optional[str] = "out", label: str = "") -> None:
         import subprocess
@@ -98,6 +135,7 @@ class Logger:
         N: npt.NDArray[np.int_],
         FSR: np.float_,
         E: np.float_,
+        analyze_score: Optional[np.float_] = None,
         format: bool = False,
     ) -> None:
         if format:
@@ -109,3 +147,5 @@ class Logger:
         print("N  : {}".format(N.tolist()))
         print("FSR: {}".format(FSR))
         print("E  : {}".format(E))
+        if analyze_score is not None:
+            print("score: {}".format(analyze_score))

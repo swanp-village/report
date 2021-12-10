@@ -5,6 +5,7 @@ import numpy.typing as npt
 from scipy.optimize import differential_evolution
 
 from config.random import get_differential_evolution_rng
+from MRR.analyzer import analyze
 from MRR.evaluator import evaluate_band
 from MRR.graph import Graph
 from MRR.logger import Logger
@@ -119,6 +120,7 @@ def optimize(
     E_list: list[float] = [0 for _ in range(number_of_generations)]
     method_list: list[int] = [0 for _ in range(number_of_generations)]
     best_E_list: list[float] = [0 for _ in range(number_of_generations)]
+    analyze_score_list: list[float] = [0 for _ in range(number_of_generations)]
     for m in range(number_of_generations):
         N: npt.NDArray[np.int_]
         L: npt.NDArray[np.float_]
@@ -130,10 +132,6 @@ def optimize(
         if m < 10:
             method: int = 4
         else:
-            # _, counts = np.unique(best_E_list[:m], return_counts=True)  # type: ignore
-            # max_counts: np.int_ = np.max(counts)  # type: ignore
-            # if max_counts > 30:
-            #     break
             method = rng.choice([1, 2, 3, 4], p=strategy)
 
         if method == 1:
@@ -196,16 +194,48 @@ def optimize(
         FSR_list[m] = FSR
         K_list[m] = K
         E_list[m] = E
+        analyze_score = 0.0
+        if E > 10:
+            for L_error_rate, K_error_rate in zip([0.01, 0.1, 1, 10], [1, 10, 100]):
+                analyze_result = analyze(
+                    n=100,
+                    L_error_rate=L_error_rate,
+                    K_error_rate=K_error_rate,
+                    L=L,
+                    K=K,
+                    n_g=n_g,
+                    n_eff=n_eff,
+                    eta=eta,
+                    alpha=alpha,
+                    center_wavelength=center_wavelength,
+                    length_of_3db_band=length_of_3db_band,
+                    FSR=FSR,
+                    max_crosstalk=max_crosstalk,
+                    H_p=H_p,
+                    H_s=H_s,
+                    H_i=H_i,
+                    r_max=r_max,
+                    weight=weight,
+                    min_ring_length=min_ring_length,
+                    seedsequence=seedsequence,
+                    skip_plot=True,
+                )
+                if analyze_result > 0.5:
+                    analyze_score += 1
+        analyze_score_list[m] = analyze_score
         best_index = np.argmax(E_list)
         best_N = N_list[best_index]
         best_L = L_list[best_index]
         best_K = K_list[best_index]
         best_FSR = FSR_list[best_index]
         best_E = E_list[best_index]
+        best_analyze_score = analyze_score_list[best_index]
         print(m + 1)
-        logger.print_parameters(K, L, N, FSR, E)
+        logger.print_parameters(K=K, L=L, N=N, FSR=FSR, E=E, analyze_score=analyze_score, format=True)
         print("==best==")
-        logger.print_parameters(best_K, best_L, best_N, best_FSR, best_E)
+        logger.print_parameters(
+            K=best_K, L=best_L, N=best_N, FSR=best_FSR, E=best_E, analyze_score=best_analyze_score, format=True
+        )
         print("================")
 
         method_list[m] = method
@@ -217,14 +247,26 @@ def optimize(
     K = K_list[max_index]
     practical_FSR = FSR_list[max_index]
     E = E_list[max_index]
+    analyze_score = analyze_score_list[max_index]
     x = calculate_x(center_wavelength=center_wavelength, FSR=practical_FSR)
     y = simulate_transfer_function(
         wavelength=x, L=L, K=K, alpha=alpha, eta=eta, n_eff=n_eff, n_g=n_g, center_wavelength=center_wavelength
     )
     print("result")
-    logger.print_parameters(K, L, N, practical_FSR, E)
-    logger.save_result(L.tolist(), K.tolist())
-    logger.save_evaluation_value(best_E_list, method_list)
+    logger.print_parameters(K=K, L=L, N=N, FSR=practical_FSR, E=E, analyze_score=analyze_score)
+    logger.save_result(L=L, K=K)
+    logger.save_evaluation_value(E_list=best_E_list, method_list=method_list)
+    print("save data")
+    logger.save_DE_data(
+        N_list=N_list,
+        L_list=L_list,
+        K_list=K_list,
+        FSR_list=FSR_list,
+        E_list=E_list,
+        method_list=method_list,
+        best_E_list=best_E_list,
+        analyze_score_list=analyze_score_list,
+    )
     print("end")
     if E > 0 and not skip_plot:
         graph = Graph()
