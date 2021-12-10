@@ -21,8 +21,11 @@ class SimulatorResult:
 
 
 class Accumulator:
-    def __init__(self, is_focus: bool = False, init_graph: bool = True) -> None:
-        self.logger = Logger()
+    def __init__(self, logger: Logger = None, is_focus: bool = False, init_graph: bool = True) -> None:
+        if logger is None:
+            self.logger = Logger()
+        else:
+            self.logger = logger
         self.number_of_rings: int = 0
         if init_graph:
             self.graph = Graph(is_focus)

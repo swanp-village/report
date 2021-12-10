@@ -7,6 +7,7 @@ import numpy as np
 import numpy.typing as npt
 
 from config.random import get_analyzer_rng
+from MRR.logger import Logger
 from MRR.simulator import Accumulator, simulate_MRR
 
 
@@ -36,10 +37,11 @@ def analyze(
     label: str = "",
     seedsequence: np.random.SeedSequence = np.random.SeedSequence(),
     skip_plot: bool = False,
+    logger: Logger = None,
 ) -> float:
     sigma_L = L_error_rate / 3 / 100
     sigma_K = K_error_rate / 3 / 100
-    accumulator = Accumulator(init_graph=False)
+    accumulator = Accumulator(init_graph=False, logger=logger)
     base_result = simulate_MRR(
         accumulator=accumulator,
         L=L,

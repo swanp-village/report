@@ -219,6 +219,7 @@ def optimize(
                     min_ring_length=min_ring_length,
                     seedsequence=seedsequence,
                     skip_plot=True,
+                    logger=logger,
                 )
                 if analyze_result > 0.5:
                     analyze_score += 1
