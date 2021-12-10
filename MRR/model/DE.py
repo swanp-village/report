@@ -191,7 +191,7 @@ def optimize(
 
         N_list[m] = N
         L_list[m] = L
-        FSR_list[m] = FSR
+        FSR_list[m] = practical_FSR
         K_list[m] = K
         E_list[m] = E
         analyze_score = 0.0
@@ -223,7 +223,7 @@ def optimize(
                 )
                 if analyze_result > 0.5:
                     analyze_score += 1
-        analyze_score_list[m] = analyze_score
+            analyze_score_list[m] = analyze_score
         best_index = np.argmax(E_list)
         best_N = N_list[best_index]
         best_L = L_list[best_index]
@@ -232,7 +232,7 @@ def optimize(
         best_E = E_list[best_index]
         best_analyze_score = analyze_score_list[best_index]
         print(m + 1)
-        logger.print_parameters(K=K, L=L, N=N, FSR=FSR, E=E, analyze_score=analyze_score, format=True)
+        logger.print_parameters(K=K, L=L, N=N, FSR=practical_FSR, E=E, analyze_score=analyze_score, format=True)
         print("==best==")
         logger.print_parameters(
             K=best_K, L=best_L, N=best_N, FSR=best_FSR, E=best_E, analyze_score=best_analyze_score, format=True
@@ -243,20 +243,28 @@ def optimize(
         best_E_list[m] = best_E
 
     max_index = np.argmax(E_list)
-    N = N_list[max_index]
-    L = L_list[max_index]
-    K = K_list[max_index]
-    practical_FSR = FSR_list[max_index]
-    E = E_list[max_index]
-    analyze_score = analyze_score_list[max_index]
-    x = calculate_x(center_wavelength=center_wavelength, FSR=practical_FSR)
+    result_N = N_list[max_index]
+    result_L = L_list[max_index]
+    result_K = K_list[max_index]
+    result_FSR = FSR_list[max_index]
+    result_E = E_list[max_index]
+    result_analyze_score = analyze_score_list[max_index]
+    x = calculate_x(center_wavelength=center_wavelength, FSR=result_FSR)
     y = simulate_transfer_function(
-        wavelength=x, L=L, K=K, alpha=alpha, eta=eta, n_eff=n_eff, n_g=n_g, center_wavelength=center_wavelength
+        wavelength=x,
+        L=result_L,
+        K=result_K,
+        alpha=alpha,
+        eta=eta,
+        n_eff=n_eff,
+        n_g=n_g,
+        center_wavelength=center_wavelength,
     )
     print("result")
-    logger.print_parameters(K=K, L=L, N=N, FSR=practical_FSR, E=E, analyze_score=analyze_score)
-    logger.save_result(L=L, K=K)
-    logger.save_evaluation_value(E_list=best_E_list, method_list=method_list)
+    logger.print_parameters(
+        K=result_K, L=result_L, N=result_N, FSR=result_FSR, E=result_E, analyze_score=result_analyze_score
+    )
+    logger.save_result(L=result_L, K=result_K)
     print("save data")
     logger.save_DE_data(
         N_list=N_list,
