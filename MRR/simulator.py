@@ -175,7 +175,7 @@ def init_ratio(number_of_rings: int, rng: np.random.Generator) -> npt.NDArray[np
     ]
     a = np.arange(1, number_of_rings + 1)
     number_of_types = rng.choice(a, p=p)
-    base = rng.choice(np.arange(2, 10), number_of_types, replace=False)
+    base = rng.choice(np.arange(2, 20), number_of_types, replace=False)
     reciprocal_of_ratio: npt.NDArray[np.int_] = rng.choice(base, number_of_rings)
     while np.unique(reciprocal_of_ratio).size != number_of_types:  # type: ignore
         reciprocal_of_ratio = rng.choice(base, number_of_rings)
