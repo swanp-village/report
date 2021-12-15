@@ -16,12 +16,15 @@ def evaluate_band(
     weight: list[float],
     ignore_binary_evaluation: bool = False,
 ) -> np.float_:
-    pass_band, _ = _get_pass_band(x=x, y=y, H_p=H_p, center_wavelength=center_wavelength)
-    if pass_band.shape[0] != 1:
+    pass_band, cross_talk = _get_pass_band(x=x, y=y, H_p=H_p, center_wavelength=center_wavelength)
+    if pass_band.shape[0] == 1:
+        start = pass_band[0][0]
+        end = pass_band[0][1]
+    elif cross_talk.shape[0] == 1:
+        start = cross_talk[0][0]
+        end = cross_talk[0][1]
+    else:
         return np.float_(0)
-
-    start = pass_band[0][0]
-    end = pass_band[0][1]
     result = [
         _evaluate_pass_band(x=x, y=y, H_p=H_p, start=start, end=end),
         _evaluate_stop_band(x=x, y=y, H_p=H_p, H_s=H_s, start=start, end=end),

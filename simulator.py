@@ -47,7 +47,7 @@ if __name__ == "__main__":
     simulate_one_cycle = args["simulate_one_cycle"]
 
     results: list[SimulatorResult] = []
-    accumulator = Accumulator(is_focus)
+    accumulator = Accumulator(is_focus=is_focus)
     if ls:
         print("\t".join([os.path.splitext(os.path.basename(p))[0] for p in sorted(glob("config/simulate/*.py"))]))
     else:
