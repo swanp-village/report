@@ -20,9 +20,9 @@ def evaluate_band(
     if pass_band.shape[0] == 1:
         start = pass_band[0][0]
         end = pass_band[0][1]
-    elif cross_talk.shape[0] == 1:
-        start = cross_talk[0][0]
-        end = cross_talk[0][1]
+    # elif cross_talk.shape[0] == 1:
+    #     start = cross_talk[0][0]
+    #     end = cross_talk[0][1]
     else:
         return np.float_(0)
     result = [
