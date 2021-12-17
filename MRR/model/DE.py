@@ -198,7 +198,7 @@ def optimize(
         if E > 10:
             for L_error_rate, K_error_rate in zip([0.01, 0.1, 1, 10], [1, 10, 100]):
                 analyze_result = analyze(
-                    n=100,
+                    n=1000,
                     L_error_rate=L_error_rate,
                     K_error_rate=K_error_rate,
                     L=L,
