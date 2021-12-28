@@ -18,8 +18,8 @@ git clone https://github.com/nimiusrd/MRR.git
 ## Update this repository
 
 ```bash
-git fetch origin master
-git merge origin master
+git fetch origin main
+git merge origin main
 ```
 
 ## 仮想環境 / virtual env
