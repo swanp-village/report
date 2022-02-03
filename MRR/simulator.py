@@ -173,6 +173,8 @@ def init_ratio(number_of_rings: int, rng: np.random.Generator) -> npt.NDArray[np
         ],
         norm.cdf(-2),
     ]
+    if number_of_rings == 2:
+        p = [norm.cdf(-2), norm.sf(-2)]
     a = np.arange(1, number_of_rings + 1)
     number_of_types = rng.choice(a, p=p)
     base = rng.choice(np.arange(2, 20), number_of_types, replace=False)
