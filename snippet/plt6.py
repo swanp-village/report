@@ -1,52 +1,45 @@
-import csv
-
 import matplotlib.pyplot as plt
-import numpy as np
 from matplotlib import rc
 
-fig, ax = plt.subplots(figsize=(8, 6))
 rc("text", usetex=True)
 rc("font", size=16)
+prop_cycle = plt.rcParams["axes.prop_cycle"]
+colors = prop_cycle.by_key()["color"]
 
-with open("snippet/data/N4L1K0/analyzer_result.txt") as f:
-    reader = csv.reader(f)
-    ring4L1K0 = [float(row[0]) for row in reader]
-    ring4L1K0_hist, bin_edges = np.histogram(ring4L1K0, range=(0, 15), bins=15 * 4)
-    bin_centers = (bin_edges[1:] + bin_edges[:-1]) / 2
+fig, ax1 = plt.subplots(figsize=(8, 6))
+ax2 = ax1.twinx()
 
-with open("snippet/data/N4L01K0/analyzer_result.txt") as f:
-    reader = csv.reader(f)
-    ring4L01K0 = [float(row[0]) for row in reader]
-    ring4L01K0_hist, _ = np.histogram(ring4L01K0, range=(0, 15), bins=15 * 4)
-
-
-with open("snippet/data/N4L001K0/analyzer_result.txt") as f:
-    reader = csv.reader(f)
-    ring4L001K0 = [float(row[0]) for row in reader]
-    ring4L001K0_hist, _ = np.histogram(ring4L001K0, range=(0, 15), bins=15 * 4)
-
-# with open("snippet/data/N4L0001K0/analyzer_result.txt") as f:
-#     reader = csv.reader(f)
-#     ring4L0001K0 = [float(row[0]) for row in reader]
-#     ring4L0001K0_hist, _ = np.histogram(ring4L0001K0, range=(0, 15), bins=15 * 4)
-
-# with open("snippet/data/N4L00001K0/analyzer_result.txt") as f:
-#     reader = csv.reader(f)
-#     ring4L00001K0 = [float(row[0]) for row in reader]
-#     ring4L00001K0_hist, _ = np.histogram(ring4L00001K0, range=(0, 15), bins=15 * 4)
-
-# with open("snippet/data/N4L000001K0/analyzer_result.txt") as f:
-#     reader = csv.reader(f)
-#     ring4L000001K0 = [float(row[0]) for row in reader]
-#     ring4L000001K0_hist, _ = np.histogram(ring4L000001K0, range=(0, 15), bins=15 * 4)
-
-plt.plot(bin_centers, ring4L1K0_hist, label="4th L:1%")
-plt.plot(bin_centers, ring4L01K0_hist, label="4th L:0.1%")
-plt.plot(bin_centers, ring4L001K0_hist, label="4th L:0.01%")
-# plt.plot(bin_centers, ring4L0001K0_hist, label="4th L:0.001%")
-# plt.plot(bin_centers, ring4L00001K0_hist, label="4th L:0.0001%")
-# plt.plot(bin_centers, ring4L000001K0_hist, label="4th L:0.00001%")
-plt.ylabel("frequency", size=20)
-plt.xlabel("evaluation function value", size=20)
-plt.legend(loc="best")
+order = [4, 6, 8, 10, 12, 14]
+shape_factor = [
+    0.445822994210091,
+    0.761353517364203,
+    0.7525581395348837,
+    0.7680074836295603,
+    0.7711627906976745,
+    0.7753424657534247,
+]
+crosstalk = [
+    -30.129842121605055,
+    -44.32602607339349,
+    -43.84737323107735,
+    -53.239044127713726,
+    -54.82174019,
+    -48.150563751802665,
+]
+ax1.plot(
+    order,
+    shape_factor,
+    color=colors[0],
+    label=r"Shape factor \(\frac{\Delta\lambda_\mathrm{1dB}}{\Delta\lambda_\mathrm{10dB}}\)",
+    marker="o",
+)
+ax2.plot(order, crosstalk, color=colors[1], label="Crosstalk", marker="o")
+ax1.set_ylim([0, 1])
+ax2.set_ylim([-60, -20])
+ax1.set_xlabel("Order", fontsize=24)
+ax1.set_ylabel(r"Shape factor \(\frac{\Delta\lambda_\mathrm{1dB}}{\Delta\lambda_\mathrm{10dB}}\)", fontsize=24)
+ax2.set_ylabel(r"Crosstalk (dB)", fontsize=24)
+h1, l1 = ax1.get_legend_handles_labels()
+h2, l2 = ax2.get_legend_handles_labels()
+ax1.legend(h1 + h2, l1 + l2, loc="lower left")
 plt.show()
