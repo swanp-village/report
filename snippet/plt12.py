@@ -16,12 +16,12 @@ class AnalyzerResult:
     label: str
 
 
-data_list = [
-    AnalyzerResult(dir="N4L001K1", label="K\(\pm\)1\% L\(\pm\)0.01\%"),
-    AnalyzerResult(dir="N4L001K10", label="K\(\pm\)10\% L\(\pm\)0.01\%"),
-    AnalyzerResult(dir="N4L001K50", label="K\(\pm\)50\% L\(\pm\)0.01\%"),
-    AnalyzerResult(dir="N4L001K100", label="K\(\pm\)100\% L\(\pm\)0.01\%"),
-]
+# data_list = [
+#     AnalyzerResult(dir="N4L001K1", label="K\(\pm\)1\% L\(\pm\)0.01\%"),
+#     AnalyzerResult(dir="N4L001K10", label="K\(\pm\)10\% L\(\pm\)0.01\%"),
+#     AnalyzerResult(dir="N4L001K50", label="K\(\pm\)50\% L\(\pm\)0.01\%"),
+#     AnalyzerResult(dir="N4L001K100", label="K\(\pm\)100\% L\(\pm\)0.01\%"),
+# ]
 # data_list = [
 #     AnalyzerResult(dir="N10L001K1", label="K\(\pm\)1\% L\(\pm\)0.01\%"),
 #     AnalyzerResult(dir="N10L001K10", label="K\(\pm\)10\% L\(\pm\)0.01\%"),
@@ -46,6 +46,12 @@ data_list = [
 #     AnalyzerResult(dir="N4L1K50", label="K\(\pm\)50\% L\(\pm\)1\%"),
 #     AnalyzerResult(dir="N4L1K100", label="K\(\pm\)100\% L\(\pm\)1\%"),
 # ]
+data_list = [
+    AnalyzerResult(dir="N4L1K1shift", label="K\(\pm\)1\% L\(\pm\)1\%"),
+    AnalyzerResult(dir="N4L1K10shift", label="K\(\pm\)10\% L\(\pm\)1\%"),
+    AnalyzerResult(dir="N4L1K50shift", label="K\(\pm\)50\% L\(\pm\)1\%"),
+    AnalyzerResult(dir="N4L1K100shift", label="K\(\pm\)100\% L\(\pm\)1\%"),
+]
 
 for d in data_list:
     with open(f"snippet/data/{d.dir}/analyzer_result.txt") as f:
