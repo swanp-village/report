@@ -47,10 +47,10 @@ class AnalyzerResult:
 #     AnalyzerResult(dir="N4L1K100", label="K\(\pm\)100\% L\(\pm\)1\%"),
 # ]
 data_list = [
-    AnalyzerResult(dir="N4L1K1shift", label="K\(\pm\)1\% L\(\pm\)1\%"),
-    AnalyzerResult(dir="N4L1K10shift", label="K\(\pm\)10\% L\(\pm\)1\%"),
-    AnalyzerResult(dir="N4L1K50shift", label="K\(\pm\)50\% L\(\pm\)1\%"),
-    AnalyzerResult(dir="N4L1K100shift", label="K\(\pm\)100\% L\(\pm\)1\%"),
+    AnalyzerResult(dir="N4L1K1shift", label="\(L\pm1\%,K\pm1\% (r_L=\\frac{0.01}{3}, r_K=\\frac{0.01}{3})\)"),
+    AnalyzerResult(dir="N4L1K10shift", label="\(L\pm1\%,K\pm10\% (r_L=\\frac{0.01}{3}, r_K=\\frac{0.1}{3})\)"),
+    AnalyzerResult(dir="N4L1K50shift", label="\(L\pm1\%,K\pm50\% (r_L=\\frac{0.01}{3}, r_K=\\frac{0.5}{3})\)"),
+    AnalyzerResult(dir="N4L1K100shift", label="\(L\pm1\%,K\pm100\% (r_L=\\frac{0.01}{3}, r_K=\\frac{1}{3})\)"),
 ]
 
 for d in data_list:
@@ -63,5 +63,6 @@ for d in data_list:
 
 plt.ylabel("Frequency", size=20)
 plt.xlabel("Evaluation Function Value", size=20)
-plt.legend(loc="best")
+plt.legend(loc="best", frameon=False)
+fig.savefig("result/error4.pdf")
 plt.show()
