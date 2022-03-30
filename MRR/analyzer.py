@@ -195,6 +195,7 @@ def simulate_with_error(params: SimulateWithErrorParams) -> tuple[np.float_, lis
     while (np.logical_or(0 >= K_with_error, K_with_error >= params.eta)).any():
         K_with_error = params.K * params.rng.normal(1, params.sigma_K)
     params.K = K_with_error
+    shifted_center_wavelength = params.L * params.n_eff / np.round(params.L * params.n_eff / params.center_wavelength)
     result = simulate_MRR(
         accumulator=params.accumulator,
         L=params.L,
@@ -203,7 +204,8 @@ def simulate_with_error(params: SimulateWithErrorParams) -> tuple[np.float_, lis
         n_eff=params.n_eff,
         eta=params.eta,
         alpha=params.alpha,
-        center_wavelength=params.center_wavelength,
+        center_wavelength=shifted_center_wavelength.mean(),
+        # center_wavelength=params.center_wavelength,
         length_of_3db_band=params.length_of_3db_band,
         max_crosstalk=params.max_crosstalk,
         H_p=params.H_p,
