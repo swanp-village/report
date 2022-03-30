@@ -41,5 +41,6 @@ ax1.set_ylabel(r"Shape factor \(\frac{\Delta\lambda_\mathrm{1dB}}{\Delta\lambda_
 ax2.set_ylabel(r"Crosstalk (dB)", fontsize=24)
 h1, l1 = ax1.get_legend_handles_labels()
 h2, l2 = ax2.get_legend_handles_labels()
-ax1.legend(h1 + h2, l1 + l2, loc="lower left")
+ax1.legend(h1 + h2, l1 + l2, loc="lower left", frameon=False)
+fig.savefig("result/crosstalk_and_shape_factor.pdf")
 plt.show()

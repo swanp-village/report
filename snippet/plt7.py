@@ -17,17 +17,17 @@ class AnalyzerResult:
 
 
 data_list = [
-    AnalyzerResult(dir="N4L1K1shift", label="K\(\pm\)1\% L\(\pm\)1\%"),
-    AnalyzerResult(dir="N4L1K10shift", label="K\(\pm\)10\% L\(\pm\)1\%"),
-    AnalyzerResult(dir="N4L1K50shift", label="K\(\pm\)50\% L\(\pm\)1\%"),
-    AnalyzerResult(dir="N4L1K100shift", label="K\(\pm\)100\% L\(\pm\)1\%"),
+    AnalyzerResult(dir="N4L1K1shift", label="\(L\pm1\%,K\pm1\% (\sigma_L=\\frac{0.01}{3}, \sigma_K=\\frac{0.01}{3})\)"),
+    AnalyzerResult(
+        dir="N4L1K10shift", label="\(L\pm1\%,K\pm10\% (\sigma_L=\\frac{0.01}{3}, \sigma_K=\\frac{0.1}{3})\)"
+    ),
+    AnalyzerResult(
+        dir="N4L1K50shift", label="\(L\pm1\%,K\pm50\% (\sigma_L=\\frac{0.01}{3}, \sigma_K=\\frac{0.5}{3})\)"
+    ),
+    AnalyzerResult(
+        dir="N4L1K100shift", label="\(L\pm1\%,K\pm100\% (\sigma_L=\\frac{0.01}{3}, \sigma_K=\\frac{1}{3})\)"
+    ),
 ]
-# data_list = [
-#     AnalyzerResult(dir="N10L1K1shift", label="K\(\pm\)1\% L\(\pm\)1\%"),
-#     AnalyzerResult(dir="N10L1K10shift", label="K\(\pm\)10\% L\(\pm\)1\%"),
-#     AnalyzerResult(dir="N10L1K50shift", label="K\(\pm\)50\% L\(\pm\)1\%"),
-#     AnalyzerResult(dir="N10L1K100shift", label="K\(\pm\)100\% L\(\pm\)1\%"),
-# ]
 
 for d in data_list:
     with open(f"snippet/data/{d.dir}/analyzer_result.txt") as f:
@@ -39,5 +39,6 @@ for d in data_list:
 
 plt.ylabel("Frequency", size=20)
 plt.xlabel("Normarized Evaluation Function Value", size=20)
-plt.legend(loc="best")
+plt.legend(loc="upper center", frameon=False)
+fig.savefig("result/error4.pdf")
 plt.show()

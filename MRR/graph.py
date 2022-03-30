@@ -24,8 +24,7 @@ class Graph:
         y: npt.NDArray[np.float_],
         label: Optional[str] = None,
     ) -> None:
-        # self.ax.semilogx(x * 1e9, y, label=label)
-        self.ax.semilogx(x * 1e9, y, label=label, lw=1)
+        self.ax.semilogx(x * 1e9, y, label=label)
 
     def show(
         self,
