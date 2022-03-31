@@ -7,7 +7,7 @@
 
 ## OS
 
-recommend for using Linux / macOS
+Recommend for using Linux / macOS
 
 ## Download this repository
 
@@ -68,25 +68,9 @@ python main.py
 
 ### シミュレーション / simulate
 
-`-c`オプションは`src/config/simulate`にあるpythonファイルを指定する．
+引数には`src/config/simulate`にあるシミュレーションをするものを指定する．
+`src/config/simulate/12_DE7.py` をシミュレーションしたい場合は以下のように実行する．
 
 ```bash
-cd src
-python main.py -c two_same_2
-```
-
-## Jupyter
-
-### 起動
-
-```bash
-jupyter notebook
-```
-基本的に`notebook/`でファイルを作成する．
-
-## テスト
-
-```bash
-cd src
-python -m unittest discover -s __tests__
+python simulator.py 12_DE7
 ```
