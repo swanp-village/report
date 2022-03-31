@@ -74,4 +74,4 @@ python main.py
 ```bash
 python simulator.py 12_DE6
 ```
-[out.pdf](https://github.com/nimiusrd/MRR/files/8386586/out.pdf)
+![out](https://user-images.githubusercontent.com/13166203/160993029-90c707a8-0ad9-4ba2-a518-b1912d1687f9.jpg)
