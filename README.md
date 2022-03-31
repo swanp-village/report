@@ -69,8 +69,8 @@ python main.py
 ### シミュレーション / simulate
 
 引数には`src/config/simulate`にあるシミュレーションをするものを指定する．
-`src/config/simulate/12_DE7.py` をシミュレーションしたい場合は以下のように実行する．
+`src/config/simulate/12_DE6.py` をシミュレーションしたい場合は以下のように実行する．
 
 ```bash
-python simulator.py 12_DE7
+python simulator.py 12_DE6
 ```
