@@ -2,7 +2,8 @@ from dataclasses import dataclass
 
 import numpy as np
 import numpy.typing as npt
-from scipy.optimize import differential_evolution
+##from scipy.optimize import differential_evolution
+from cmaes import CMA
 
 from config.random import get_differential_evolution_rng
 from MRR.analyzer import analyze
