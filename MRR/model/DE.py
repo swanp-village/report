@@ -86,6 +86,7 @@ def optimize_K(
         ##seed=rng,
     ##)
     result=CMA(
+        self,
         optimize_K_func,
         bounds,
         mean=npt.NDArray[np.float_],
