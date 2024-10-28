@@ -74,16 +74,16 @@ def optimize_K(
 ) -> tuple[npt.NDArray[np.float_], float]:
     bounds = [(1e-12, eta) for _ in range(number_of_rings + 1)]
 
-    ##result = differential_evolution (
-        ##optimize_K_func,
-        ##bounds,
-        ##args=(params,),
-        ##strategy="currenttobest1bin",
-        ##workers=-1,
-        ##updating="deferred",
-        ##popsize=15,
-        ##maxiter=500,
-        ##seed=rng,
+    result = differential_evolution (
+        optimize_K_func,
+        bounds,
+        args=(params,),
+        strategy="currenttobest1bin",
+        workers=-1,
+        updating="deferred",
+        popsize=15,
+        maxiter=500,
+        seed=rng,
     ##)
     result=CMA(
         self,
