@@ -90,7 +90,7 @@ def optimize_K(
         optimize_K_func,
         bounds,
         sigma=0.5
-        mean=parems
+        mean:parems
         seed=rng,
         population_size=15,
         n_max_resampling=500,
