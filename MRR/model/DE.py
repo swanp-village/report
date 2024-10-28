@@ -92,8 +92,8 @@ def optimize_K(
         sigma=0.5
         #mean:parems
         #seed=rng,
-        population_size=15,
-        n_max_resampling=500,
+        population_size(15),
+        n_max_resampling=int(500),
     )
         
         
