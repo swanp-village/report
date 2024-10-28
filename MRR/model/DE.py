@@ -86,8 +86,10 @@ def optimize_K(
         seed=rng,
     ##)
     result= CMA(
+        self,
         optimize_K_func,
         bounds,
+        mean=params
         sigma=0.5
         seed=rng,
         population_size=15,
