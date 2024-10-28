@@ -77,7 +77,7 @@ def optimize_K(
     ##result = differential_evolution (
         ##optimize_K_func,
         ##bounds,
-        ##args=(params,),
+        args=(params,),
         ##strategy="currenttobest1bin",
         ##workers=-1,
         ##updating="deferred",
@@ -88,7 +88,7 @@ def optimize_K(
     result= CMA(
         optimize_K_func,
         bounds,
-        mean=params,
+        sigma=0.5
         seed=rng,
         population_size=15,
         n_max_resampling=500,
