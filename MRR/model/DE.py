@@ -77,7 +77,7 @@ def optimize_K(
     ##result = differential_evolution (
         ##optimize_K_func,
         ##bounds,
-        args=(params,),
+        ##args=(params,),
         ##strategy="currenttobest1bin",
         ##workers=-1,
         ##updating="deferred",
