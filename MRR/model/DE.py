@@ -83,7 +83,7 @@ def optimize_K(
         ##updating="deferred",
         ##popsize=15,
         ##maxiter=500,
-        ##seed=rng,
+        seed=rng,
     ##)
     result= CMA(
         optimize_K_func,
