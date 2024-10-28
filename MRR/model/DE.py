@@ -85,16 +85,16 @@ def optimize_K(
         ##maxiter=500,
         ##seed=rng,
     ##)
-    result= CMA(
-        self,
+    result=CMA(
         optimize_K_func,
+        mean=
+        sigma=
         bounds,
-        sigma=0.5
-        #mean:parems
-        #seed=rng,
-        population_size(15),
-        n_max_resampling=int(500),
     )
+        
+        
+    
+   
         
         
         
