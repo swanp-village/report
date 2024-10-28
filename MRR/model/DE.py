@@ -86,7 +86,7 @@ def optimize_K(
         ##seed=rng,
     ##)
     result= CMA(
-        optimize_K_funk,
+        optimize_K_func,
         bounds,
         mean=params,
         seed=rng,
