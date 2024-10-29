@@ -75,6 +75,7 @@ def optimize_K(
     bounds = [(1e-12, eta) for _ in range(number_of_rings + 1)]
     initial=np.random.uniform(bounds,number_of_rings+1)
     sigma=1.5
+    print(initial)
 
     #result = differential_evolution (
        ## optimize_K_func,
