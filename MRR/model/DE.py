@@ -92,7 +92,7 @@ def optimize_K(
     result=CMA(
         optimize_K_func,
         mean=initial_mean,
-        sigma=sigma,
+        sigma=1.5,
         bounds,
     )
         
