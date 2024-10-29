@@ -91,9 +91,9 @@ def optimize_K(
     ##)
     result=CMA(
         optimize_K_func,
+        bounds,
         mean=initial_mean,
         sigma=1.5,
-        bounds,
     )
         
     E: float = -result.fun
