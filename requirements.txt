@@ -5,6 +5,7 @@ matplotlib
 mypy
 numpy
 scipy
+cmaes
 scikit-learn
 black
 isort
