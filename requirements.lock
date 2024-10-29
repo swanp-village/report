@@ -8,6 +8,7 @@ black==21.7b0
 bleach==3.2.1
 cffi==1.14.4
 click==8.0.1
+cmaes==0.11.1
 cycler==0.10.0
 decorator==4.4.2
 defusedxml==0.6.0
@@ -43,7 +44,7 @@ nbformat==5.0.8
 nest-asyncio==1.4.3
 notebook==6.1.5
 numba==0.52.0
-numpy==1.21.1
+numpy==1.24.0
 packaging==20.8
 pandocfilters==1.4.3
 parso==0.7.1
