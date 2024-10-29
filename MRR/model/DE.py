@@ -80,7 +80,7 @@ def optimize_K(
        ## optimize_K_func,
        ## bounds,
         ##args=(params,),
-        s##trategy="currenttobest1bin",
+        #strategy="currenttobest1bin",
         #workers=-1,
         #updating="deferred",
         #popsize=15,
