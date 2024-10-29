@@ -93,11 +93,23 @@ def optimize_K(
         mean=initial_mean,
         sigma=1.5,
     )
-    for _ in range(500):  # 500世代実行する場合
-      solutions = optimizer.ask()  # 解を生成
-      fitness = [optimize_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams) for K in solutions]  # 各解の評価
-      optimizer.tell(solutions, fitness)  # 評価結果を最適化アルゴリズムに渡す
-        
+    #for _ in range(500):  # 500世代実行する場合
+     # solutions = optimizer.ask()  # 解を生成
+      #fitness = [optimize_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams) for K in solutions]  # 各解の評価
+      #optimizer.tell(solutions, fitness)  # 評価結果を最適化アルゴリズムに渡す
+
+    for generation in range(500):
+               solutions = []
+               for _ in range(optimizer.population_size):
+                   # Ask a parameter
+                   x = optimizer.ask()
+                   value = optimize_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams)
+                   solutions.append((x, value))
+                   print(f"#{generation} {value} (K={x[0]}, params = {x[1]})")
+
+               # Tell evaluation values.
+               optimizer.tell(solutions)
+
     E: float = -optimize.fun
     K: npt.NDArray[np.float_] = optimize.x
 
