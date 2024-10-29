@@ -89,15 +89,17 @@ def optimize_K(
         #maxiter=500,
         #seed=rng,
     ##)
-    result=CMA(
-        optimize_K_func,
-        bounds,
+    optimizer=CMA(
         mean=initial_mean,
         sigma=1.5,
     )
+    for _ in range(500):  # 500世代実行する場合
+      solutions = optimizer.ask()  # 解を生成
+      fitness = [optimize_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams) for K in solutions]  # 各解の評価
+      optimizer.tell(solutions, fitness)  # 評価結果を最適化アルゴリズムに渡す
         
-    E: float = -result.fun
-    K: npt.NDArray[np.float_] = result.x
+    E: float = -optimize.fun
+    K: npt.NDArray[np.float_] = optimize.x
 
     return K, E
 
