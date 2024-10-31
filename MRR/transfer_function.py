@@ -13,7 +13,7 @@ def simulate_transfer_function(
     center_wavelength: float,
 ) -> npt.NDArray[np.float_]:
     #print(K)
-    #K=K.T
+    K=K.T
     #print(K)
     y: npt.NDArray[np.float_] = 20 * np.log10(np.abs(_D(L, K, alpha, wavelength, eta, n_eff, n_g, center_wavelength)))
     return y.reshape(y.size)
