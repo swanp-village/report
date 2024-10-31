@@ -73,10 +73,11 @@ def optimize_K(
     params: OptimizeKParams,
 ) -> tuple[npt.NDArray[np.float_], float]:
     bounds = [(1e-12, eta) for _ in range(number_of_rings + 1)]
-    initial=np.random.uniform(bounds,number_of_rings+1)
-    initial_mean=initial.mean(axis=0)
+    #for i in range(number_of_rings+1)
+    initial=rng.uniform(1e-12, eta,size=(1,len(bounds))
+        
     sigma=1.5
-    print(initial_mean)
+    print(initial)
 
     #result = differential_evolution (
        ## optimize_K_func,
