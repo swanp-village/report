@@ -313,6 +313,7 @@ def optimize(
 
 
 def optimize_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams) -> np.float_:
+    K = K.T
     x = calculate_x(center_wavelength=params.center_wavelength, FSR=params.FSR)
     y = simulate_transfer_function(
         wavelength=x,
