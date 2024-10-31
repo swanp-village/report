@@ -79,6 +79,7 @@ def optimize_K(
 
     sigma=1.5
     print(initial)
+    bounds2=[1e-12, eta]
 
     #result = differential_evolution (
        ## optimize_K_func,
@@ -92,7 +93,7 @@ def optimize_K(
         #seed=rng,
     ##)
     optimizer=CMA(
-        bounds=bounds,
+        bounds=bounds2,
         mean=initial,
         sigma=1.5,
     )
