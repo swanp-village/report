@@ -79,7 +79,7 @@ def optimize_K(
 
     sigma=1.5
     print(initial)
-    bounds2=[1e-12, eta]
+    bounds2=np.array([1e-12, eta])
 
     #result = differential_evolution (
        ## optimize_K_func,
