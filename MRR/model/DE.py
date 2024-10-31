@@ -90,7 +90,7 @@ def optimize_K(
         #seed=rng,
     ##)
     optimizer=CMA(
-        mean=initial_mean,
+        mean=initial,
         sigma=1.5,
     )
     #for _ in range(500):  # 500世代実行する場合
