@@ -93,7 +93,7 @@ def optimize_K(
         #seed=rng,
     ##)
     optimizer=CMA(
-        bounds=bounds2,
+        bounds=(bounds2,initial),
         mean=initial,
         sigma=1.5,
     )
