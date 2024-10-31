@@ -105,6 +105,7 @@ def optimize_K(
                for _ in range(optimizer.population_size):
                    # Ask a parameter
                    x = optimizer.ask()
+                   print(x)
                    value = optimize_K_func(x, params)
                    solutions.append((x, value))
                    print(f"#{generation} {value} (K={x[0]}, params = {x[1]})")
