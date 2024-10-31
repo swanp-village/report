@@ -73,13 +73,14 @@ def optimize_K(
     params: OptimizeKParams,
 ) -> tuple[npt.NDArray[np.float_], float]:
     bounds = [(1e-12, eta) for _ in range(number_of_rings + 1)]
+    bounds2=[[1e-12, eta] for _ in range(number_of_rings + 1)]
     #for i in range(number_of_rings+1)
     initial=rng.uniform(1e-12, eta,size=(1,len(bounds))) 
     initial_T=initial.T
 
     sigma=1.5
     print(initial)
-    bounds2=np.array([1e-12, eta])
+    #bounds2=np.array([1e-12, eta])
 
     #result = differential_evolution (
        ## optimize_K_func,
@@ -93,7 +94,7 @@ def optimize_K(
         #seed=rng,
     ##)
     optimizer=CMA(
-        bounds=np.array([bounds2,initial]),
+        bounds=bounds2,
         mean=initial_T,
         sigma=1.5,
     )
