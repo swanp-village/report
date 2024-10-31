@@ -75,6 +75,8 @@ def optimize_K(
     bounds = [(1e-12, eta) for _ in range(number_of_rings + 1)]
     #for i in range(number_of_rings+1)
     initial=rng.uniform(1e-12, eta,size=(1,len(bounds))) 
+    initial=initial.T
+
     sigma=1.5
     print(initial)
 
