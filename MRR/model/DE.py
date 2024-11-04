@@ -103,6 +103,7 @@ def optimize_K(
     for _ in range(500):  # 500世代実行する場合
       solutions = optimizer.ask()  # 解を生成
       fitness =  [optimize_K_func(K,params) for K in solutions]  # 各解の評価
+    　print(fitness)
       optimizer.tell(list(zip(solutions, fitness)))  # 評価結果を最適化アルゴリズムに渡す
 
     #for generation in range(500):
