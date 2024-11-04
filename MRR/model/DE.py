@@ -105,7 +105,7 @@ def optimize_K(
       print(solutions)
       fitness =  [optimize_K_func(K.flatten(),params) for K in solutions]  # 各解の評価
      # optimizer.tell(solutions, fitness)  # 評価結果を最適化アルゴリズムに渡す
-      optimizer.tell(list(zip(solutions, fitness_values)))
+      optimizer.tell(list(zip(solutions, fitness)))
 
     #for generation in range(500):
      #          solutions = []
