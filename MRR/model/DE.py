@@ -77,6 +77,7 @@ def optimize_K(
     #for i in range(number_of_rings+1)
     initial=rng.uniform(1e-12, eta,size=(1,len(bounds))) 
     initial_T=initial.T
+    popsize=15
 
     sigma=1.5
     print(initial)
@@ -97,6 +98,7 @@ def optimize_K(
         bounds=bounds2,
         mean=initial_T,
         sigma=1.5,
+        population_size=popsize,
     )
     for _ in range(500):  # 500世代実行する場合
       solutions = optimizer.ask()  # 解を生成
