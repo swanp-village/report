@@ -91,17 +91,17 @@ def optimize_K(
         sigma=1.5,
         population_size=popsize,
     )
-    test_K = np.random.rand(9)
-    test_value = optimize_K_func(test_K, params)
-    print("Test value:", test_value)
+    #test_K = np.random.rand(9)
+    #test_value = optimize_K_func(test_K, params)
+    #print("Test value:", test_value)
     for _ in range(500):  # 500世代実行する場合
       solutions = optimizer.ask()  # 解を生成
-      print(solutions)
-      print("Solutions type:", type(solutions))
-      print("Solutions shape:", solutions.shape)
+      #print(solutions)
+      #print("Solutions type:", type(solutions))
+      #print("Solutions shape:", solutions.shape)
       fitness = np.array([float(optimize_K_func(K,params)) for K in solutions]) # 各解の評価
-      print("Fitness values shape:", np.shape(fitness))
-      print("Fitness values:", fitness)
+      #print("Fitness values shape:", np.shape(fitness))
+      #print("Fitness values:", fitness)
       optimizer.tell(solutions, fitness)  # 評価結果を最適化アルゴリズムに渡す
       #optimizer.tell(list(zip(solutions, fitness)))
 
@@ -321,6 +321,22 @@ def optimize_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams) -> np.fl
         n_g=params.n_g,
         center_wavelength=params.center_wavelength,
     )
+    print(f"x: {x}")
+    print(f"y: {y}")
+    print("evaluate_band result:", evaluate_band(
+        x=x,
+        y=y,
+        center_wavelength=params.center_wavelength,
+        length_of_3db_band=params.length_of_3db_band,
+        max_crosstalk=params.max_crosstalk,
+        H_p=params.H_p,
+        H_s=params.H_s,
+        H_i=params.H_i,
+        r_max=params.r_max,
+        weight=params.weight,
+        ignore_binary_evaluation=False,
+    ))
+
     #print(f"x shape: {x.shape}, x: {x}")
     #print(f"y shape: {y.shape}, y: {y}") 
 
