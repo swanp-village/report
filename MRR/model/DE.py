@@ -65,6 +65,17 @@ class OptimizeKParams:
     r_max: float
     weight: list[float]
 
+def simple_func(x):
+    return sum((x - 0.5) ** 2)
+
+optimizer = CMA(mean=np.zeros(9), sigma=0.5)
+
+for generation in range(10):
+    solutions = optimizer.ask()
+    fitness = np.array([simple_func(sol) for sol in solutions])
+    optimizer.tell(solutions, fitness)
+    print(f"Generation {generation} complete.")
+
 
 def optimize_K(
     eta: float,
