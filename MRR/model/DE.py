@@ -106,10 +106,9 @@ def optimize_K(
     K: npt.NDArray[np.float_] = optimize.x
 
     return K, E
-
-　　test_K = np.random.rand(9)
-　　test_value = optimize_K_func(test_K, params)
-　　print("Test value:", test_value)
+    test_K = np.random.rand(9)
+    test_value = optimize_K_func(test_K, params)
+    print("Test value:", test_value)
 
 
 def optimize(
