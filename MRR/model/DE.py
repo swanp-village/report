@@ -91,6 +91,9 @@ def optimize_K(
         sigma=1.5,
         population_size=popsize,
     )
+    test_K = np.random.rand(9)
+    test_value = optimize_K_func(test_K, params)
+    print("Test value:", test_value)
     for _ in range(500):  # 500世代実行する場合
       solutions = optimizer.ask()  # 解を生成
       print(solutions)
@@ -106,9 +109,7 @@ def optimize_K(
     K: npt.NDArray[np.float_] = optimize.x
 
     return K, E
-    test_K = np.random.rand(9)
-    test_value = optimize_K_func(test_K, params)
-    print("Test value:", test_value)
+    
 
 
 def optimize(
