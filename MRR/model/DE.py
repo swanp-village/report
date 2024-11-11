@@ -21,29 +21,6 @@ from MRR.transfer_function import simulate_transfer_function
 import numpy as np
 from cmaes import CMA
 
-def simple_func(x):
-    return sum((x - 0.5) ** 2)
-
-# 初期化
-mean = np.zeros(9)  # 8次のMRRに対応する次元数 9個
-sigma = 0.5
-optimizer = CMA(mean=mean, sigma=sigma)
-
-for generation in range(10):
-    solutions = optimizer.ask()
-    
-    # solutions と fitness を明示的に確認
-    print("Solutions type:", type(solutions))
-    print("Solutions shape:", solutions.shape)
-    print("Solutions:", solutions)
-    
-    fitness = np.array([simple_func(K) for K in solutions])
-    
-    print("Fitness values:", fitness)
-    
-    optimizer.tell(solutions, fitness)
-    print(f"Generation {generation} complete.")
-
 
 
 def optimize_L(
