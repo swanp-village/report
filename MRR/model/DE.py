@@ -85,21 +85,6 @@ def optimize_K(
     popsize=number_of_rings+1
 
     sigma=0.2
-    #print(initial)
-    #print(initial_T)
-    #bounds2=np.array([1e-12, eta])
-
-    #result = differential_evolution (
-       ## optimize_K_func,
-       ## bounds,
-        ##args=(params,),
-        #strategy="currenttobest1bin",
-        #workers=-1,
-        #updating="deferred",
-        #popsize=15,
-        #maxiter=500,
-        #seed=rng,
-    ##)
     optimizer=CMA(
         bounds=bounds2,
         mean=initial_T,
@@ -117,22 +102,14 @@ def optimize_K(
       optimizer.tell(solutions, fitness)  # 評価結果を最適化アルゴリズムに渡す
       #optimizer.tell(list(zip(solutions, fitness)))
 
-    #for generation in range(500):
-     #          solutions = []
-    #           for _ in range(optimizer.population_size):
-     #              # Ask a parameter
-      #             x = optimizer.ask()
-       #            print(x)
-        #           value = optimize_K_func(x, params)
-         #         print(f"#{generation} {value} (K={x[0]}, params = {x[1]})")
-
-               # Tell evaluation values.
-             #  optimizer.tell(solutions)
-
     E: float = -optimize.fun
     K: npt.NDArray[np.float_] = optimize.x
 
     return K, E
+
+test_K = np.random.rand(9)
+test_value = optimize_K_func(test_K, params)
+print("Test value:", test_value)
 
 
 def optimize(
