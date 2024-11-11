@@ -84,9 +84,9 @@ def optimize_K(
     initial_T=initial.T
     popsize=number_of_rings+1
 
-    sigma=1.5
-    print(initial)
-    print(initial_T)
+    sigma=0.2
+    #print(initial)
+    #print(initial_T)
     #bounds2=np.array([1e-12, eta])
 
     #result = differential_evolution (
