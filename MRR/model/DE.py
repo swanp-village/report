@@ -339,8 +339,8 @@ def optimize_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams) -> np.fl
         n_g=params.n_g,
         center_wavelength=params.center_wavelength,
     )
-    print(f"x shape: {x.shape}, x: {x}")
-    print(f"y shape: {y.shape}, y: {y}") 
+    #print(f"x shape: {x.shape}, x: {x}")
+    #print(f"y shape: {y.shape}, y: {y}") 
 
     return -evaluate_band(
         x=x,
@@ -355,4 +355,4 @@ def optimize_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams) -> np.fl
         weight=params.weight,
         ignore_binary_evaluation=False,
     )
-    print(f"Fitness value: {fitness}")
+    #print(f"Fitness value: {fitness}")
