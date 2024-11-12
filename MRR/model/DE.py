@@ -114,7 +114,7 @@ def optimize_K(
       if fitness.shape != (9,):
         fitness = np.ravel(fitness)
           
-      solutions_with_fitness = [(solution, f) for solution, f in zip(solutions, fitness)]　#solutionとfitnessを一体化
+      solutions_with_fitness =[(solution, fitness_value) for solution, fitness_value in zip(solutions, fitness)]
       print(solutions_with_fitness)
       
       optimizer.tell(solutions_with_fitness)  # 評価結果を最適化アルゴリズムに渡す
