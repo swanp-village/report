@@ -25,6 +25,9 @@ def evaluate_band(
     #     end = cross_talk[0][1]
     else:
         return np.float_(0)
+
+    print(f"Pass band: {pass_band}")
+    print(f"Cross talk: {cross_talk}")
     result = [
         _evaluate_pass_band(x=x, y=y, H_p=H_p, start=start, end=end),
         _evaluate_stop_band(x=x, y=y, H_p=H_p, H_s=H_s, start=start, end=end),
