@@ -23,6 +23,8 @@ from cmaes import CMA
 
 
 
+
+
 def optimize_L(
     n_g: float,
     n_eff: float,
@@ -90,11 +92,11 @@ def optimize_K(
         bounds=bounds2,
         mean=initial_T,
         sigma=0.2,
-        population_size=2,
+        population_size=popsize,
         seed=42
     )
     # テスト用
-    optimizer.tell([([0.1, 0.2], 1.0)])  # サンプルデータで動作確認
+    optimizer.tell([([0.1, 0.2,0.1,0.1,0.1,0.1,0.1,0.1,0.1], 1.0)])  # サンプルデータで動作確認
 
 
     for _ in range(3):  # 500世代実行する場合
