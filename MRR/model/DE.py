@@ -111,16 +111,12 @@ def optimize_K(
       solutions = optimizer.ask()  # 解を生成
       #print(solutions)
       print(np.shape(solutions))
-      fitness = [float(optimize_K_func(K,params)) for K in solutions] # 各解の評価
+      fitness = np.array([float(optimize_K_func(K,params)) for K in solutions]) # 各解の評価
       #print(fitness)
       print("Fitness values shape:", np.shape(fitness))
-      solutions_with_fitness = []
-      for i in range(len(solutions)):
-         solutions_with_fitness.append((solutions[i], fitness[i]))  # i番目のsolutionとfitnessをペアに追加
-      print(solutions_with_fitness)
+      # solutionsをリストに変換してペアを作成
+      solutions_with_fitness = [(solution.tolist(), fitness_value) for solution, fitness_value in zip(solutions, fitness)]
 
-     
-      
       optimizer.tell(solutions_with_fitness)  # 評価結果を最適化アルゴリズムに渡す
     
 
