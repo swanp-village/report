@@ -112,7 +112,7 @@ def optimize_K(
       #print(solutions)
       #print("Solutions type:", type(solutions))
       #print("Solutions shape:", solutions.shape)
-      fitness = [float(optimize_K_func(K,params)) for K in solutions] # 各解の評価
+      fitness = np.array([optimize_K_func(K,params) for K in solutions]) # 各解の評価
       #print("Fitness values shape:", np.shape(fitness))
       #print("Fitness values:", fitness.shape)
       optimizer.tell(fitness)  # 評価結果を最適化アルゴリズムに渡す
