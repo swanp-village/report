@@ -116,6 +116,7 @@ def optimize_K(
       print("Fitness values shape:", np.shape(fitness))
       #print("Fitness values:", fitness.shape)
       solutions_with_fitness = [(solutions[i], fitness[i]) for i in range(len(solutions))]
+    　print(solution_with_fitness)
       
       optimizer.tell(solutions_with_fitness)  # 評価結果を最適化アルゴリズムに渡す
     
