@@ -112,6 +112,7 @@ def optimize_K(
       print(solutions)
       fitness = np.array([float(optimize_K_func(K,params)) for K in solutions]) # 各解の評価
       print("Fitness values shape:", np.shape(fitness))
+        
       if fitness.shape != (9,):
         fitness = np.ravel(fitness)
           
