@@ -115,7 +115,7 @@ def optimize_K(
       #print(fitness)
       print("Fitness values shape:", np.shape(fitness))
           
-      solutions_with_fitness =[(solutions, fitness_value) for solution, fitness_value in zip(solutions, fitness)]
+      solutions_with_fitness =[(solution, fitness_value) for solution, fitness_value in zip(solutions, fitness)]
       print("solution_with_fitness shape:",np.shape(solutions_with_fitness))
       
       optimizer.tell(solutions_with_fitness)  # 評価結果を最適化アルゴリズムに渡す
