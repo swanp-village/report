@@ -89,7 +89,7 @@ def optimize_K(
     optimizer=CMA(
         bounds=bounds2,
         mean=initial_T,
-        sigma=1.5,
+        sigma=0.2,
         population_size=popsize,
     )
     #test_K = np.random.rand(9)
