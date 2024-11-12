@@ -107,7 +107,7 @@ def optimize_K(
     #test_K = np.random.rand(9)
     #test_value = optimize_K_func(test_K, params)
     #print("Test value:", test_value)
-    for _ in range(2):  # 500世代実行する場合
+    for _ in range(500):  # 500世代実行する場合
       solutions = optimizer.ask()  # 解を生成
       print(solutions)
       fitness = np.array([float(optimize_K_func(K,params)) for K in solutions]) # 各解の評価
