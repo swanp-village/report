@@ -94,22 +94,6 @@ def optimize_K(
         #maxiter=500,
         #seed=rng,
     #)
-     def quadratic(x1, x2):
-               return (x1 - 3) ** 2 + (10 * (x2 + 2)) ** 2
-
-           optimizer = CMA(mean=np.zeros(2), sigma=1.3)
-
-    for generation in range(50):
-               solutions = []
-               for _ in range(optimizer.population_size):
-                   # Ask a parameter
-                   x = optimizer.ask()
-                   value = quadratic(x[0], x[1])
-                   solutions.append((x, value))
-                   print(f"#{generation} {value} (x1={x[0]}, x2 = {x[1]})")
-
-               # Tell evaluation values.
-               optimizer.tell(solutions)
 
 
     sigma=0.2
@@ -135,7 +119,7 @@ def optimize_K(
       solutions_with_fitness =[(solution, fitness_value) for solution, fitness_value in zip(solutions, fitness)]
       print(solutions_with_fitness)
       
-      optimizer.tell(solutions_with_fitness)  # 評価結果を最適化アルゴリズムに渡す
+    optimizer.tell(solutions_with_fitness)  # 評価結果を最適化アルゴリズムに渡す
     
 
     E: float = -optimize.fun
