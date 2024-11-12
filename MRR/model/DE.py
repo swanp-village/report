@@ -91,6 +91,7 @@ def optimize_K(
         mean=initial_T,
         sigma=0.2,
         population_size=popsize,
+        seed=42
     )
     #test_K = np.random.rand(9)
     #test_value = optimize_K_func(test_K, params)
