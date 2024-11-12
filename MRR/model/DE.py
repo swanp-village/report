@@ -110,10 +110,12 @@ def optimize_K(
     for _ in range(3):  # 500世代実行する場合
       solutions = optimizer.ask()  # 解を生成
       #print(solutions)
-      print(np.shape(solutions))
+      #print(np.shape(solutions))
       fitness = np.array([float(optimize_K_func(K,params)) for K in solutions]) # 各解の評価
       #print(fitness)
-      print("Fitness values shape:", np.shape(fitness))
+      #print("Fitness values shape:", np.shape(fitness))
+      solutions=np.array(solutions)
+      fitness=np.array(fitness)
       # solutionsをリストに変換してペアを作成
       solutions_with_fitness = [(solution.tolist(), fitness_value) for solution, fitness_value in zip(solutions, fitness)]
       print(solutions_with_fitness)
