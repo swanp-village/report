@@ -112,7 +112,7 @@ def optimize_K(
       #print(solutions)
       #print("Solutions type:", type(solutions))
       #print("Solutions shape:", solutions.shape)
-      fitness = np.array([optimize_K_func(K,params) for K in solutions]) # 各解の評価
+      fitness = [optimize_K_func(K,params) for K in solutions] # 各解の評価
       #print("Fitness values shape:", np.shape(fitness))
       #print("Fitness values:", fitness.shape)
       optimizer.tell(fitness)  # 評価結果を最適化アルゴリズムに渡す
@@ -352,8 +352,8 @@ def optimize_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams) -> np.fl
         ignore_binary_evaluation=False,
     ))
 
-    print(f"x shape: {x.shape}, x: {x}")
-    print(f"y shape: {y.shape}, y: {y}") 
+    #print(f"x shape: {x.shape}, x: {x}")
+    #print(f"y shape: {y.shape}, y: {y}") 
 
     return -evaluate_band(
         x=x,
