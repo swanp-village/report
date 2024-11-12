@@ -90,7 +90,7 @@ def optimize_K(
         bounds=bounds2,
         mean=initial_T,
         sigma=0.2,
-        population_size=popsize,
+        population_size=2,
         seed=42
     )
     # テスト用
