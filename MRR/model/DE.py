@@ -82,33 +82,46 @@ def optimize_K(
     #for i in range(number_of_rings+1)
     initial=rng.uniform(1e-12, eta,size=(1,len(bounds))) 
     initial_T=initial.T
-    popsize=number_of_rings+1
+    #popsize=number_of_rings+1
+    result = differential_evolution(
+        optimize_K_func,
+        bounds,
+        args=(params,),
+        strategy="currenttobest1bin",
+        workers=-1,
+        updating="deferred",
+        popsize=15,
+        maxiter=500,
+        seed=rng,
+    )
 
     sigma=0.2
-    optimizer=CMA(
-        bounds=bounds2,
-        mean=initial_T,
-        sigma=1.5,
-        population_size=popsize,
-    )
+    #optimizer=CMA(
+        #bounds=bounds2,
+        #mean=initial_T,
+        #sigma=1.5,
+        #population_size=popsize,
+    #)
     #test_K = np.random.rand(9)
     #test_value = optimize_K_func(test_K, params)
     #print("Test value:", test_value)
-    for _ in range(500):  # 500世代実行する場合
-      solutions = optimizer.ask()  # 解を生成
+    #for _ in range(500):  # 500世代実行する場合
+      #solutions = optimizer.ask()  # 解を生成
       #print(solutions)
       #print("Solutions type:", type(solutions))
       #print("Solutions shape:", solutions.shape)
-      fitness = np.array([float(optimize_K_func(K,params)) for K in solutions]) # 各解の評価
+      #fitness = np.array([float(optimize_K_func(K,params)) for K in solutions]) # 各解の評価
       #print("Fitness values shape:", np.shape(fitness))
       #print("Fitness values:", fitness)
-      optimizer.tell(solutions, fitness)  # 評価結果を最適化アルゴリズムに渡す
+      #optimizer.tell(solutions, fitness)  # 評価結果を最適化アルゴリズムに渡す
       #optimizer.tell(list(zip(solutions, fitness)))
 
     E: float = -optimize.fun
     K: npt.NDArray[np.float_] = optimize.x
 
     return K, E
+
+
     
 
 
