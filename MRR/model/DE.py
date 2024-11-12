@@ -99,8 +99,8 @@ def optimize_K(
      
       fitness = np.array([float(optimize_K_func(K,params)) for K in solutions]) # 各解の評価
       
-      solutions=np.array(solutions)
-      fitness=np.array(fitness)
+      solutions=np.array(solutions,dtype=np.float_)
+      fitness=np.array(fitness,dtype=np.float_)
       # solutionsをリストに変換してペアを作成
       solutions_with_fitness = [(solution, fitness_value) for solution, fitness_value in zip(solutions, fitness)]
       print(solutions_with_fitness)
