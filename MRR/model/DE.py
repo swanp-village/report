@@ -102,7 +102,7 @@ def optimize_K(
       solutions=np.array(solutions,dtype=np.float_)
       fitness=np.array(fitness,dtype=np.float_)
       # solutionsをリストに変換してペアを作成
-      solutions_with_fitness = [(solution, fitness_value) for solution, fitness_value in zip(solutions, fitness)]
+      solutions_with_fitness = [(solution.flatten(), fitness_value) for solution, fitness_value in zip(solutions, fitness)]
       print(solutions_with_fitness)
 
       optimizer.tell(solutions_with_fitness)  # 評価結果を最適化アルゴリズムに渡す
