@@ -86,7 +86,6 @@ def optimize_K(
     #initial=rng.uniform(1e-12, eta,size=(1,len(bounds))) 
     initial=np.random.uniform(1e-12, eta, size=(9,)),
     print("bounds:",bounds)
-    print("bounds2:",bounds2)
     initial_T=initial.T
     print("initial:",initial_T)
     
