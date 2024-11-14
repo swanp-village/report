@@ -105,14 +105,14 @@ def optimize_K(
         best_solution = None
         best_fitness = float("inf")
         solutions = []
-            for _ in range(number_of_rings + 1):
-                # Ask a parameter
-                x = optimizer.ask()
-                value = optimize_K_func(x, params)
-                solutions.append((x, value))
-                if value < best_fitness:
-                  best_fitness = value
-                  best_solution = x                   
+        for _ in range(number_of_rings + 1):
+            # Ask a parameter
+            x = optimizer.ask()
+            value = optimize_K_func(x, params)
+            solutions.append((x, value))
+            if value < best_fitness:
+                best_fitness = value
+                best_solution = x                   
         # Tell evaluation values.
         optimizer.tell(solutions)
         
