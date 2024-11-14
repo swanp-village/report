@@ -105,7 +105,7 @@ def optimize_K(
 
     for _ in range(3):  # 500世代実行する場合
       solutions = optimizer.ask()  # 解を生成
-      print(solitions)
+      print(solutions)
       fitness = np.array([float(optimize_K_func(K,params)) for K in solutions]) # 各解の評価
       solutions=np.array(solutions,dtype=np.float_)
       fitness=np.array(fitness,dtype=np.float_)
