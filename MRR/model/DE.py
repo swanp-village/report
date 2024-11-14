@@ -102,7 +102,6 @@ def optimize_K(
  
     
     for generation in range(3):
-        f
         best_solution = None
         best_fitness = float("inf")
         solutions = []
