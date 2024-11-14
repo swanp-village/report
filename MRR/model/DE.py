@@ -111,15 +111,12 @@ def optimize_K(
                    value = optimize_K_func(x, params)
                    solutions.append((x, value))
 
-               min_fitness = min(values)
-               min_fitness_index = values.index(min_fitness)
+               min_fitness = min(value)
+               min_fitness_index = value.index(min_fitness)
                if min_fitness < best_fitness:
                   best_fitness = min_fitness
                   best_solution = solutions[min_fitness_index]
-    
-               optimizer.tell(solutions, fitness_values) 
                    
-
                # Tell evaluation values.
                optimizer.tell(solutions)
         
