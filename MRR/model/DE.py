@@ -93,7 +93,7 @@ def optimize_K(
 
     sigma=0.2
     optimizer=CMA(
-        bounds=bounds2,
+        bounds=bounds,
         mean=initial_T,
         sigma=0.2,
         population_size=popsize,
