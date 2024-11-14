@@ -82,7 +82,7 @@ def optimize_K(
     bounds = [(1e-12, eta) for _ in range(number_of_rings + 1)]
     #bounds2=np.array([[1e-12, eta] for _ in range(number_of_rings + 1)])
     #for i in range(number_of_rings+1)
-    bound_array=np.array(bounds)
+    bounds_array=np.array(bounds)
     #initial=rng.uniform(1e-12, eta,size=(1,len(bounds))) 
     initial=np.random.uniform(1e-12, eta, size=(9,)),
     print("bounds:",bounds)
