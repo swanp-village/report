@@ -114,8 +114,8 @@ def optimize_K(
                optimizer.tell(solutions)
 
 
-    E: float = -optimizer._best_fitness
-    K: npt.NDArray[np.float_] = optimizer._mean
+    #E: float = -optimizer._best_fitness
+    #K: npt.NDArray[np.float_] = optimizer._mean
 
     return K, E
 
