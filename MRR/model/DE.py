@@ -322,7 +322,7 @@ def optimize(
 
 
 def optimize_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams) -> np.float_:
-    print(K)
+    
     
 
     x = calculate_x(center_wavelength=params.center_wavelength, FSR=params.FSR)
@@ -338,19 +338,7 @@ def optimize_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams) -> np.fl
     )
     #print(f"x: {x}")
     #print(f"y: {y}")
-    print("evaluate_band result:", evaluate_band(
-        x=x,
-        y=y,
-        center_wavelength=params.center_wavelength,
-        length_of_3db_band=params.length_of_3db_band,
-        max_crosstalk=params.max_crosstalk,
-        H_p=params.H_p,
-        H_s=params.H_s,
-        H_i=params.H_i,
-        r_max=params.r_max,
-        weight=params.weight,
-        ignore_binary_evaluation=False,
-    ))
+    
 
     
 
