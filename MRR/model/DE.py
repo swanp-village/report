@@ -108,7 +108,7 @@ def optimize_K(
                    x = optimizer.ask()
                    value = optimize_K_func(x, params)
                    solutions.append((x, value))
-                   print(f"#{generation} {value} (x1={x[0]}, x2 = {x[1]})")
+                   
 
                # Tell evaluation values.
                optimizer.tell(solutions)
@@ -117,7 +117,7 @@ def optimize_K(
     #E: float = -optimizer._best_fitness
     #K: npt.NDArray[np.float_] = optimizer._mean
 
-    return K, E
+    #return K, E
 
 
     
