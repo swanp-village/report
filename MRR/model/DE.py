@@ -99,8 +99,8 @@ def optimize_K(
         population_size=popsize,
         seed=42
     )
-    # テスト用
-    optimizer.tell([([0.1, 0.2,0.1,0.1,0.1,0.1,0.1,0.1,0.1], 1.0)])  # サンプルデータで動作確認
+ 
+    
 
 
     for _ in range(3):  # 500世代実行する場合
