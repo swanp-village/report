@@ -84,7 +84,8 @@ def optimize_K(
     #for i in range(number_of_rings+1)
     bounds_array=np.array(bounds)
     #initial=rng.uniform(1e-12, eta,size=(1,len(bounds))) 
-    initial=np.random.uniform(1e-12, eta, size=(9,)),
+    initial=np.random.uniform(1e-12, eta, size=(9,))
+    print(initial)
     print("bounds:",bounds)
     
     popsize=number_of_rings+1
