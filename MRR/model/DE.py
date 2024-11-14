@@ -103,21 +103,32 @@ def optimize_K(
     
     for generation in range(3):
                solutions = []
+               best_solution = None
+               best_fitness = float("inf")
                for _ in range(optimizer.population_size):
                    # Ask a parameter
                    x = optimizer.ask()
                    value = optimize_K_func(x, params)
                    solutions.append((x, value))
+
+               min_fitness = min(values)
+               min_fitness_index = values.index(min_fitness)
+               if min_fitness < best_fitness:
+                  best_fitness = min_fitness
+                  best_solution = solutions[min_fitness_index]
+    
+               optimizer.tell(solutions, fitness_values) 
                    
 
                # Tell evaluation values.
                optimizer.tell(solutions)
+        
 
 
-    #E: float = -optimizer._best_fitness
-    #K: npt.NDArray[np.float_] = optimizer._mean
+    E: float = best_fitness
+    K: npt.NDArray[np.float_] = best_solution
 
-    #return K, E
+    return K, E
 
 
     
