@@ -86,8 +86,6 @@ def optimize_K(
     #initial=rng.uniform(1e-12, eta,size=(1,len(bounds))) 
     initial=np.random.uniform(1e-12, eta, size=(9,)),
     print("bounds:",bounds)
-    initial_T=initial.T
-    print("initial:",initial_T)
     
     popsize=number_of_rings+1
    
@@ -95,7 +93,7 @@ def optimize_K(
     sigma=0.2
     optimizer=CMA(
         bounds=bounds_array,
-        mean=initial_T,
+        mean=initial,
         sigma=0.2,
         population_size=popsize,
         seed=42
