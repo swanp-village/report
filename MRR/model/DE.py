@@ -80,9 +80,11 @@ def optimize_K(
     params: OptimizeKParams,
 ) -> tuple[npt.NDArray[np.float_], float]:
     bounds = [(1e-12, eta) for _ in range(number_of_rings + 1)]
-    bounds2=np.array([[1e-12, eta] for _ in range(number_of_rings + 1)])
+    #bounds2=np.array([[1e-12, eta] for _ in range(number_of_rings + 1)])
     #for i in range(number_of_rings+1)
-    initial=rng.uniform(1e-12, eta,size=(1,len(bounds))) 
+    bound_array=np.array(bounds)
+    #initial=rng.uniform(1e-12, eta,size=(1,len(bounds))) 
+    initial=np.random.uniform(1e-12, eta, size=(9,)),
     print("bounds:",bounds)
     print("bounds2:",bounds2)
     initial_T=initial.T
@@ -93,7 +95,7 @@ def optimize_K(
 
     sigma=0.2
     optimizer=CMA(
-        bounds=bounds,
+        bounds=bounds_array,
         mean=initial_T,
         sigma=0.2,
         population_size=popsize,
