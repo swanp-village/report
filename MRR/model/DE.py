@@ -112,7 +112,7 @@ def optimize_K(
       # solutionsをリストに変換してペアを作成
      # solutions_with_fitness = [(solutions[i], fitness[i]) for i in range(len(fitness))]
      # optimizer.tell(solutions_with_fitness)  # 評価結果を最適化アルゴリズムに渡す
-    for generation in range(50):
+    for generation in range(3):
                solutions = []
                for _ in range(optimizer.population_size):
                    # Ask a parameter
