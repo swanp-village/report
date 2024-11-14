@@ -106,7 +106,7 @@ def optimize_K(
         best_solution = None
         best_fitness = float("inf")
         solutions = []
-            for _ in range(optimizer.population_size):
+            for _ in range(number_of_rings + 1):
                 # Ask a parameter
                 x = optimizer.ask()
                 value = optimize_K_func(x, params)
