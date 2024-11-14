@@ -101,17 +101,6 @@ def optimize_K(
     )
  
     
-
-
-    #for _ in range(3):  # 500世代実行する場合
-     # solutions = optimizer.ask()  # 解を生成
-     # print(solutions)
-     # fitness = np.array([float(optimize_K_func(K,params)) for K in solutions]) # 各解の評価
-     # solutions=np.array(solutions,dtype=np.float_)
-     # fitness=np.array(fitness,dtype=np.float_)
-      # solutionsをリストに変換してペアを作成
-     # solutions_with_fitness = [(solutions[i], fitness[i]) for i in range(len(fitness))]
-     # optimizer.tell(solutions_with_fitness)  # 評価結果を最適化アルゴリズムに渡す
     for generation in range(3):
                solutions = []
                for _ in range(optimizer.population_size):
@@ -125,8 +114,8 @@ def optimize_K(
                optimizer.tell(solutions)
 
 
-    E: float = -optimize.fun
-    K: npt.NDArray[np.float_] = optimize.x
+    E: float = -optimizer._best_fitness
+    K: npt.NDArray[np.float_] = optimizer._mean
 
     return K, E
 
