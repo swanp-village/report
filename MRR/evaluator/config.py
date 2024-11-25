@@ -16,6 +16,6 @@ config = OptimizationConfig(
     H_i=base.H_i,
     r_max=base.r_max,
     min_ring_length=50e-6,
-    number_of_episodes_in_L=1,
+    number_of_episodes_in_L=100,
     strategy=[0.03, 0.07, 0.2, 0.7],
 )
