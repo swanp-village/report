@@ -100,6 +100,7 @@ def optimize_K(
             # Ask a parameter
             x = optimizer.ask()
             value = optimize_K_func(x, params)
+            print("value=",value)
             solutions.append((x, value))
             if value < best_fitness:
                 best_fitness = value
