@@ -88,8 +88,7 @@ def optimize_K(
         bounds=bounds_array,
         mean=initial,
         sigma=0.3,
-        population_size=popsize,
-        seed=rng
+        population_size=popsize
     )
  
     for generation in range(2):
