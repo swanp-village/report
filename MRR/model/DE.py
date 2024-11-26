@@ -84,7 +84,7 @@ def optimize_K(
     initial=np.random.uniform(1e-12, eta, size=(number_of_rings+1,))
     popsize=number_of_rings+1
     sigma=0.3
-   rng: np.random.Generator 
+    rng: np.random.Generator 
     optimizer=CMA(
         bounds=bounds_array,
         mean=initial,
