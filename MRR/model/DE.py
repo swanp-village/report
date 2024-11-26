@@ -89,7 +89,7 @@ def optimize_K(
         mean=initial,
         sigma=0.3,
         population_size=popsize,
-        seed=100
+        seed=42
     )
  
     for generation in range(500):
