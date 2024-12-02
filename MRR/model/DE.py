@@ -88,6 +88,7 @@ def optimize_K(
     sigma=0.3 
     x=[0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5]
     value=optimize_K_func(x,params)
+    """
     optimizer=CMA(
         bounds=bounds_array,
         mean=initial,
@@ -115,6 +116,7 @@ def optimize_K(
     K: npt.NDArray[np.float_] = best_solution
 
     return K,E
+    
     
     
 
@@ -315,7 +317,7 @@ def optimize(
         graph.plot(x, y)
         graph.show(logger.generate_image_path())
 
-
+"""
 def optimize_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams) -> np.float_:
     
     
