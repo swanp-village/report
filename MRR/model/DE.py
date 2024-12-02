@@ -196,12 +196,13 @@ def optimize(
                 number_of_rings=number_of_rings,
                 rng=rng,
             )
+        L=[ 8.24318182e-05, 8.24318182e-05, 8.24318182e-05, 8.24318182e-05, 8.24318182e-05, 0.000109909091, 0.000109909091, 0.000109909091] 
         K, E = optimize_K(
             eta=eta,
             number_of_rings=number_of_rings,
             rng=rng,
             params=OptimizeKParams(
-                L=[ 8.24318182e-05, 8.24318182e-05, 8.24318182e-05, 8.24318182e-05, 8.24318182e-05, 0.000109909091, 0.000109909091, 0.000109909091] ,
+                L=L
                 n_g=n_g,
                 n_eff=n_eff,
                 eta=eta,
