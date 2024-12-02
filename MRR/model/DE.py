@@ -99,6 +99,7 @@ def optimize_K(
         for _ in range(number_of_rings + 1):
             # Ask a parameter
             x = optimizer.ask()
+            print(x)
             value = optimize_K_func(x, params)
             solutions.append((x, value))
             if value < best_fitness:
