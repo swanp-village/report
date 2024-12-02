@@ -84,6 +84,9 @@ def optimize_K(
     initial=np.random.uniform(1e-12, eta, size=(number_of_rings+1,))
     popsize=number_of_rings+1
     sigma=0.3 
+    x=[0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5]
+    value=optimize_K_func(x,params)
+    """
     optimizer=CMA(
         bounds=bounds_array,
         mean=initial,
@@ -110,6 +113,7 @@ def optimize_K(
     K: npt.NDArray[np.float_] = best_solution
 
     return K, E
+    """
 
 
     
@@ -197,7 +201,7 @@ def optimize(
             number_of_rings=number_of_rings,
             rng=rng,
             params=OptimizeKParams(
-                L=L,
+                L=[,
                 n_g=n_g,
                 n_eff=n_eff,
                 eta=eta,
