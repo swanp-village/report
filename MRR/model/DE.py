@@ -45,7 +45,7 @@ def optimize_L(
             rng=rng,
         )
         #L = calculate_ring_length(center_wavelength=center_wavelength, n_eff=n_eff, N=N)
-        L=
+        L=[8.24318182e-05, 8.24318182e-05, 8.24318182e-05, 8.24318182e-05, 8.24318182e-05, 0.000109909091, 0.000109909091, 0.000109909091] 
         practical_FSR = calculate_practical_FSR(center_wavelength=center_wavelength, n_eff=n_eff, n_g=n_g, N=N)
         if practical_FSR > FSR * 0.99 and practical_FSR < FSR * 1.01 and np.all(L < 0.1):
             break
