@@ -44,7 +44,8 @@ def optimize_L(
             FSR=FSR,
             rng=rng,
         )
-        L = calculate_ring_length(center_wavelength=center_wavelength, n_eff=n_eff, N=N)
+        #L = calculate_ring_length(center_wavelength=center_wavelength, n_eff=n_eff, N=N)
+        L=[8.24318182e-05, 8.24318182e-05, 8.24318182e-05, 8.24318182e-05, 8.24318182e-05, 0.000109909091, 0.000109909091, 0.000109909091]  
         
         practical_FSR = calculate_practical_FSR(center_wavelength=center_wavelength, n_eff=n_eff, n_g=n_g, N=N)
         if practical_FSR > FSR * 0.99 and practical_FSR < FSR * 1.01 and np.all(L < 0.1):
@@ -85,6 +86,8 @@ def optimize_K(
     initial=np.random.uniform(1e-12, eta, size=(number_of_rings+1,))
     popsize=number_of_rings+1
     sigma=0.3 
+    x=[0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5]
+    value=optimize_K_func(x,params)
     optimizer=CMA(
         bounds=bounds_array,
         mean=initial,
