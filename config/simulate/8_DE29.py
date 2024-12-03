@@ -30,7 +30,7 @@ config = {
     "lambda_limit": np.arange(1540e-9, 1560e-9, 1e-12),
     "label": r"pre8th, E=14.09",
 }
-
+"""
 config = {
     "eta": 0.996,  # 結合損
     "alpha": 52.96,  # 伝搬損失係数
