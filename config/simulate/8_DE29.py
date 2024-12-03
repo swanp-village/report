@@ -30,7 +30,6 @@ config = {
     "lambda_limit": np.arange(1549e-9, 1551e-9, 1e-12),
 }
 
-"""
 config = {
     "eta": 0.996,  # 結合損
     "alpha": 52.96,  # 伝搬損失係数
@@ -45,4 +44,4 @@ config = {
     "center_wavelength": 1550e-9,
     "lambda_limit": np.arange(1549e-9, 1551e-9, 1e-12),
 }
-"""
+
