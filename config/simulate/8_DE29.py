@@ -28,8 +28,8 @@ config = {
     "n_g": 4.4,  # 群屈折率
     "center_wavelength": 1550e-9,
     "lambda_limit": np.arange(1540e-9, 1560e-9, 1e-12),
-    "label": r"pre8th, E=14.09",
 }
+
 """
 config = {
     "eta": 0.996,  # 結合損
@@ -45,3 +45,4 @@ config = {
     "center_wavelength": 1550e-9,
     "lambda_limit": np.arange(1540e-9, 1560e-9, 1e-12),
 }
+"""
