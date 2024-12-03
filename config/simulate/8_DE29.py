@@ -44,5 +44,4 @@ config = {
     "n_g": 4.4,  # 群屈折率
     "center_wavelength": 1550e-9,
     "lambda_limit": np.arange(1540e-9, 1560e-9, 1e-12),
-    "label": r"8th, E=13.9",
 }
