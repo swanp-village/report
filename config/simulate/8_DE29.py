@@ -26,8 +26,7 @@ config = {
     ],
     "n_eff": 2.2,
     "n_g": 4.4,
-    "center_wavelength": 1.55e-06
-}
+
     "center_wavelength": 1550e-9,
     "lambda_limit": np.arange(1549e-9, 1551e-9, 1e-12),
 }
