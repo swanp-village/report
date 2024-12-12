@@ -19,7 +19,7 @@ from MRR.simulator import (
 from MRR.transfer_function import simulate_transfer_function
 
 import numpy as np
-from cmaes import CMA
+
 
 
 
