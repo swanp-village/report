@@ -36,12 +36,7 @@ config = {
     "n_g": 4.2,  # 群屈折率
     "center_wavelength": 1550e-9,
     "lambda_limit": np.arange(1525e-9, 1555e-9, 1e-12),
-    
-}
-
-config2 = {
-    "eta": 0.996,  # 結合損
-    "alpha": 52.96,  # 伝搬損失係数
+   
     "K": [
         0.8436244108235607,
         0.3206806557245825,
@@ -72,4 +67,6 @@ config2 = {
     "center_wavelength": 1550e-9,
     "lambda_limit": np.arange(1520e-9, 1560e-9, 1e-12),
     "label": r"10th, E=14.20",
+    
 }
+
