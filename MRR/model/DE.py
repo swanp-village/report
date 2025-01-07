@@ -87,7 +87,8 @@ def optimize_K(
     popsize=number_of_rings+1
     sigma=0.3 
     optimizer = cma.CMAEvolutionStrategy(initial, sigma, 
-                                         {'popsize': popsize, 'bounds': bounds_array})
+                                         {'population_size': popsize, 'bounds':bounds_array, 'adaptsigma': True})
+
 
    
     """
@@ -140,12 +141,6 @@ def optimize_K(
 
     return K, E
     
-    
-    
-
-
-    
-
 
 def optimize(
     n_g: float,
