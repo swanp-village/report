@@ -4,7 +4,7 @@ import numpy as np
 import numpy.typing as npt
 from scipy.optimize import differential_evolution
 from cmaes import CMA
-
+import cma
 from config.random import get_differential_evolution_rng
 from MRR.analyzer import analyze
 from MRR.evaluator import evaluate_band
@@ -86,8 +86,11 @@ def optimize_K(
     initial=np.random.uniform(1e-12, eta, size=(number_of_rings+1,))
     popsize=number_of_rings+1
     sigma=0.3 
+    optimizer = cma.CMAEvolutionStrategy(initial, sigma, 
+                                         {'popsize': popsize, 'bounds': bounds_array})
+
    
-    
+    """
     optimizer=CMA(
         bounds=bounds_array,
         mean=initial,
@@ -109,11 +112,33 @@ def optimize_K(
                 best_solution = x                   
         # Tell evaluation values.
         optimizer.tell(solutions)
-        
+        best_solution = optimizer.result.xbest
+        best_fitness = optimizer.result.fbest
+       
     E: float = -best_fitness
     K: npt.NDArray[np.float_] = best_solution
 
     return K,E
+    """
+    for generation in range(500):
+        solutions = []
+        for _ in range(popsize):
+            # Ask a parameter
+            x = optimizer.ask()
+            value = optimize_K_func(x, params)
+            solutions.append((x, value))
+        
+        # Tell the optimizer the evaluated solutions
+        optimizer.tell(solutions)
+        
+        # 最良の解とフィットネスを更新
+        best_solution = optimizer.result.xbest
+        best_fitness = optimizer.result.fbest
+        
+    E: float = -best_fitness
+    K: npt.NDArray[np.float_] = best_solution
+
+    return K, E
     
     
     
