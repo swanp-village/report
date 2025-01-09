@@ -86,12 +86,12 @@ def optimize_K(
     initial=np.random.uniform(1e-12, eta, size=(number_of_rings+1,))
     popsize=number_of_rings+1
     sigma=0.3 
-    optimizer = cma.CMAEvolutionStrategy(initial, sigma, 
-                                         {'population_size': popsize, 'bounds':bounds_array, 'adaptsigma': True})
+    #optimizer = cma.CMAEvolutionStrategy(initial, sigma, 
+                                      #   {'population_size': popsize, 'bounds':bounds_array, 'adaptsigma': True})
 
 
    
-    """
+    
     optimizer=CMA(
         bounds=bounds_array,
         mean=initial,
@@ -140,7 +140,7 @@ def optimize_K(
     K: npt.NDArray[np.float_] = best_solution
 
     return K, E
-    
+    """
 
 def optimize(
     n_g: float,
