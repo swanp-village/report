@@ -4,7 +4,6 @@ import numpy as np
 import numpy.typing as npt
 from scipy.optimize import differential_evolution
 from cmaes import CMA
-import cma
 from config.random import get_differential_evolution_rng
 from MRR.analyzer import analyze
 from MRR.evaluator import evaluate_band
@@ -24,7 +23,7 @@ import numpy as np
 
 
 
-
+"""
 def optimize_L(
     n_g: float,
     n_eff: float,
@@ -54,7 +53,7 @@ def optimize_L(
         raise Exception("FSR is too strict")
 
     return N, L, practical_FSR
-
+"""
 
 @dataclass
 class OptimizeKParams:
