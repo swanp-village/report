@@ -115,6 +115,7 @@ def optimize_K(
        
     E: float = -best_fitness
     K: npt.NDArray[np.float_] = best_solution
+    print(E)
 
     return K,E
     """
