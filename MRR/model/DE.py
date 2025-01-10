@@ -218,6 +218,7 @@ def optimize(
                 number_of_rings=number_of_rings,
                 rng=rng,
             )
+        L=(0.000055,0.000055,0.000055,0.0003297,0.0003297,0.0000824,0.0000824,0.0000824)
         K, E = optimize_K(
             eta=eta,
             number_of_rings=number_of_rings,
