@@ -98,7 +98,7 @@ def optimize_K(
         population_size=popsize
     )
  
-    for generation in range(500):
+    for generation in range(1000):
         best_solution = None
         best_fitness = float("inf")
         solutions = []
