@@ -77,7 +77,7 @@ def simulate_MRR(
 
     else:
     
-    evaluation_result = evaluate_band(
+        evaluation_result = evaluate_band(
             x=x,
             y=y,
             center_wavelength=center_wavelength,
@@ -89,7 +89,7 @@ def simulate_MRR(
             r_max=r_max,
             weight=weight,
             ignore_binary_evaluation=ignore_binary_evaluation,
-    )
+        )
     
       
     accumulator.logger.print_parameters(K=K, L=L, N=N, FSR=practical_FSR, E=evaluation_result, format=format)
