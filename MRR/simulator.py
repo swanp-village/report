@@ -71,12 +71,12 @@ def simulate_MRR(
     y = simulate_transfer_function(
         wavelength=x, L=L, K=K, alpha=alpha, eta=eta, n_eff=n_eff, n_g=n_g, center_wavelength=center_wavelength
     )
-"""
+    """
     if skip_evaluation:
         evaluation_result = np.float_(0)
 
     else:
- """
+    """
     evaluation_result = evaluate_band(
             x=x,
             y=y,
