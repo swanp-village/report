@@ -89,7 +89,8 @@ def simulate_MRR(
             r_max=r_max,
             weight=weight,
             ignore_binary_evaluation=ignore_binary_evaluation,
-      )
+    )
+      
     accumulator.logger.print_parameters(K=K, L=L, N=N, FSR=practical_FSR, E=evaluation_result, format=format)
 
     if not skip_graph:
