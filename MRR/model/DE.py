@@ -23,7 +23,7 @@ import numpy as np
 
 
 
-"""
+
 def optimize_L(
     n_g: float,
     n_eff: float,
@@ -53,7 +53,7 @@ def optimize_L(
         raise Exception("FSR is too strict")
 
     return N, L, practical_FSR
-"""
+
 
 @dataclass
 class OptimizeKParams:
