@@ -85,9 +85,7 @@ def optimize_K(
     initial=np.random.uniform(1e-12, eta, size=(number_of_rings+1,))
     popsize=number_of_rings+1
     sigma=0.3 
-    #optimizer = cma.CMAEvolutionStrategy(initial, sigma, 
-                                      #   {'population_size': popsize, 'bounds':bounds_array, 'adaptsigma': True})
-
+   
 
    
     
@@ -98,13 +96,13 @@ def optimize_K(
         population_size=popsize
     )
  
-    for generation in range(1000):
+    for generation in range(500):
         best_solution = None
         best_fitness = float("inf")
+        x=optimizer.ask(popsize)
         solutions = []
         for _ in range(number_of_rings + 1):
             # Ask a parameter
-            x = optimizer.ask()
             value = optimize_K_func(x, params)
             solutions.append((x, value))
             if value < best_fitness:
