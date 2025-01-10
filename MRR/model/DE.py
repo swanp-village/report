@@ -217,7 +217,7 @@ def optimize(
                 number_of_rings=number_of_rings,
                 rng=rng,
             )
-        L=np.array([0.000055,0.000055,0.000055,0.0003297,0.0003297,0.0000824,0.0000824,0.0000824])
+        L=np.array([0.000055,0.000055,0.000055,0.0001373,0.0001373,0.0000824,0.0000824,0.0001373])
         K, E = optimize_K(
             eta=eta,
             number_of_rings=number_of_rings,
