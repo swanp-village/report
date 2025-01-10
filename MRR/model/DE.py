@@ -83,7 +83,7 @@ def optimize_K(
     bounds = [(1e-12, eta) for _ in range(number_of_rings + 1)]
     bounds_array=np.array(bounds) 
     initial=np.random.uniform(1e-12, eta, size=(number_of_rings+1,))
-    popsize=number_of_rings+1
+    popsize　= 4 + math.floor(3 * math.log(number_of_rings))
     sigma=0.3 
    
 
@@ -101,7 +101,7 @@ def optimize_K(
         best_fitness = float("inf")
         
         solutions = []
-        for _ in range(number_of_rings + 1):
+        for _ in range(popsize):
             # Ask a parameter
             x=optimizer.ask()
             value = optimize_K_func(x, params)
