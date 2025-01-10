@@ -99,10 +99,11 @@ def optimize_K(
     for generation in range(500):
         best_solution = None
         best_fitness = float("inf")
-        x=optimizer.ask(popsize)
+        
         solutions = []
         for _ in range(number_of_rings + 1):
             # Ask a parameter
+            x=optimizer.ask()
             value = optimize_K_func(x, params)
             solutions.append((x, value))
             if value < best_fitness:
