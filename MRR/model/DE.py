@@ -73,7 +73,7 @@ class OptimizeKParams:
     weight: list[float]
 
 
-
+"""
 def optimize_K(
     eta: float,
     number_of_rings: int,
@@ -172,7 +172,30 @@ def optimize_K(
     
 
     return K,E
-   
+   """
+def optimize_K(
+    eta: float,
+    number_of_rings: int,
+    rng: np.random.Generator,
+    params: OptimizeKParams,
+) -> tuple[npt.NDArray[np.float_], float]:
+    bounds = [(1e-12, eta) for _ in range(number_of_rings + 1)]
+
+    result = differential_evolution(
+        optimize_K_func,
+        bounds,
+        args=(params,),
+        strategy="currenttobest1bin",
+        workers=-1,
+        updating="deferred",
+        popsize=15,
+        maxiter=500,
+        seed=rng,
+    )
+    E: float = -result.fun
+    K: npt.NDArray[np.float_] = result.x
+
+    return K, E
 def optimize(
     n_g: float,
     n_eff: float,
