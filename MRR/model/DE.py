@@ -88,7 +88,7 @@ def optimize_K(
     initial = samples.flatten() * eta
     #initial = sampler.random(n=number_of_rings + 1).flatten() * eta  # 0からetaの範囲でスケーリング
     popsize = 4 + math.floor(3 * math.log(number_of_rings))+5
-    sigma=0.5 
+    sigma=0.3 
    
 
    
