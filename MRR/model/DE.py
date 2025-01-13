@@ -124,34 +124,53 @@ def optimize_K(
         
         optimizer.tell(solutions)
         print(best_fitness)
-        best_fitness_history.append(best_fitness)
+        # 評価値の履歴を保存するリスト
+        fitness_history = []
 
-        fitness_change = abs(previous_best_fitness - best_fitness)
+        # 進行状況を表示
+        if generation % 50 == 0:
+            print(f"Generation {generation}, Best Fitness: {best_fitness}")
 
+        # 最良解の更新
+        if value < best_fitness:
+            best_fitness = value
+            best_solution = x
+
+# 評価値を履歴に追加
+        fitness_history.append(best_fitness)
+
+# fitness_historyが10個を超えたら、古い評価値を削除
+        if len(fitness_history) > 10:
+            fitness_history.pop(0)
+
+# 過去10世代分の評価値を使ってfitness_changeを計算
+        if len(fitness_history) > 1:
+            fitness_change = abs(fitness_history[-1] - fitness_history[-2])
+        else:
+            fitness_change = float('inf')  # 最初は比較できないので大きな差を設定
+
+# stagnation_countを増加させる条件
         if fitness_change < 0.1:
             stagnation_count += 1
         else:
-            stagnation_count = 0  # 改善があった場合はカウントをリセット
-        print(stagnation_count)
+            stagnation_count = 0  # 改善があった場合はリセット
 
-        # 10世代以上改善がない場合にσを増加
+# stagnation_countが10に達した場合にσを減少
         if stagnation_count >= 10:
-            # 10世代以上改善がない場合にσを増加
-            sigma *= 1.5  # σを増加させる
-            print(f"Generation {generation}: No significant improvement (change < 0.1), increasing sigma to {sigma}.")
-            optimizer = CMA(  # 新しいσを反映させるために新たにoptimizerを初期化
+            sigma *= 0.9  # σを減少させる（探索範囲を狭める）
+            print(f"Generation {generation}: No significant improvement (change < 0.1), decreasing sigma to {sigma}.")
+    
+    # 新しいσを反映させるために新たにoptimizerを初期化
+            optimizer = CMA(  
                 bounds=bounds_array,
                 mean=optimizer.mean,  # 以前の最良解を引き継ぐ
                 sigma=sigma,
                 population_size=popsize
             )
+    
             stagnation_count = 0  # カウントをリセット
-
-        previous_best_fitness = best_fitness  # 最良評価値を更新
-
-        # 進行状況を表示
-        if generation % 50 == 0:
-            print(f"Generation {generation}, Best Fitness: {best_fitness}")
+        else:
+            print(f"Generation {generation}, Best Fitness: {best_fitness}, Fitness Change: {fitness_change}, Stagnation Count: {stagnation_count}")
 
 
 
@@ -160,28 +179,7 @@ def optimize_K(
     
 
     return K,E
-    """
-    for generation in range(500):
-        solutions = []
-        for _ in range(popsize):
-            # Ask a parameter
-            x = optimizer.ask()
-            value = optimize_K_func(x, params)
-            solutions.append((x, value))
-        
-        # Tell the optimizer the evaluated solutions
-        optimizer.tell(solutions)
-        
-        # 最良の解とフィットネスを更新
-        best_solution = optimizer.result.xbest
-        best_fitness = optimizer.result.fbest
-        
-    E: float = -best_fitness
-    K: npt.NDArray[np.float_] = best_solution
-
-    return K, E
-    """
-
+   
 def optimize(
     n_g: float,
     n_eff: float,
