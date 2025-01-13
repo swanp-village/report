@@ -115,6 +115,8 @@ def optimize_K(
                 best_solution = x                   
         # Tell evaluation values.
         best_fitness_history.append(best_fitness)
+        optimizer.tell(solutions)
+        print(best_fitness)
 
         # 停滞の検出（例: 10世代の間に改善がなければ）
         if len(best_fitness_history) > 10 :
@@ -139,8 +141,7 @@ def optimize_K(
             print(f"Generation {generation}, Best Fitness: {best_fitness}")
 
     
-        optimizer.tell(solutions)
-        print(best_fitness)
+       
         
        
     E: float = -best_fitness
