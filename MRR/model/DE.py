@@ -124,7 +124,7 @@ def optimize_K(
             print(f"Generation {generation}, Best Fitness: {best_fitness}")
 
         # fitness_historyが10個を超えたら、古い評価値を削除
-        if len(fitness_history) > 10:
+        if len(fitness_history) > 30:
             fitness_history.pop(0)
 
         # 過去10世代分の評価値を使ってfitness_changeを計算
@@ -140,7 +140,7 @@ def optimize_K(
             stagnation_count = 0  # 改善があった場合はリセット
 
         # stagnation_countが10に達した場合にリスタート
-        if stagnation_count >= 10:
+        if stagnation_count >= 30:
             print(f"Generation {generation}: No significant improvement (change < 0.1), restarting optimization.")
             if restart_count >= max_restart:
                 print("Maximum restarts reached. Ending optimization")
