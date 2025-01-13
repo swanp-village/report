@@ -89,6 +89,7 @@ def optimize_K(
     #initial = sampler.random(n=number_of_rings + 1).flatten() * eta  # 0からetaの範囲でスケーリング
     popsize = 4 + math.floor(3 * math.log(number_of_rings))+5
     sigma=0.3 
+    mu = popsize // 2
    
 
    
@@ -99,54 +100,60 @@ def optimize_K(
         sigma=0.3,
         population_size=popsize
     )
+    best_solution = None
+    best_fitness = float("inf")
+    best_fitness_history=[]
+    previous_best_fitness = float("inf")  # 前回の最良評価値
+    stagnation_count = 0  # 改善がない回数をカウントする
  
     for generation in range(900):
-        best_solution = None
-        best_fitness = float("inf")
-        best_fitness_history=[]
         solutions = []
         for _ in range(popsize):
             # Ask a parameter
             x=optimizer.ask()
             value = optimize_K_func(x, params)
-            solutions.append((x, value))
+            
             if value < best_fitness:
                 best_fitness = value
-                best_solution = x                   
+                best_solution = x    
+                stagnation_count=0
+            else:
+                stagnation_count=1
+            solutions.append((x,value))
         # Tell evaluation values.
         
         optimizer.tell(solutions)
         print(best_fitness)
         best_fitness_history.append(best_fitness)
 
-        # 停滞の検出（例: 10世代の間に改善がなければ）
-        if len(best_fitness_history) > 10 :
-           # 最後の10世代の評価値を取り出す
-            last_10_fitness = best_fitness_history[-10:]
-            fitness_diff = [abs(last_10_fitness[i] - last_10_fitness[i+1]) for i in range(9)]
-            print(f"Generation {generation} - Fitness diffs: {fitness_diff}")
+        fitness_change = abs(previous_best_fitness - best_fitness)
 
-            # 10世代すべての変化量が0.1未満であればσを増加
-            if all(diff < 1.0 for diff in fitness_diff):
-                print(f"Generation {generation}: No significant change in last 10 generations, increasing sigma.")
-                sigma *= 1.5  # σを増加させる
-                optimizer.sigma = sigma  # 新しいσを適用
-                optimizer = CMA(  # 新しいσを反映させるために新たにoptimizerを初期化
-                    bounds=bounds_array,
-                    mean=optimizer.mean,  # 以前の最良解を引き継ぐ
-                    sigma=sigma,
-                    population_size=popsize
-                )
+        if fitness_change < 0.1:
+            stagnation_count += 1
+        else:
+            stagnation_count = 0  # 改善があった場合はカウントをリセット
+
+        # 10世代以上改善がない場合にσを増加
+        if stagnation_count >= 10:
+            # 10世代以上改善がない場合にσを増加
+            sigma *= 1.5  # σを増加させる
+            print(f"Generation {generation}: No significant improvement (change < 0.1), increasing sigma to {sigma}.")
+            optimizer = CMA(  # 新しいσを反映させるために新たにoptimizerを初期化
+                bounds=bounds_array,
+                mean=optimizer.mean,  # 以前の最良解を引き継ぐ
+                sigma=sigma,
+                population_size=popsize
+            )
+            stagnation_count = 0  # カウントをリセット
+
+        previous_best_fitness = best_fitness  # 最良評価値を更新
+
         # 進行状況を表示
         if generation % 50 == 0:
             print(f"Generation {generation}, Best Fitness: {best_fitness}")
-    
 
 
-    
-       
-        
-       
+
     E: float = -best_fitness
     K: npt.NDArray[np.float_] = best_solution
     
