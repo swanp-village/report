@@ -90,10 +90,7 @@ def optimize_K(
     popsize = 4 + math.floor(3 * math.log(number_of_rings))+5
     sigma=0.3 
     mu = popsize // 2
-   
 
-   
-    
     optimizer=CMA(
         bounds=bounds_array,
         mean=initial,
@@ -105,6 +102,8 @@ def optimize_K(
     previous_best_fitness = float("inf")  # 前回の最良評価値
     fitness_history = []
     stagnation_count = 0  # 改善がない回数をカウントする
+    restart_count = 0
+    max_restart = 5
  
     for generation in range(900):
         solutions = []
@@ -116,38 +115,43 @@ def optimize_K(
             if value < best_fitness:
                 best_fitness = value
                 best_solution = x    
-    
+
+#　リスタート戦略
         # 評価値を履歴に追加
         fitness_history.append(best_fitness)
-
-        
-
         # 進行状況を表示
         if generation % 50 == 0:
             print(f"Generation {generation}, Best Fitness: {best_fitness}")
 
-# fitness_historyが10個を超えたら、古い評価値を削除
+        # fitness_historyが10個を超えたら、古い評価値を削除
         if len(fitness_history) > 10:
             fitness_history.pop(0)
 
-# 過去10世代分の評価値を使ってfitness_changeを計算
+        # 過去10世代分の評価値を使ってfitness_changeを計算
         if len(fitness_history) > 1:
             fitness_change = abs(fitness_history[-1] - fitness_history[-2])
         else:
             fitness_change = float('inf')  # 最初は比較できないので大きな差を設定
-        print(fitness_change)
-# stagnation_countを増加させる条件
+    
+        # stagnation_countを増加させる条件
         if fitness_change < 0.1:
             stagnation_count += 1
         else:
             stagnation_count = 0  # 改善があった場合はリセット
 
-# stagnation_countが10に達した場合にσを減少
+        # stagnation_countが10に達した場合にリスタート
         if stagnation_count >= 10:
-            sigma *= 1.2  # σを減少させる（探索範囲を狭める）
-            print(f"Generation {generation}: No significant improvement (change < 0.1), decreasing sigma to {sigma}.")
+            print(f"Generation {generation}: No significant improvement (change < 0.1), restarting optimization.")
+            if restart_count >= max_restart:
+                print("Maximum restarts reached. Ending optimization")
+                break
     
-    # 新しいσを反映させるために新たにoptimizerを初期化
+         # リスタート
+            restart_count += 1
+            sampler = LatinHypercube(d=number_of_rings+1)  # 次元数を1に設定
+            samples = sampler.random(n=1)  # 1サンプルだけ生成（shape: (1, number_of_rings + 1)）
+            initial = samples.flatten() * eta
+            sigma=0.3 
             optimizer = CMA(  
                 bounds=bounds_array,
                 mean=optimizer.mean,  # 以前の最良解を引き継ぐ
@@ -156,12 +160,10 @@ def optimize_K(
             )
     
             stagnation_count = 0  # カウントをリセット
-        else:
-            print(f"Generation {generation}, Best Fitness: {best_fitness}, Fitness Change: {fitness_change}, Stagnation Count: {stagnation_count}")
+        
 
         optimizer.tell(solutions)
-
-
+        print(best_solution)
 
     E: float = -best_fitness
     K: npt.NDArray[np.float_] = best_solution
