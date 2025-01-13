@@ -73,21 +73,8 @@ def simulate_MRR(
     )
     
     if skip_evaluation:
-        #evaluation_result = np.float_(0)
-        evaluation_result = evaluate_band(
-            x=x,
-            y=y,
-            center_wavelength=center_wavelength,
-            length_of_3db_band=length_of_3db_band,
-            max_crosstalk=max_crosstalk,
-            H_p=H_p,
-            H_s=H_s,
-            H_i=H_i,
-            r_max=r_max,
-            weight=weight,
-            ignore_binary_evaluation=ignore_binary_evaluation,
-        )
-
+        evaluation_result = np.float_(0)
+       
     else:
     
         evaluation_result = evaluate_band(
