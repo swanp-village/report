@@ -163,7 +163,7 @@ def optimize_K(
         
 
         optimizer.tell(solutions)
-        print(best_solution)
+        print(-best_fitness)
 
     E: float = -best_fitness
     K: npt.NDArray[np.float_] = best_solution
