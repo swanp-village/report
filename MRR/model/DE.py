@@ -134,7 +134,7 @@ def optimize_K(
             fitness_change = float('inf')  # 最初は比較できないので大きな差を設定
     
         # stagnation_countを増加させる条件
-        if fitness_change < 0.1:
+        if fitness_change < 0.9:
             stagnation_count += 1
         else:
             stagnation_count = 0  # 改善があった場合はリセット
