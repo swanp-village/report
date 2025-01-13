@@ -84,7 +84,9 @@ def optimize_K(
     bounds_array=np.array(bounds) 
     #initial=np.random.uniform(1e-12, eta, size=(number_of_rings+1,))
     sampler = LatinHypercube(d=number_of_rings+1)  # 次元数を1に設定
-    initial = sampler.random(n=number_of_rings + 1).flatten() * eta  # 0からetaの範囲でスケーリング
+    samples = sampler.random(n=1)  # 1サンプルだけ生成（shape: (1, number_of_rings + 1)）
+    initial = samples.flatten() * eta
+    #initial = sampler.random(n=number_of_rings + 1).flatten() * eta  # 0からetaの範囲でスケーリング
     popsize = 4 + math.floor(3 * math.log(number_of_rings))+5
     sigma=0.5 
    
