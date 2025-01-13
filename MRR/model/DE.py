@@ -16,7 +16,7 @@ from MRR.simulator import (
     optimize_N,
 )
 from MRR.transfer_function import simulate_transfer_function
-
+from scipy.stats.qmc import LatinHypercube
 import numpy as np
 
 
@@ -82,7 +82,9 @@ def optimize_K(
 ) -> tuple[npt.NDArray[np.float_], float]:
     bounds = [(1e-12, eta) for _ in range(number_of_rings + 1)]
     bounds_array=np.array(bounds) 
-    initial=np.random.uniform(1e-12, eta, size=(number_of_rings+1,))
+    #initial=np.random.uniform(1e-12, eta, size=(number_of_rings+1,))
+    sampler = LatinHypercube(d=number_of_rings+1)  # 次元数を1に設定
+    initial = sampler.random(n=number_of_rings + 1).flatten() * eta  # 0からetaの範囲でスケーリング
     popsize = 4 + math.floor(3 * math.log(number_of_rings))+5
     sigma=0.5 
    
