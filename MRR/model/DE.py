@@ -103,7 +103,7 @@ def optimize_K(
     for generation in range(900):
         best_solution = None
         best_fitness = float("inf")
-        
+        best_fitness_history=[]
         solutions = []
         for _ in range(popsize):
             # Ask a parameter
