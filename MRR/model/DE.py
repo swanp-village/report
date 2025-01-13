@@ -140,7 +140,7 @@ def optimize_K(
             stagnation_count = 0  # 改善があった場合はリセット
 
         # stagnation_countが10に達した場合にリスタート
-        if stagnation_count >= 30:
+        if stagnation_count >= 100:
             print(f"Generation {generation}: No significant improvement (change < 0.05), restarting optimization.")
             if restart_count >= max_restart:
                 print("Maximum restarts reached. Ending optimization")
