@@ -123,7 +123,7 @@ def optimize_K(
             fitness_diff = [abs(last_10_fitness[i] - last_10_fitness[i+1]) for i in range(9)]
 
             # 10世代すべての変化量が0.1未満であればσを増加
-            if all(diff < 0.05 for diff in fitness_diff):
+            if all(diff < 1.0 for diff in fitness_diff):
                 print(f"Generation {generation}: No significant change in last 10 generations, increasing sigma.")
                 sigma *= 1.5  # σを増加させる
                 optimizer.sigma = sigma  # 新しいσを適用
