@@ -102,7 +102,6 @@ def optimize_K(
     )
     best_solution = None
     best_fitness = float("inf")
-    best_fitness_history=[]
     previous_best_fitness = float("inf")  # 前回の最良評価値
     stagnation_count = 0  # 改善がない回数をカウントする
  
@@ -112,32 +111,21 @@ def optimize_K(
             # Ask a parameter
             x=optimizer.ask()
             value = optimize_K_func(x, params)
-            
+            solutions.append((x,value))
             if value < best_fitness:
                 best_fitness = value
                 best_solution = x    
-                stagnation_count=0
-            else:
-                stagnation_count=1
-            solutions.append((x,value))
-        # Tell evaluation values.
         
-        optimizer.tell(solutions)
-        print(best_fitness)
         # 評価値の履歴を保存するリスト
         fitness_history = []
+        # 評価値を履歴に追加
+        fitness_history.append(best_fitness)
+
+        
 
         # 進行状況を表示
         if generation % 50 == 0:
             print(f"Generation {generation}, Best Fitness: {best_fitness}")
-
-        # 最良解の更新
-        if value < best_fitness:
-            best_fitness = value
-            best_solution = x
-
-# 評価値を履歴に追加
-        fitness_history.append(best_fitness)
 
 # fitness_historyが10個を超えたら、古い評価値を削除
         if len(fitness_history) > 10:
@@ -171,6 +159,8 @@ def optimize_K(
             stagnation_count = 0  # カウントをリセット
         else:
             print(f"Generation {generation}, Best Fitness: {best_fitness}, Fitness Change: {fitness_change}, Stagnation Count: {stagnation_count}")
+
+        optimizer.tell(solutions)
 
 
 
