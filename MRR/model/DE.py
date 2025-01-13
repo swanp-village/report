@@ -148,7 +148,7 @@ def optimize_K(
             fitness_change = abs(fitness_history[-1] - fitness_history[-2])
         else:
             fitness_change = float('inf')  # 最初は比較できないので大きな差を設定
-
+        print(fitness_change)
 # stagnation_countを増加させる条件
         if fitness_change < 0.1:
             stagnation_count += 1
