@@ -134,14 +134,14 @@ def optimize_K(
             fitness_change = float('inf')  # 最初は比較できないので大きな差を設定
     
         # stagnation_countを増加させる条件
-        if fitness_change < 0.9:
+        if fitness_change < 0.05:
             stagnation_count += 1
         else:
             stagnation_count = 0  # 改善があった場合はリセット
 
         # stagnation_countが10に達した場合にリスタート
         if stagnation_count >= 30:
-            print(f"Generation {generation}: No significant improvement (change < 0.1), restarting optimization.")
+            print(f"Generation {generation}: No significant improvement (change < 0.05), restarting optimization.")
             if restart_count >= max_restart:
                 print("Maximum restarts reached. Ending optimization")
                 break
