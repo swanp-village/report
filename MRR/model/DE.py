@@ -121,6 +121,7 @@ def optimize_K(
            # 最後の10世代の評価値を取り出す
             last_10_fitness = best_fitness_history[-10:]
             fitness_diff = [abs(last_10_fitness[i] - last_10_fitness[i+1]) for i in range(9)]
+            print(f"Generation {generation} - Fitness diffs: {fitness_diff}")
 
             # 10世代すべての変化量が0.1未満であればσを増加
             if all(diff < 1.0 for diff in fitness_diff):
