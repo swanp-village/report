@@ -132,6 +132,7 @@ def optimize_K(
             stagnation_count += 1
         else:
             stagnation_count = 0  # 改善があった場合はカウントをリセット
+        print(stagnation_count)
 
         # 10世代以上改善がない場合にσを増加
         if stagnation_count >= 10:
