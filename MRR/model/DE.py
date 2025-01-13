@@ -127,6 +127,12 @@ def optimize_K(
                 print(f"Generation {generation}: No significant change in last 10 generations, increasing sigma.")
                 sigma *= 1.5  # σを増加させる
                 optimizer.sigma = sigma  # 新しいσを適用
+                optimizer = CMA(  # 新しいσを反映させるために新たにoptimizerを初期化
+                    bounds=bounds_array,
+                    mean=optimizer.mean,  # 以前の最良解を引き継ぐ
+                    sigma=sigma,
+                    population_size=popsize
+                )
         # 進行状況を表示
         if generation % 50 == 0:
             print(f"Generation {generation}, Best Fitness: {best_fitness}")
