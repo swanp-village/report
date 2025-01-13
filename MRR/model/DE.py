@@ -140,6 +140,8 @@ def optimize_K(
         # 進行状況を表示
         if generation % 50 == 0:
             print(f"Generation {generation}, Best Fitness: {best_fitness}")
+        print(f"Best Fitness History: {best_fitness_history[-10:]}")
+
 
     
        
