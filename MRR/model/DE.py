@@ -158,7 +158,9 @@ def optimize_K(
                 sigma=sigma,
                 population_size=popsize
             )
-    
+            best_solution = None
+            best_fitness = float("inf")
+            fitness_history.clear()
             stagnation_count = 0  # カウントをリセット
         
 
