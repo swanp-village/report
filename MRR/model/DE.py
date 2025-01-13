@@ -154,7 +154,7 @@ def optimize_K(
             sigma=0.3 
             optimizer = CMA(  
                 bounds=bounds_array,
-                mean=optimizer.mean,  # 以前の最良解を引き継ぐ
+                mean=initial,  # 以前の最良解を引き継ぐ
                 sigma=sigma,
                 population_size=popsize
             )
