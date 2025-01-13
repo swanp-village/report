@@ -114,6 +114,18 @@ def optimize_K(
                 best_fitness = value
                 best_solution = x                   
         # Tell evaluation values.
+        best_fitness_history.append(best_fitness)
+
+        # 停滞の検出（例: 10世代の間に改善がなければ）
+        if len(best_fitness_history) > 50 and best_fitness_history[-10] == best_fitness:
+            print(f"Generation {generation}: Stagnation detected, increasing sigma.")
+            sigma *= 1.5  # 停滞時にσを増加させる
+            optimizer.sigma = sigma  # 新しいσを適用
+
+        # 進行状況を表示
+        if generation % 50 == 0:
+            print(f"Generation {generation}, Best Fitness: {best_fitness}")
+
     
         optimizer.tell(solutions)
         print(best_fitness)
