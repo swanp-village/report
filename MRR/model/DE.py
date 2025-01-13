@@ -117,11 +117,16 @@ def optimize_K(
         best_fitness_history.append(best_fitness)
 
         # 停滞の検出（例: 10世代の間に改善がなければ）
-        if len(best_fitness_history) > 10 and best_fitness_history[-10] == best_fitness:
-            print(f"Generation {generation}: Stagnation detected, increasing sigma.")
-            sigma *= 1.5  # 停滞時にσを増加させる
-            optimizer.sigma = sigma  # 新しいσを適用
+        if len(best_fitness_history) > 10 :
+           # 最後の10世代の評価値を取り出す
+            last_10_fitness = best_fitness_history[-10:]
+            fitness_diff = [abs(last_10_fitness[i] - last_10_fitness[i+1]) for i in range(9)]
 
+            # 10世代すべての変化量が0.1未満であればσを増加
+            if all(diff < 0.05 for diff in fitness_diff):
+                print(f"Generation {generation}: No significant change in last 10 generations, increasing sigma.")
+                sigma *= 1.5  # σを増加させる
+                optimizer.sigma = sigma  # 新しいσを適用
         # 進行状況を表示
         if generation % 50 == 0:
             print(f"Generation {generation}, Best Fitness: {best_fitness}")
