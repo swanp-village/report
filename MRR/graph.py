@@ -35,7 +35,7 @@ class Graph:
         self.ax.axis([None, None, None, 5])
 
         if self.is_focus:
-            self.ax.set_xlim([1540, 1560])
+            self.ax.set_xlim([1549, 1551])
             self.ax.set_ylim([-12, 0])
             self.ax.xaxis.set_major_formatter(FormatStrFormatter("%.1f"))
             self.ax.xaxis.set_minor_formatter(FormatStrFormatter("%.1f"))
