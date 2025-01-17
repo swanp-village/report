@@ -276,7 +276,8 @@ def optimize(
                 number_of_rings=number_of_rings,
                 rng=rng,
             )
-        L=np.array([0.000055,0.000055,0.000055,0.0003297,0.0003297,0.0000824,0.0000824,0.0000824])
+        N = [78,78,78,468,468,117,117,117]
+        L = calculate_ring_length(center_wavelength=center_wavelength, n_eff=n_eff, N=N)
         K, E = optimize_K(
             eta=eta,
             number_of_rings=number_of_rings,
