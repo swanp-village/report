@@ -165,7 +165,6 @@ def optimize_K(
             best_fitness = float("inf")
             fitness_history.clear()
             stagnation_count = 0  # カウントをリセット
-        
 """
         optimizer.tell(solutions)
         print(-best_fitness)
