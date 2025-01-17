@@ -127,7 +127,7 @@ def optimize_K(
 
     return K,E
 """
-#　リスタート戦略
+#　リスタート戦略今後複雑な処理が増えたら使ってみてね
         # 評価値を履歴に追加
         fitness_history.append(best_fitness)
         # 進行状況を表示
