@@ -117,7 +117,15 @@ def optimize_K(
             solutions.append((x,value))
             if value < best_fitness:
                 best_fitness = value
-                best_solution = x    
+                best_solution = x   
+        optimizer.tell(solutions)
+        print(-best_fitness)
+
+    E: float = -best_fitness
+    K: npt.NDArray[np.float_] = best_solution
+    
+
+    return K,E
 """
 #　リスタート戦略
         # 評価値を履歴に追加
@@ -165,16 +173,7 @@ def optimize_K(
             best_fitness = float("inf")
             fitness_history.clear()
             stagnation_count = 0  # カウントをリセット
-"""
-        optimizer.tell(solutions)
-        print(-best_fitness)
 
-    E: float = -best_fitness
-    K: npt.NDArray[np.float_] = best_solution
-    
-
-    return K,E
-"""
 def optimize_K(
     eta: float,
     number_of_rings: int,
