@@ -100,11 +100,13 @@ def optimize_K(
     )
     best_solution = None
     best_fitness = float("inf")
+    """
     previous_best_fitness = float("inf")  # 前回の最良評価値
     fitness_history = []
     stagnation_count = 0  # 改善がない回数をカウントする
     restart_count = 0
     max_restart = 5
+    """
  
     for generation in range(900):
         solutions = []
@@ -116,7 +118,7 @@ def optimize_K(
             if value < best_fitness:
                 best_fitness = value
                 best_solution = x    
-
+"""
 #　リスタート戦略
         # 評価値を履歴に追加
         fitness_history.append(best_fitness)
@@ -164,7 +166,7 @@ def optimize_K(
             fitness_history.clear()
             stagnation_count = 0  # カウントをリセット
         
-
+"""
         optimizer.tell(solutions)
         print(-best_fitness)
 
