@@ -118,7 +118,7 @@ def optimize_K(
             if value < best_fitness:
                 best_fitness = value
                 best_solution = x  
-        print(-solutions)
+        print(solutions)
         optimizer.tell(solutions)
         
 
