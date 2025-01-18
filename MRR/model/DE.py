@@ -117,8 +117,10 @@ def optimize_K(
             solutions.append((x,value))
             if value < best_fitness:
                 best_fitness = value
-                best_solution = x   
+                best_solution = x  
+        
         optimizer.tell(solutions)
+        print(-solutions)
 
 
     E: float = -best_fitness
