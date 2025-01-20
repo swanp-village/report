@@ -90,9 +90,8 @@ def optimize_K(
     #initial = sampler.random(n=number_of_rings + 1).flatten() * eta  # 0からetaの範囲でスケーリング
     popsize = 4 + math.floor(3 * math.log(number_of_rings+1))+5
     sigma = 0.1 * math.sqrt(number_of_rings+1)
- 
+ """
     generations = (number_of_rings+1) * 100
-
     optimizer=CMA(
         bounds=bounds_array,
         mean=initial,
@@ -162,7 +161,7 @@ def optimize_K(
     
 
     return K,E
-"""
+
 #　リスタート戦略今後複雑な処理が増えたら使ってみてね
         # 評価値を履歴に追加
         fitness_history.append(best_fitness)
@@ -209,7 +208,7 @@ def optimize_K(
             best_fitness = float("inf")
             fitness_history.clear()
             stagnation_count = 0  # カウントをリセット
-
+"""
 def optimize_K(
     eta: float,
     number_of_rings: int,
@@ -233,7 +232,7 @@ def optimize_K(
     K: npt.NDArray[np.float_] = result.x
 
     return K, E
-"""
+
 
 
 def optimize(
