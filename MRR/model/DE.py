@@ -115,8 +115,19 @@ def optimize_K(
             solutions.append((x,value))
             if value < best_fitness:
                 best_fitness = value
-                best_solution = x  
+                best_solution = x 
+            optimizer.tell(solution)
+            print(-best_fitness)
 
+    
+    E: float = -best_fitness
+    K: npt.NDArray[np.float_] = best_solution
+    
+
+    return K,E
+
+
+"""
         fitness_history.append(best_fitness)
 
         # fitness_historyが10個を超えたら、古い評価値を削除
@@ -161,7 +172,6 @@ def optimize_K(
     
 
     return K,E
-"""
 #　リスタート戦略今後複雑な処理が増えたら使ってみてね
         # 評価値を履歴に追加
         fitness_history.append(best_fitness)
