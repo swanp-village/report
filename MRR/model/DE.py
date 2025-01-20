@@ -120,7 +120,7 @@ def optimize_K(
                 best_solution = x  
         
         optimizer.tell(solutions)
-        
+        print(-best_solution)
 
 
     E: float = -best_fitness
