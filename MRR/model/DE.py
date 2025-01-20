@@ -89,24 +89,23 @@ def optimize_K(
     initial = samples.flatten() * eta
     #initial = sampler.random(n=number_of_rings + 1).flatten() * eta  # 0からetaの範囲でスケーリング
     popsize = 4 + math.floor(3 * math.log(number_of_rings))+5
-    sigma=0.3 
+    sigma = 0.1 * math.sqrt(number_of_rings)
+ 
     generations = (number_of_rings+1) * 100
 
     optimizer=CMA(
         bounds=bounds_array,
         mean=initial,
-        sigma=0.3,
+        sigma=sigma,
         population_size=popsize
     )
     best_solution = None
     best_fitness = float("inf")
-    """
-    previous_best_fitness = float("inf")  # 前回の最良評価値
+
+    #previous_best_fitness = float("inf")  # 前回の最良評価値
     fitness_history = []
     stagnation_count = 0  # 改善がない回数をカウントする
-    restart_count = 0
-    max_restart = 5
-    """
+    
  
     for generation in range(generations):
         solutions = []
@@ -118,9 +117,44 @@ def optimize_K(
             if value < best_fitness:
                 best_fitness = value
                 best_solution = x  
-        
+
+        fitness_history.append(best_fitness)
+
+        # fitness_historyが10個を超えたら、古い評価値を削除
+        if len(fitness_history) > 10:
+            fitness_history.pop(0)
+
+        # 過去の評価値を使ってfitness_changeを計算
+        if len(fitness_history) > 1:
+            fitness_change = abs(fitness_history[-1] - fitness_history[-2])
+        else:
+            fitness_change = float('inf')  # 最初は比較できないので大きな差を設定
+
+        # stagnation_countを増加させる条件
+        if fitness_change < 0.1:
+            stagnation_count += 1
+        else:
+            stagnation_count = 0  # 改善があった場合はリセット
+
+        # stagnation_countが10に達した場合にσを減少
+        if stagnation_count >= 30:
+            sigma *= 0.9  # σを減少させる（探索範囲を狭める）
+            print(f"Generation {generation}: No significant improvement (change < 0.1), decreasing sigma to {sigma}.")
+
+            # 新しいσを反映させるために新たにoptimizerを初期化
+            optimizer = CMA(
+                bounds=bounds_array,
+                mean=optimizer.mean,  # 以前の最良解を引き継ぐ
+                sigma=sigma,
+                population_size=popsize
+            )
+
+            stagnation_count = 0  # カウントをリセット
+
+        # 評価の確認
+        print(f"Generation {generation}, Best Fitness: {best_fitness}, Fitness Change: {fitness_change}, Stagnation Count: {stagnation_count}")
+
         optimizer.tell(solutions)
-        print(-best_fitness)
 
 
     E: float = -best_fitness
@@ -280,8 +314,8 @@ def optimize(
                 rng=rng,
             )
         #N = [78,78,78,117,117,117] #6th
-        N = [78,78,78,468,468,117,117,117] #8th
-        #N = [117,117,117,156,156,156,117,117,156,156] #10th
+        #N = [78,78,78,468,468,117,117,117] #8th
+        N = [117,117,117,156,156,156,117,117,156,156] #10th
         #N = [117,117,117,117,468,468,468,78,78,78,78,78] #12th
         #N = [117,117,117,117,468,468,468,468,78,78,78,78,78,78] #14th
         
