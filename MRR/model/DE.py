@@ -74,7 +74,7 @@ class OptimizeKParams:
     weight: list[float]
 
 
-
+"""
 def optimize_K(
     eta: float,
     number_of_rings: int,
@@ -90,7 +90,7 @@ def optimize_K(
     #initial = sampler.random(n=number_of_rings + 1).flatten() * eta  # 0からetaの範囲でスケーリング
     popsize = 4 + math.floor(3 * math.log(number_of_rings+1))+5
     sigma = 0.1 * math.sqrt(number_of_rings+1)
- """
+ 
     generations = (number_of_rings+1) * 100
     optimizer=CMA(
         bounds=bounds_array,
