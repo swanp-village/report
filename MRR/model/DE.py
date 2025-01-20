@@ -138,7 +138,7 @@ def optimize_K(
 
         # stagnation_countが10に達した場合にσを減少
         if stagnation_count >= 30:
-            sigma *= 0.9  # σを減少させる（探索範囲を狭める）
+            sigma *= 1.05  # σを減少させる（探索範囲を狭める）
             print(f"Generation {generation}: No significant improvement (change < 0.1), decreasing sigma to {sigma}.")
 
             # 新しいσを反映させるために新たにoptimizerを初期化
