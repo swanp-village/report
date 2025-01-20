@@ -88,10 +88,11 @@ def optimize_K(
     samples = sampler.random(n=1)  # 1サンプルだけ生成（shape: (1, number_of_rings + 1)）
     initial = samples.flatten() * eta
     #initial = sampler.random(n=number_of_rings + 1).flatten() * eta  # 0からetaの範囲でスケーリング
-    popsize = 4 + math.floor(3 * math.log(number_of_rings+1)) + 10
-    sigma = 0.1 * math.sqrt(number_of_rings+1)
- 
+    popsize = 4 + math.floor(3 * math.log(number_of_rings+1)) + 5
+    sigma = 0.3
     generations = (number_of_rings+1) * 100
+
+    
     optimizer=CMA(
         bounds=bounds_array,
         mean=initial,
@@ -101,10 +102,6 @@ def optimize_K(
     best_solution = None
     best_fitness = float("inf")
 
-    #previous_best_fitness = float("inf")  # 前回の最良評価値
-    fitness_history = []
-    stagnation_count = 0  # 改善がない回数をカウントする
-    
  
     for generation in range(generations):
         solutions = []
