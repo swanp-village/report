@@ -88,8 +88,8 @@ def optimize_K(
     samples = sampler.random(n=1)  # 1サンプルだけ生成（shape: (1, number_of_rings + 1)）
     initial = samples.flatten() * eta
     #initial = sampler.random(n=number_of_rings + 1).flatten() * eta  # 0からetaの範囲でスケーリング
-    popsize = 4 + math.floor(3 * math.log(number_of_rings))+5
-    sigma = 0.1 * math.sqrt(number_of_rings)
+    popsize = 4 + math.floor(3 * math.log(number_of_rings+1))+5
+    sigma = 0.1 * math.sqrt(number_of_rings+1)
  
     generations = (number_of_rings+1) * 100
 
