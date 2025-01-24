@@ -117,7 +117,7 @@ def optimize_K(
             if value < best_fitness - 0.05:
                 best_fitness = value
                 best_solution = x 
-                best_generation = generations
+                best_generation = generation
                 improved=True
         if improved:
             count = 0
@@ -125,7 +125,7 @@ def optimize_K(
             count += 1
         optimizer.tell(solutions)
         print(-best_fitness)
-        if count >= 50:
+        if count >= 100:
             break
 
     print(f"Best fitness achieved at generation {best_generation}.")  # 追加: 最適な世代を出力
