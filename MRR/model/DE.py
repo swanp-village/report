@@ -115,7 +115,7 @@ def optimize_K(
             if value < best_fitness:
                 best_fitness = value
                 best_solution = x 
-                best_genaration = ganerations
+                best_genaration = generations
         optimizer.tell(solutions)
 
     print(f"Best fitness achieved at generation {best_generation}.")  # 追加: 最適な世代を出力
