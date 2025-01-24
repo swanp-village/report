@@ -415,6 +415,7 @@ def optimize(
         logger.print_parameters(
             K=best_K, L=best_L, N=best_N, FSR=best_FSR, E=best_E, analyze_score=best_analyze_score, format=True
         )
+        
         print("================")
 
         method_list[m] = method
