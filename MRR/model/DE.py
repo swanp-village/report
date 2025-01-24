@@ -120,7 +120,7 @@ def optimize_K(
        
         optimizer.tell(solutions)
         print(-best_fitness)
-
+"""
         # 評価値を履歴に追加
         fitness_history.append(best_fitness)
         # 進行状況を表示
@@ -165,6 +165,7 @@ def optimize_K(
             best_fitness = float("inf")
             fitness_history.clear()
             stagnation_count = 0  # カウントをリセット
+"""
     E: float = -best_fitness
     K: npt.NDArray[np.float_] = best_solution
     
