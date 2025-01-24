@@ -103,6 +103,7 @@ def optimize_K(
     best_solution = None
     best_fitness = float("inf")
     best_generation = -1
+    count = 0
 
  
     for generation in range(generations):
@@ -112,13 +113,18 @@ def optimize_K(
             x=optimizer.ask()
             value = optimize_K_func(x, params)
             solutions.append((x,value))
-            if value < best_fitness:
+            if value < best_fitness - 0.05:
                 best_fitness = value
                 best_solution = x 
                 best_generation = generations
+                count = 0
+            else:
+                count += 1
         
         optimizer.tell(solutions)
         print(-best_fitness)
+        if count >= 50:
+            break
 
     print(f"Best fitness achieved at generation {best_generation}.")  # 追加: 最適な世代を出力
     E: float = -best_fitness
