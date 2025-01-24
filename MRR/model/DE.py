@@ -117,63 +117,10 @@ def optimize_K(
             if value < best_fitness - 0.05:
                 best_fitness = value
                 best_solution = x 
-                best_generation = generation
-                
        
         optimizer.tell(solutions)
         print(-best_fitness)
-       
-   
-    
 
-
-"""
-        fitness_history.append(best_fitness)
-
-        # fitness_historyが10個を超えたら、古い評価値を削除
-        if len(fitness_history) > 10:
-            fitness_history.pop(0)
-
-        # 過去の評価値を使ってfitness_changeを計算
-        if len(fitness_history) > 1:
-            fitness_change = abs(fitness_history[-1] - fitness_history[-2])
-        else:
-            fitness_change = float('inf')  # 最初は比較できないので大きな差を設定
-
-        # stagnation_countを増加させる条件
-        if fitness_change < 0.1:
-            stagnation_count += 1
-        else:
-            stagnation_count = 0  # 改善があった場合はリセット
-
-        # stagnation_countが10に達した場合にσを減少
-        if stagnation_count >= 30:
-            sigma *= 1.05  # σを減少させる（探索範囲を狭める）
-            print(f"Generation {generation}: No significant improvement (change < 0.1), decreasing sigma to {sigma}.")
-
-            # 新しいσを反映させるために新たにoptimizerを初期化
-            optimizer = CMA(
-                bounds=bounds_array,
-                mean=optimizer.mean,  # 以前の最良解を引き継ぐ
-                sigma=sigma,
-                population_size=popsize
-            )
-
-            stagnation_count = 0  # カウントをリセット
-
-        # 評価の確認
-        print(f"Generation {generation}, Best Fitness: {best_fitness}, Fitness Change: {fitness_change}, Stagnation Count: {stagnation_count}")
-
-        optimizer.tell(solutions)
-
-
-    E: float = -best_fitness
-    K: npt.NDArray[np.float_] = best_solution
-    
-
-    return K,E
-"""
-#　リスタート戦略今後複雑な処理が増えたら使ってみてね
         # 評価値を履歴に追加
         fitness_history.append(best_fitness)
         # 進行状況を表示
@@ -224,7 +171,7 @@ def optimize_K(
     
 
     return K,E
-"""
+
 def optimize_K(
     eta: float,
     number_of_rings: int,
