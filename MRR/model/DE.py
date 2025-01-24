@@ -117,10 +117,11 @@ def optimize_K(
                 best_fitness = value
                 best_solution = x 
                 best_generation = generations
-                count = 0
-            else:
-                count += 1
-        
+                improved=True
+        if improved:
+            count = 0
+        else:
+            count += 1
         optimizer.tell(solutions)
         print(-best_fitness)
         if count >= 50:
