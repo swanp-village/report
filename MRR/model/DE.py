@@ -224,6 +224,22 @@ def optimize_K(
     params: OptimizeKParams,
 ) -> tuple[npt.NDArray[np.float_], float]:
     bounds = [(1e-12, eta) for _ in range(number_of_rings + 1)]
+    best_fitness = float("inf")  # 初期化
+    best_generation = -1  # 初期化: 最良値を達成した世代
+
+    def callback(xk, convergence):
+        nonlocal best_fitness, best_generation
+        current_fitness = -optimize_K_func(xk, params)  # 現在の適応度を計算
+        generation = len(callback.generations)
+        callback.generations.append((generation, current_fitness))
+
+        if current_fitness < best_fitness:
+            best_fitness = current_fitness
+            best_generation = generation
+
+        print(f"Generation {generation}: Current Best Fitness = {current_fitness}")
+
+    callback.generations = []  # コールバックに世代情報を記録
 
     result = differential_evolution(
         optimize_K_func,
@@ -236,6 +252,7 @@ def optimize_K(
         maxiter=500,
         seed=rng,
     )
+    print(f"Best fitness achieved at generation {best_generation}.")  # 最適な世代を出力
     E: float = -result.fun
     K: npt.NDArray[np.float_] = result.x
 
