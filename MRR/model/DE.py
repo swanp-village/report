@@ -108,6 +108,7 @@ def optimize_K(
  
     for generation in range(generations):
         solutions = []
+        improved = False
         for _ in range(popsize):
             # Ask a parameter
             x=optimizer.ask()
