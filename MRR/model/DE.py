@@ -101,6 +101,7 @@ def optimize_K(
     )
     best_solution = None
     best_fitness = float("inf")
+    best_genaration = -1
 
  
     for generation in range(generations):
@@ -113,10 +114,10 @@ def optimize_K(
             if value < best_fitness:
                 best_fitness = value
                 best_solution = x 
+                best_genaration = ganerations
         optimizer.tell(solutions)
-        print(-best_fitness)
 
-    
+    print(f"Best fitness achieved at generation {best_generation}.")  # 追加: 最適な世代を出力
     E: float = -best_fitness
     K: npt.NDArray[np.float_] = best_solution
     
