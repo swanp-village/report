@@ -102,13 +102,13 @@ def optimize_K(
     )
     best_solution = None
     best_fitness = float("inf")
-    best_generation = -1
-    count = 0
+    previous_best_fitness = float("inf")
+    fitness_history = []
+    stagnation_count = 0
 
  
     for generation in range(generations):
         solutions = []
-        improved = False
         for _ in range(popsize):
             # Ask a parameter
             x=optimizer.ask()
@@ -118,22 +118,13 @@ def optimize_K(
                 best_fitness = value
                 best_solution = x 
                 best_generation = generation
-                improved=True
-        if improved:
-            count = 0
-        else:
-            count += 1
+                
+       
         optimizer.tell(solutions)
         print(-best_fitness)
-        if count >= 100:
-            break
-
-    print(f"Best fitness achieved at generation {best_generation}.")  # 追加: 最適な世代を出力
-    E: float = -best_fitness
-    K: npt.NDArray[np.float_] = best_solution
+       
+   
     
-
-    return K,E
 
 
 """
@@ -181,6 +172,7 @@ def optimize_K(
     
 
     return K,E
+"""
 #　リスタート戦略今後複雑な処理が増えたら使ってみてね
         # 評価値を履歴に追加
         fitness_history.append(best_fitness)
@@ -227,7 +219,12 @@ def optimize_K(
             best_fitness = float("inf")
             fitness_history.clear()
             stagnation_count = 0  # カウントをリセット
+    E: float = -best_fitness
+    K: npt.NDArray[np.float_] = best_solution
+    
 
+    return K,E
+"""
 def optimize_K(
     eta: float,
     number_of_rings: int,
