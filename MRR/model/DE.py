@@ -102,9 +102,11 @@ def optimize_K(
     )
     best_solution = None
     best_fitness = float("inf")
+    """
     previous_best_fitness = float("inf")
     fitness_history = []
     stagnation_count = 0
+    """
 
  
     for generation in range(generations):
