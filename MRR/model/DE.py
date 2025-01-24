@@ -171,7 +171,7 @@ def optimize_K(
     
 
     return K,E
-
+"""
 def optimize_K(
     eta: float,
     number_of_rings: int,
