@@ -177,6 +177,7 @@ def _evaluate_ripple(
     if index.size <= 1:
         return (np.float_(0), False)
     three_db_band = pass_band[index[0] : index[-1]]
+"""
     max_val = three_db_band.max()
     min_val = three_db_band.min()
     dif = max_val - min_val
@@ -198,7 +199,7 @@ def _evaluate_ripple(
         return (np.float_(0), False)
     E = 1 - dif / r_max
     return (E, True)
-"""
+
 
 
 def _evaluate_cross_talk(
