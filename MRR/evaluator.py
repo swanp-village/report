@@ -148,7 +148,7 @@ def _evaluate_insertion_loss(
         E = 1 - insertion_loss[0] / H_i
         #return (np.float_(0), False)
     else:
-        E = 1
+        E = H_i / insertion_loss[0]
     #E = 1 - insertion_loss[0] / H_i
     return (E, True)
 
@@ -182,11 +182,11 @@ def _evaluate_ripple(
     dif = max_val - min_val
 
     if dif > r_max:
-        return(np.float_(0),False)
+        E = r_max / dif
 
     E = 1 - dif / r_max
     return(E,True)
-    """
+"""
     maxid = argrelmax(three_db_band, order=1)
     minid = argrelmin(three_db_band, order=1)
     peak_max = three_db_band[maxid]
@@ -198,7 +198,7 @@ def _evaluate_ripple(
         return (np.float_(0), False)
     E = 1 - dif / r_max
     return (E, True)
-    """
+"""
 
 
 def _evaluate_cross_talk(
