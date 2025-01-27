@@ -174,6 +174,16 @@ def _evaluate_ripple(
     if index.size <= 1:
         return (np.float_(0), False)
     three_db_band = pass_band[index[0] : index[-1]]
+    max_val = three_db_band.max()
+    min_val = three_db_band.min()
+    dif = max_val - min_val
+
+    if dif > r_max:
+        return(np.float_(0),False)
+
+    E = 1 - dif / r_max
+    return(E,True)
+    """
     maxid = argrelmax(three_db_band, order=1)
     minid = argrelmin(three_db_band, order=1)
     peak_max = three_db_band[maxid]
@@ -185,6 +195,7 @@ def _evaluate_ripple(
         return (np.float_(0), False)
     E = 1 - dif / r_max
     return (E, True)
+    """
 
 
 def _evaluate_cross_talk(
@@ -196,11 +207,16 @@ def _evaluate_cross_talk(
     maxid_end = np.append(argrelmax(end), -1)
     start_peak = start[maxid_start]
     end_peak = end[maxid_end]
-    a = np.any(start_peak > max_crosstalk)
-    b = np.any(end_peak > max_crosstalk)
-    if a or b:
-        return (np.float_(0), False)
-    return (np.float_(0), True)
+    excess_start = np.maximum(start_peak - max_crosstalk,0)
+    excess_end = np.maximum(end_peak - max_crosstalk,0)
+    penalty = np.sum(excess_start) + np.sum(excess_end)
+    return (1 / (1 + penalty),True)
+    #a = np.any(start_peak > max_crosstalk)
+    #b = np.any(end_peak > max_crosstalk)
+    #if a or b:
+        #return (np.float_(0), False)
+    #return (np.float_(0),True)
+
 
 
 def _evaluate_shape_factor(
@@ -209,7 +225,9 @@ def _evaluate_shape_factor(
     index = _get_3db_band(x=x, y=y, start=start, end=end)
     if index.size <= 1:
         return (np.float_(0), False)
-    E = (index[-1] - index[0]) / (end - start)
+    practical_length = x[index[-1]] - x[index[0]]
+    total_length = x[end] - x[start]
+    E = practical_length / total_length
     if E < 0.5:
         return (E, False)
     return (E, True)
