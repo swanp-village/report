@@ -93,7 +93,7 @@ def optimize_K(
     sigma = 0.3
     generations = (number_of_rings+1) * 100
 
-""" 
+
     optimizer=CMA(
         bounds=bounds_array,
         mean=initial,
@@ -145,7 +145,7 @@ def optimize_K(
     K: npt.NDArray[np.float_] = result.x
 
     return K, E
-
+"""
 
 
 def optimize(
