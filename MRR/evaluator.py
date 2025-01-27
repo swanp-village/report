@@ -103,6 +103,7 @@ def _get_3db_band(x: npt.NDArray[np.float_], y: npt.NDArray[np.float_], start: i
     return index
 
 #離散ver
+"""
 def _evaluate_pass_band(
     x: npt.NDArray[np.float_], y: npt.NDArray[np.float_], H_p: float, start: int, end: int
 ) -> tuple[np.float_, bool]:
@@ -353,4 +354,4 @@ def _evaluate_shape_factor(
     if E < 0.5:
         return (E ** 2, False)  # ペナルティを連続化
     return (E, True)
-"""
+
