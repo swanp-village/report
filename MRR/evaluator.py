@@ -157,9 +157,7 @@ def _evaluate_3db_band(
     x: npt.NDArray[np.float_], y: npt.NDArray[np.float_], length_of_3db_band: float, start: int, end: int
 ) -> tuple[np.float_, bool]:
     distance: np.float_ = x[1] - x[0]
-    #index = _get_3db_band(x=x, y=y, start=start, end=end)
-    border = y.max() - 3
-    index = np.where(y[start:end] <= border)[0]
+    index = _get_3db_band(x=x, y=y, start=start, end=end)
     if index.size <= 1:
         return (np.float_(0), False)
     practical_length_of_3db_band = distance * (index[-1] - index[0])
