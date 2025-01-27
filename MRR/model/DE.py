@@ -93,7 +93,7 @@ def optimize_K(
     sigma = 0.3
     generations = (number_of_rings+1) * 100
 
-    
+""" 
     optimizer=CMA(
         bounds=bounds_array,
         mean=initial,
@@ -145,7 +145,7 @@ def optimize_K(
     K: npt.NDArray[np.float_] = result.x
 
     return K, E
-"""
+
 
 
 def optimize(
@@ -225,12 +225,12 @@ def optimize(
                 number_of_rings=number_of_rings,
                 rng=rng,
             )
-        #N = [78,78,78,117,117,117] #6th
+        N = [78,78,78,117,117,117] #6th
         #N = [78,78,78,468,468,117,117,117] #8th
         #N = [117,117,117,156,156,156,117,117,156,156] #10th
         #N = [117,117,117,117,468,468,468,78,78,78,78,78] #12th
         #N = [117,117,117,117,468,468,468,468,78,78,78,78,78,78] #14th
-        N = [78,117,117,117,78,78,78,78]
+        #N = [78,117,117,117,78,78,78,78]
         
         L = calculate_ring_length(center_wavelength=center_wavelength, n_eff=n_eff, N=N)
         K, E = optimize_K(
