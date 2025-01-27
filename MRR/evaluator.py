@@ -145,10 +145,10 @@ def _evaluate_insertion_loss(
 ) -> tuple[np.float_, bool]:
     insertion_loss = y[x == center_wavelength]
     if insertion_loss[0] < H_i:
-        E = 1 - insertion_loss[0] / H_i
+        E = H_i / insertion_loss[0]
         #return (np.float_(0), False)
     else:
-        E = H_i / insertion_loss[0]
+        E = 1 - insertion_loss[0] / H_i
     #E = 1 - insertion_loss[0] / H_i
     return (E, True)
 
