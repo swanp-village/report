@@ -74,7 +74,7 @@ class OptimizeKParams:
     weight: list[float]
 
 
-"""
+
 def optimize_K(
     eta: float,
     number_of_rings: int,
@@ -86,7 +86,7 @@ def optimize_K(
     #initial=np.random.uniform(1e-12, eta, size=(number_of_rings+1,))
     #sampler = LatinHypercube(d=number_of_rings+1)  # 次元数を1に設定
     #samples = sampler.random(n=1)  # 1サンプルだけ生成（shape: (1, number_of_rings + 1)）
-    initial = np.array[0.2903466,0.04022134,0.03250041,0.039598,0.05683068,0.09295288,0.55140266]
+    initial = np.array[0.31696919,0.03971662,0.03015172,0.03758653,0.06327071,0.11668272,0.6309192]
     #initial = sampler.random(n=number_of_rings + 1).flatten() * eta  # 0からetaの範囲でスケーリング
     popsize = 4 + math.floor(3 * math.log(number_of_rings+1)) + 5
     #sigma = 0.3*(number_of_rings+1)/9
@@ -145,7 +145,7 @@ def optimize_K(
     K: npt.NDArray[np.float_] = result.x
 
     return K, E
-
+"""
 
 
 def optimize(
