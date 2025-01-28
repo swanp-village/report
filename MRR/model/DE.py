@@ -74,7 +74,7 @@ class OptimizeKParams:
     weight: list[float]
 
 
-
+"""
 def optimize_K(
     eta: float,
     number_of_rings: int,
@@ -145,7 +145,7 @@ def optimize_K(
     K: npt.NDArray[np.float_] = result.x
 
     return K, E
-"""
+
 
 
 def optimize(
