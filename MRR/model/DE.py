@@ -73,8 +73,58 @@ class OptimizeKParams:
     r_max: float
     weight: list[float]
 
+def optimize_K(
+    eta: float,
+    number_of_rings: int,
+    rng: np.random.Generator,
+    params: OptimizeKParams,
+) -> tuple[npt.NDArray[np.float_], float, npt.NDArray[np.float_], float]:
+    bounds = [(1e-12, eta) for _ in range(number_of_rings + 1)]
+    bounds_array = np.array(bounds)
+    initial = np.array([0.31696919, 0.03971662, 0.03015172, 0.03758653, 0.06327071, 0.11668272, 0.6309192])
+    popsize = 4 + math.floor(3 * math.log(number_of_rings + 1)) + 5
+    sigma = 0.07
+    generations = (number_of_rings + 1) * 100
 
+    optimizer = CMA(
+        bounds=bounds_array,
+        mean=initial,
+        sigma=sigma,
+        population_size=popsize
+    )
+    best_solution_with_error = None
+    best_fitness_with_error = float("inf")
+    best_solution_without_error = None
+    best_fitness_without_error = float("inf")
+    
+    for generation in range(generations):
+        solutions = []
+        for _ in range(popsize):
+            x = optimizer.ask()
+            value_without_error = optimize_K_func(x, params)
+            noise = rng.uniform(-0.05, 0.05)  # 誤差を加える
+            value_with_error = value_without_error + noise
+            solutions.append((x, value_with_error))
+            
+            if value_with_error < best_fitness_with_error:
+                best_fitness_with_error = value_with_error
+                best_solution_with_error = x
+            
+            if value_without_error < best_fitness_without_error:
+                best_fitness_without_error = value_without_error
+                best_solution_without_error = x
 
+        optimizer.tell(solutions)
+        print(f"Generation {generation}: With Error: {-best_fitness_with_error}, Without Error: {-best_fitness_without_error}")
+    
+    E_with_error = -best_fitness_with_error
+    K_with_error = best_solution_with_error
+    E_without_error = -best_fitness_without_error
+    K_without_error = best_solution_without_error
+    
+    return K_with_error, E_with_error, K_without_error, E_without_error
+
+"""
 def optimize_K(
     eta: float,
     number_of_rings: int,
@@ -120,7 +170,7 @@ def optimize_K(
     
 
     return K,E
-"""
+
 def optimize_K(
     eta: float,
     number_of_rings: int,
