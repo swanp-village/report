@@ -73,7 +73,8 @@ class OptimizeKParams:
     r_max: float
     weight: list[float]
 
-
+"""
+#誤差強化設計
 def optimize_K(
     eta: float,
     number_of_rings: int,
@@ -125,6 +126,7 @@ def optimize_K(
    
     return K,E,E_without_error,K_without_error
 """
+#一般設計
 def optimize_K(
     eta: float,
     number_of_rings: int,
@@ -173,7 +175,8 @@ def optimize_K(
     
 
     return K,E
-
+"""
+#差分進化法
 def optimize_K(
     eta: float,
     number_of_rings: int,
