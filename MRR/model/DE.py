@@ -125,7 +125,7 @@ def optimize_K(
     print(E_without_error)
     print(K_without_error)
     
-    return E,K
+    return K,E
 """
 def optimize_K(
     eta: float,
