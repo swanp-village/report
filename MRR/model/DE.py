@@ -103,7 +103,7 @@ def optimize_K(
         for _ in range(popsize):
             x = optimizer.ask()
             value_without_error = optimize_K_func(x, params)
-            noise = rng.uniform(-0.05, 0.05)  # 誤差を加える
+            noise = 0.005  # 誤差を加える
             value_with_error = value_without_error + noise
             solutions.append((x, value_with_error))
             
