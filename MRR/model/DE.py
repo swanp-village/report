@@ -75,7 +75,7 @@ class OptimizeKParams:
 
 
 
-"""
+
 def optimize_K(
     eta: float,
     number_of_rings: int,
@@ -115,13 +115,16 @@ def optimize_K(
                 best_solution = x 
        
         optimizer.tell(solutions)
-        print(-best_fitness)
-    E: float = -best_fitness
+        
+
+    noise = rng.uniform(-0.005, 0.005)  # 誤差を加える範囲
+    best_fitness_with_error = best_fitness + noise  # 最適解に誤差を加えた
+    E: float = -best_fitness_with_error
     K: npt.NDArray[np.float_] = best_solution
     
 
     return K,E
-
+"""
 def optimize_K(
     eta: float,
     number_of_rings: int,
@@ -234,8 +237,7 @@ def optimize(
         #N = [78,117,117,117,78,78,78,78]
         
         L = calculate_ring_length(center_wavelength=center_wavelength, n_eff=n_eff, N=N)
-        K = [
-        """
+       
         K, E = optimize_K(
             eta=eta,
             number_of_rings=number_of_rings,
@@ -257,7 +259,7 @@ def optimize(
                 weight=weight,
             ),
         )
-        """
+        
 
         N_list[m] = N
         L_list[m] = L
