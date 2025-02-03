@@ -390,8 +390,6 @@ def optimize(
         K=result_K, L=result_L, N=result_N, FSR=result_FSR, E=result_E, analyze_score=result_analyze_score
     )
     logger.save_result(L=result_L, K=result_K)
-    print(K_without_error)
-    print(E_without_error)
     print("save data")
     logger.save_DE_data(
         N_list=N_list,
