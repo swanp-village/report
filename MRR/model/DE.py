@@ -166,11 +166,11 @@ def optimize_K(
                 best_solution = x 
        
         optimizer.tell(solutions)
+        print(-best_fitness)
         
 
-    noise = rng.uniform(-0.005, 0.005)  # 誤差を加える範囲
-    best_fitness_with_error = best_fitness + noise  # 最適解に誤差を加えた
-    E: float = -best_fitness_with_error
+
+    E: float = -best_fitness
     K: npt.NDArray[np.float_] = best_solution
     
 
