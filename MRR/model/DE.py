@@ -122,10 +122,8 @@ def optimize_K(
     K = best_solution_with_error
     E_without_error = -best_fitness_without_error
     K_without_error = best_solution_without_error
-    print(E_without_error)
-    print(K_without_error)
-    
-    return K,E
+   
+    return K,E,E_without_error,K_without_error
 """
 def optimize_K(
     eta: float,
@@ -389,6 +387,8 @@ def optimize(
         K=result_K, L=result_L, N=result_N, FSR=result_FSR, E=result_E, analyze_score=result_analyze_score
     )
     logger.save_result(L=result_L, K=result_K)
+    print(K_without_error)
+    print(E_without_error)
     print("save data")
     logger.save_DE_data(
         N_list=N_list,
