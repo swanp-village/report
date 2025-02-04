@@ -302,7 +302,7 @@ def optimize(
         K_list[m] = K
         E_list[m] = E
         analyze_score = 0.0
-        if E > 10:
+        if E > 18.5:
             for L_error_rate, K_error_rate in zip([0.01, 0.1, 1, 10], [1, 10, 100]):
                 analyze_result = analyze(
                     n=1000,
@@ -374,6 +374,7 @@ def optimize(
     )
     logger.save_result(L=result_L, K=result_K)
     print("save data")
+    print(perturbed_evaluations)
     logger.save_DE_data(
         N_list=N_list,
         L_list=L_list,
