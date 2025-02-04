@@ -12,6 +12,22 @@ from MRR.transfer_function import simulate_transfer_function
 
 
 @dataclass
+class OptimizeKParams:
+   # L:np.array([0.000055,0.000055,0.000055,0.0003297,0.0003297,0.0000824,0.0000824,0.0000824])
+    L: npt.NDArray[np.float_]
+    n_g: float
+    n_eff: float
+    eta: float
+    alpha: float
+    center_wavelength: float
+    length_of_3db_band: float
+    FSR: np.float_
+    max_crosstalk: float
+    H_p: float
+    H_s: float
+    H_i: float
+    r_max: float
+    weight: list[float]
 class SimulatorResult:
     name: str
     x: npt.NDArray[np.float_]
@@ -36,8 +52,6 @@ class Accumulator:
 
 def optimize_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams) -> np.float_:
     
-    
-
     x = calculate_x(center_wavelength=params.center_wavelength, FSR=params.FSR)
     y = simulate_transfer_function(
         wavelength=x,
@@ -52,9 +66,6 @@ def optimize_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams) -> np.fl
     #print(f"x: {x}")
     #print(f"y: {y}")
     
-
-    
-
     return -evaluate_band(
         x=x,
         y=y,
@@ -68,7 +79,7 @@ def optimize_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams) -> np.fl
         weight=params.weight,
         ignore_binary_evaluation=False,
     )
-    #print(f"Fitness value: {fitness}")
+    print(f"Fitness value: {fitness}")
 def simulate_MRR(
     accumulator: Accumulator,
     L: npt.NDArray[np.float_],
