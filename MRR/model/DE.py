@@ -72,11 +72,11 @@ class OptimizeKParams:
     H_i: float
     r_max: float
     weight: list[float]
-"""
+
 normal_evaluations = []
 perturbed_evaluations = []
 def combined_evaluation(K: npt.NDArray[np.float_], params: OptimizeKParams) -> float:
-    
+    """
     誤差の正負両方を考慮した総合評価値を計算。
 
     Parameters:
@@ -85,8 +85,9 @@ def combined_evaluation(K: npt.NDArray[np.float_], params: OptimizeKParams) -> f
 
     Returns:
     - total_score: 総合評価値
-    
+    """
     global normal_evaluations, perturbed_evaluations
+    print("error_K":K)
 
     # 通常の評価値
     E_optimal = optimize_K_func(K, params)
@@ -106,7 +107,7 @@ def combined_evaluation(K: npt.NDArray[np.float_], params: OptimizeKParams) -> f
     total_score = E_optimal + (delta_E_positive + delta_E_negative) / 2
 
     return total_score
-"""
+
 #一般設計
 def optimize_K(
     eta: float,
@@ -141,7 +142,7 @@ def optimize_K(
         for _ in range(popsize):
             # Ask a parameter
             x=optimizer.ask()
-            value = optimize_K_func(x, params)
+            value = combined_evaluation(x, params)
             solutions.append((x,value))
             if value < best_fitness :
                 best_fitness = value
@@ -149,6 +150,7 @@ def optimize_K(
        
         optimizer.tell(solutions)
         print(-best_fitness)
+        
         
 
 
@@ -430,11 +432,11 @@ def optimize_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams) -> np.fl
         ignore_binary_evaluation=False,
     )
     #print(f"Fitness value: {fitness}")
-"""
+
 def optimize_perturbed_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams) -> tuple[float, float]:
     
     誤差として結合率 K に +0.005 および -0.005 を適用した場合の評価値を計算。
-
+"""
     Parameters:
     - K: 結合率の配列
     - params: 最適化パラメータ
@@ -442,7 +444,7 @@ def optimize_perturbed_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams
     Returns:
     - E_positive: +0.005 の誤差を加えた場合の評価値
     - E_negative: -0.005 の誤差を加えた場合の評価値
-    
+"""
     # 正の誤差を加える
     perturbed_K_positive = np.clip(K + 0.005, 1e-12, params.eta)
     print(perturbed_K_positive)
@@ -477,7 +479,7 @@ def optimize_perturbed_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams
         weight=params.weight,
         ignore_binary_evaluation=False,
     )
-    print(E_positive)
+    
 
     # 負の誤差での評価値
     y_negative = simulate_transfer_function(
@@ -505,4 +507,3 @@ def optimize_perturbed_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams
     )
 
     return E_positive, E_negative
-"""
