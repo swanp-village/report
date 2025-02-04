@@ -141,7 +141,7 @@ def optimize_K(
         for _ in range(popsize):
             # Ask a parameter
             x=optimizer.ask()
-            value = combined_evaluation(x, params)
+            value = optimize_K_func(x, params)
             solutions.append((x,value))
             if value < best_fitness :
                 best_fitness = value
