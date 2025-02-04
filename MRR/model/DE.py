@@ -149,11 +149,7 @@ def optimize_K(
                 best_solution = x 
        
         optimizer.tell(solutions)
-        print(-best_fitness)
         
-        
-
-
     E: float = -best_fitness
     K: npt.NDArray[np.float_] = best_solution
     
@@ -297,9 +293,6 @@ def optimize(
                 weight=weight,
             ),
         )
-        error_K_list[m] = error_K
-        
-
         N_list[m] = N
         L_list[m] = L
         FSR_list[m] = practical_FSR
