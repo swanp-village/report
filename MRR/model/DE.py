@@ -125,7 +125,7 @@ def optimize_K(
     #sigma = 0.3*(number_of_rings+1)/9
     sigma = 0.07
     #generations = (number_of_rings+1) * 100
-    genarations=5
+    generations=5
 
 
     optimizer=CMA(
