@@ -87,7 +87,7 @@ def combined_evaluation(K: npt.NDArray[np.float_], params: OptimizeKParams) -> f
     - total_score: 総合評価値
     """
     global normal_evaluations, perturbed_evaluations
-    print(f"error_K:{K}")
+    
 
     # 通常の評価値
     E_optimal = optimize_K_func(K, params)
@@ -125,8 +125,8 @@ def optimize_K(
     popsize = 4 + math.floor(3 * math.log(number_of_rings+1)) + 5
     #sigma = 0.3*(number_of_rings+1)/9
     sigma = 0.07
-    #generations = (number_of_rings+1) * 100
-    generations=5
+    generations = (number_of_rings+1) * 100
+    
 
 
     optimizer=CMA(
