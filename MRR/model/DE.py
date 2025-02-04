@@ -87,7 +87,7 @@ def combined_evaluation(K: npt.NDArray[np.float_], params: OptimizeKParams) -> f
     - total_score: 総合評価値
     """
     global normal_evaluations, perturbed_evaluations
-    print("error_K":K)
+    print(f"error_K:{K}")
 
     # 通常の評価値
     E_optimal = optimize_K_func(K, params)
