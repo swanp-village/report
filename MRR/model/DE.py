@@ -267,8 +267,8 @@ def optimize(
         #N = [78,117,117,117,78,78,78,78]
         
         L = calculate_ring_length(center_wavelength=center_wavelength, n_eff=n_eff, N=N)
-        nomal_evaluations = []
-        error_evaluations = []
+        normal_evaluations = []
+        perturbed_evaluations = []
        
         K, E = optimize_K(
             eta=eta,
