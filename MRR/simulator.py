@@ -12,22 +12,6 @@ from MRR.transfer_function import simulate_transfer_function
 
 
 @dataclass
-class OptimizeKParams:
-   # L:np.array([0.000055,0.000055,0.000055,0.0003297,0.0003297,0.0000824,0.0000824,0.0000824])
-    L: npt.NDArray[np.float_]
-    n_g: float
-    n_eff: float
-    eta: float
-    alpha: float
-    center_wavelength: float
-    length_of_3db_band: float
-    FSR: np.float_
-    max_crosstalk: float
-    H_p: float
-    H_s: float
-    H_i: float
-    r_max: float
-    weight: list[float]
 class SimulatorResult:
     name: str
     x: npt.NDArray[np.float_]
@@ -50,36 +34,7 @@ class Accumulator:
     def show(self) -> None:
         self.graph.show(self.logger.generate_image_path())
 
-def optimize_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams) -> np.float_:
-    
-    x = calculate_x(center_wavelength=params.center_wavelength, FSR=params.FSR)
-    y = simulate_transfer_function(
-        wavelength=x,
-        L=params.L,
-        K=K,
-        alpha=params.alpha,
-        eta=params.eta,
-        n_eff=params.n_eff,
-        n_g=params.n_g,
-        center_wavelength=params.center_wavelength,
-    )
-    #print(f"x: {x}")
-    #print(f"y: {y}")
-    
-    return -evaluate_band(
-        x=x,
-        y=y,
-        center_wavelength=params.center_wavelength,
-        length_of_3db_band=params.length_of_3db_band,
-        max_crosstalk=params.max_crosstalk,
-        H_p=params.H_p,
-        H_s=params.H_s,
-        H_i=params.H_i,
-        r_max=params.r_max,
-        weight=params.weight,
-        ignore_binary_evaluation=False,
-    )
-    print(f"Fitness value: {fitness}")
+
 def simulate_MRR(
     accumulator: Accumulator,
     L: npt.NDArray[np.float_],
@@ -116,13 +71,12 @@ def simulate_MRR(
     y = simulate_transfer_function(
         wavelength=x, L=L, K=K, alpha=alpha, eta=eta, n_eff=n_eff, n_g=n_g, center_wavelength=center_wavelength
     )
-    
+    """
     if skip_evaluation:
         evaluation_result = np.float_(0)
-       
-    else:
+    """   
     
-        evaluation_result = evaluate_band(
+    evaluation_result = evaluate_band(
             x=x,
             y=y,
             center_wavelength=center_wavelength,
@@ -134,7 +88,7 @@ def simulate_MRR(
             r_max=r_max,
             weight=weight,
             ignore_binary_evaluation=ignore_binary_evaluation,
-        )
+    )
     
       
     accumulator.logger.print_parameters(K=K, L=L, N=N, FSR=practical_FSR, E=evaluation_result, format=format)
