@@ -370,20 +370,11 @@ def optimize(
         center_wavelength=center_wavelength,
     )
     print("result")
-    print("best")
+    
     logger.print_parameters(
         K=result_K, L=result_L, N=result_N, FSR=result_FSR, E=result_E, analyze_score=result_analyze_score
     )
-    print("positive")
-    logger.print_parameters(
-        K=result_K, L=result_L, N=result_N, FSR=result_FSR, E=E_positive, analyze_score=result_analyze_score
-    )
-    print("negative")
-    logger.print_parameters(
-        K=perturbed_K_negative, L=result_L, N=result_N, FSR=result_FSR, E=E_negative, analyze_score=result_analyze_score
-    )
 
-        
     logger.save_result(L=result_L, K=result_K)
     print("save data")
     print(perturbed_evaluations)
@@ -455,6 +446,7 @@ def optimize_perturbed_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams
     """
     # 正の誤差を加える
     perturbed_K_positive = np.clip(K + 0.005, 1e-12, params.eta)
+    print(perturbed_K_positive)
 
     # 負の誤差を加える
     perturbed_K_negative = np.clip(K - 0.005, 1e-12, params.eta)
@@ -486,6 +478,7 @@ def optimize_perturbed_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams
         weight=params.weight,
         ignore_binary_evaluation=False,
     )
+    print(E_positive)
 
     # 負の誤差での評価値
     y_negative = simulate_transfer_function(
