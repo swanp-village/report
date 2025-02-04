@@ -63,10 +63,10 @@ def simulate_MRR(
     N = calculate_N(center_wavelength=center_wavelength, n_eff=n_eff, L=L)
     practical_FSR = calculate_practical_FSR(center_wavelength=center_wavelength, n_eff=n_eff, n_g=n_g, N=N)
 
-    if simulate_one_cycle:
-        x = calculate_x(center_wavelength=center_wavelength, FSR=practical_FSR)
-    else:
-        x = lambda_limit
+    #if simulate_one_cycle:
+    x = calculate_x(center_wavelength=center_wavelength, FSR=practical_FSR)
+    #else:
+        #x = lambda_limit
 
     y = simulate_transfer_function(
         wavelength=x, L=L, K=K, alpha=alpha, eta=eta, n_eff=n_eff, n_g=n_g, center_wavelength=center_wavelength
