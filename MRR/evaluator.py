@@ -103,7 +103,7 @@ def _get_3db_band(x: npt.NDArray[np.float_], y: npt.NDArray[np.float_], start: i
     return index
 
 #離散ver
-
+"""
 def _evaluate_pass_band(
     x: npt.NDArray[np.float_], y: npt.NDArray[np.float_], H_p: float, start: int, end: int
 ) -> tuple[np.float_, bool]:
@@ -319,7 +319,7 @@ def _evaluate_ripple(
         E = 1 - dif / r_max
 
     return (E, True)
-    
+"""   
 def _evaluate_cross_talk(
     y: npt.NDArray[np.float_], max_crosstalk: float, pass_band_start: int, pass_band_end: int
 ) -> tuple[np.float_, bool]:
@@ -334,7 +334,7 @@ def _evaluate_cross_talk(
     if a or b:
         return (np.float_(0), False)
     return (np.float_(0), True)
-
+"""
 def _evaluate_cross_talk(
     y: npt.NDArray[np.float_], max_crosstalk: float, pass_band_start: int, pass_band_end: int
 ) -> tuple[np.float_, bool]:
