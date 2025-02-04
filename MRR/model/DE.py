@@ -297,6 +297,7 @@ def optimize(
                 weight=weight,
             ),
         )
+        error_K_list[m] = error_K
         
 
         N_list[m] = N
