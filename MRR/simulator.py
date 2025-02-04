@@ -34,7 +34,41 @@ class Accumulator:
     def show(self) -> None:
         self.graph.show(self.logger.generate_image_path())
 
+def optimize_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams) -> np.float_:
+    
+    
 
+    x = calculate_x(center_wavelength=params.center_wavelength, FSR=params.FSR)
+    y = simulate_transfer_function(
+        wavelength=x,
+        L=params.L,
+        K=K,
+        alpha=params.alpha,
+        eta=params.eta,
+        n_eff=params.n_eff,
+        n_g=params.n_g,
+        center_wavelength=params.center_wavelength,
+    )
+    #print(f"x: {x}")
+    #print(f"y: {y}")
+    
+
+    
+
+    return -evaluate_band(
+        x=x,
+        y=y,
+        center_wavelength=params.center_wavelength,
+        length_of_3db_band=params.length_of_3db_band,
+        max_crosstalk=params.max_crosstalk,
+        H_p=params.H_p,
+        H_s=params.H_s,
+        H_i=params.H_i,
+        r_max=params.r_max,
+        weight=params.weight,
+        ignore_binary_evaluation=False,
+    )
+    #print(f"Fitness value: {fitness}")
 def simulate_MRR(
     accumulator: Accumulator,
     L: npt.NDArray[np.float_],
