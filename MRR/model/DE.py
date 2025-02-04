@@ -149,6 +149,7 @@ def optimize_K(
                 best_solution = x 
        
         optimizer.tell(solutions)
+        print(best_fitness)
         
     E: float = -best_fitness
     K: npt.NDArray[np.float_] = best_solution
@@ -443,7 +444,6 @@ def optimize_perturbed_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams
 
     # 正の誤差を加える
     perturbed_K_positive = np.clip(K + 0.005, 1e-12, params.eta)
-    print(perturbed_K_positive)
 
     # 負の誤差を加える
     perturbed_K_negative = np.clip(K - 0.005, 1e-12, params.eta)
