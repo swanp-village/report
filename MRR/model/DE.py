@@ -72,7 +72,37 @@ class OptimizeKParams:
     H_i: float
     r_max: float
     weight: list[float]
+def combined_evaluation(K: npt.NDArray[np.float_], params: OptimizeKParams) -> float:
+    """
+    誤差の正負両方を考慮した総合評価値を計算。
 
+    Parameters:
+    - K: 結合率の配列
+    - params: 最適化パラメータ
+
+    Returns:
+    - total_score: 総合評価値
+    """
+    global normal_evaluations, perturbed_evaluations
+
+    # 通常の評価値
+    E_optimal = optimize_K_func(K, params)
+
+    # 正負の誤差による評価値
+    E_positive, E_negative = optimize_perturbed_K_func(K, params)
+
+    # 評価値を記録
+    normal_evaluations.append(E_optimal)
+    perturbed_evaluations.append((E_positive, E_negative))
+
+    # 評価値の統合
+    delta_E_positive = abs(E_optimal - E_positive)
+    delta_E_negative = abs(E_optimal - E_negative)
+
+    # 総合評価値 (例: 平均変動量をペナルティとして加算)
+    total_score = E_optimal + (delta_E_positive + delta_E_negative) / 2
+
+    return total_score
 
 #一般設計
 def optimize_K(
@@ -237,6 +267,8 @@ def optimize(
         #N = [78,117,117,117,78,78,78,78]
         
         L = calculate_ring_length(center_wavelength=center_wavelength, n_eff=n_eff, N=N)
+        nomal_evaluations = []
+        error_evaluations = []
        
         K, E = optimize_K(
             eta=eta,
@@ -393,39 +425,41 @@ def optimize_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams) -> np.fl
     )
     #print(f"Fitness value: {fitness}")
 """
-def optimize_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams) -> np.float_:
-    error = 0.005
-    K_noisy = K + np.random.choice([-error, error], size=K.shape)
-    K_noisy = np.clip(K_noisy, 1e-12, params.eta)
-    
-    print(f"Original K: {K}")
-    print(f"Noisy K: {K_noisy}")
-    
+def optimize_perturbed_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams) -> tuple[float, float]:
+    """
+    誤差として結合率 K に +0.005 および -0.005 を適用した場合の評価値を計算。
+
+    Parameters:
+    - K: 結合率の配列
+    - params: 最適化パラメータ
+
+    Returns:
+    - E_positive: +0.005 の誤差を加えた場合の評価値
+    - E_negative: -0.005 の誤差を加えた場合の評価値
+    """
+    # 正の誤差を加える
+    perturbed_K_positive = np.clip(K + 0.005, 1e-12, params.eta)
+
+    # 負の誤差を加える
+    perturbed_K_negative = np.clip(K - 0.005, 1e-12, params.eta)
+
+    # 波長を計算
     x = calculate_x(center_wavelength=params.center_wavelength, FSR=params.FSR)
-    y_original = simulate_transfer_function(
+
+    # 正の誤差での評価値
+    y_positive = simulate_transfer_function(
         wavelength=x,
         L=params.L,
-        K=K,
+        K=perturbed_K_positive,
         alpha=params.alpha,
         eta=params.eta,
         n_eff=params.n_eff,
         n_g=params.n_g,
         center_wavelength=params.center_wavelength,
     )
-    y_noisy = simulate_transfer_function(
-        wavelength=x,
-        L=params.L,
-        K=K_noisy,
-        alpha=params.alpha,
-        eta=params.eta,
-        n_eff=params.n_eff,
-        n_g=params.n_g,
-        center_wavelength=params.center_wavelength,
-    )
-    
-    eval_original = -evaluate_band(
+    E_positive = -evaluate_band(
         x=x,
-        y=y_original,
+        y=y_positive,
         center_wavelength=params.center_wavelength,
         length_of_3db_band=params.length_of_3db_band,
         max_crosstalk=params.max_crosstalk,
@@ -436,9 +470,21 @@ def optimize_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams) -> np.fl
         weight=params.weight,
         ignore_binary_evaluation=False,
     )
-    eval_noisy = -evaluate_band(
+
+    # 負の誤差での評価値
+    y_negative = simulate_transfer_function(
+        wavelength=x,
+        L=params.L,
+        K=perturbed_K_negative,
+        alpha=params.alpha,
+        eta=params.eta,
+        n_eff=params.n_eff,
+        n_g=params.n_g,
+        center_wavelength=params.center_wavelength,
+    )
+    E_negative = -evaluate_band(
         x=x,
-        y=y_noisy,
+        y=y_negative,
         center_wavelength=params.center_wavelength,
         length_of_3db_band=params.length_of_3db_band,
         max_crosstalk=params.max_crosstalk,
@@ -449,9 +495,6 @@ def optimize_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams) -> np.fl
         weight=params.weight,
         ignore_binary_evaluation=False,
     )
-    
-    print(f"Original Evaluation: {eval_original}")
-    print(f"Noisy Evaluation: {eval_noisy}")
-    
-    return eval_noisy
+
+    return E_positive, E_negative
 
