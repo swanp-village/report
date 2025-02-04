@@ -376,7 +376,7 @@ def optimize(
     )
     print("positive")
     logger.print_parameters(
-        K=perturbed_K_positive, L=result_L, N=result_N, FSR=result_FSR, E=E_positive, analyze_score=result_analyze_score
+        K=result_K, L=result_L, N=result_N, FSR=result_FSR, E=E_positive, analyze_score=result_analyze_score
     )
     print("negative")
     logger.print_parameters(
