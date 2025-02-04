@@ -124,7 +124,8 @@ def optimize_K(
     popsize = 4 + math.floor(3 * math.log(number_of_rings+1)) + 5
     #sigma = 0.3*(number_of_rings+1)/9
     sigma = 0.07
-    generations = (number_of_rings+1) * 100
+    #generations = (number_of_rings+1) * 100
+    genarations=5
 
 
     optimizer=CMA(
@@ -369,9 +370,20 @@ def optimize(
         center_wavelength=center_wavelength,
     )
     print("result")
+    print("best")
     logger.print_parameters(
         K=result_K, L=result_L, N=result_N, FSR=result_FSR, E=result_E, analyze_score=result_analyze_score
     )
+    print("positive")
+    logger.print_parameters(
+        K=perturbed_K_positive, L=result_L, N=result_N, FSR=result_FSR, E=E_positive, analyze_score=result_analyze_score
+    )
+    print("negative")
+    logger.print_parameters(
+        K=perturbed_K_negative, L=result_L, N=result_N, FSR=result_FSR, E=E_negative, analyze_score=result_analyze_score
+    )
+
+        
     logger.save_result(L=result_L, K=result_K)
     print("save data")
     print(perturbed_evaluations)
