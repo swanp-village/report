@@ -72,6 +72,9 @@ class OptimizeKParams:
     H_i: float
     r_max: float
     weight: list[float]
+
+normal_evaluations = []
+perturbed_evaluations = []
 def combined_evaluation(K: npt.NDArray[np.float_], params: OptimizeKParams) -> float:
     """
     誤差の正負両方を考慮した総合評価値を計算。
