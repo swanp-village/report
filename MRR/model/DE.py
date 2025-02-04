@@ -72,7 +72,7 @@ class OptimizeKParams:
     H_i: float
     r_max: float
     weight: list[float]
-
+"""
 normal_evaluations = []
 perturbed_evaluations = []
 def combined_evaluation(K: npt.NDArray[np.float_], params: OptimizeKParams) -> float:
@@ -106,7 +106,7 @@ def combined_evaluation(K: npt.NDArray[np.float_], params: OptimizeKParams) -> f
     total_score = E_optimal + (delta_E_positive + delta_E_negative) / 2
 
     return total_score
-
+"""
 #一般設計
 def optimize_K(
     eta: float,
@@ -377,7 +377,6 @@ def optimize(
 
     logger.save_result(L=result_L, K=result_K)
     print("save data")
-    print(perturbed_evaluations)
     logger.save_DE_data(
         N_list=N_list,
         L_list=L_list,
@@ -431,7 +430,7 @@ def optimize_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams) -> np.fl
         ignore_binary_evaluation=False,
     )
     #print(f"Fitness value: {fitness}")
-
+"""
 def optimize_perturbed_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams) -> tuple[float, float]:
     """
     誤差として結合率 K に +0.005 および -0.005 を適用した場合の評価値を計算。
@@ -506,4 +505,4 @@ def optimize_perturbed_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams
     )
 
     return E_positive, E_negative
-
+"""
