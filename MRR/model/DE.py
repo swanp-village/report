@@ -107,7 +107,7 @@ def combined_evaluation(K: npt.NDArray[np.float_], params: OptimizeKParams) -> f
     total_score = E_optimal + (delta_E_positive + delta_E_negative) / 2
 
     return total_score
-
+"""
 #一般設計
 def optimize_K(
     eta: float,
@@ -167,7 +167,7 @@ def optimize_K(
     bounds = [(1e-12, eta) for _ in range(number_of_rings + 1)]
     best_fitness = float("inf")  # 初期化
     result = differential_evolution(
-        optimize_K_func,
+        combined_evaluation,
         bounds,
         args=(params,),
         strategy="currenttobest1bin",
@@ -182,7 +182,7 @@ def optimize_K(
     K: npt.NDArray[np.float_] = result.x
 
     return K, E
-"""
+
 
 
 def optimize(
