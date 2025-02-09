@@ -49,6 +49,9 @@ def evaluate_band(
     if ignore_binary_evaluation:
         return E_c
     E = E_c * E_b
+    # 各評価関数の結果を表示
+    for i, res in enumerate(result):
+        print(f"評価関数 {i+1}: 値 = {res[0]}, バイナリ評価 = {res[1]}")
 
     return E
 
