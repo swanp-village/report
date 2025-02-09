@@ -72,7 +72,7 @@ class OptimizeKParams:
     H_i: float
     r_max: float
     weight: list[float]
-
+"""
 normal_evaluations = []
 perturbed_evaluations = []
 def combined_evaluation(K: npt.NDArray[np.float_], params: OptimizeKParams) -> float:
@@ -107,7 +107,7 @@ def combined_evaluation(K: npt.NDArray[np.float_], params: OptimizeKParams) -> f
     total_score = E_optimal + (delta_E_positive + delta_E_negative) / 2
 
     return total_score
-
+"""
 #一般設計
 def optimize_K(
     eta: float,
@@ -427,7 +427,7 @@ def optimize_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams) -> np.fl
         ignore_binary_evaluation=False,
     )
     #print(f"Fitness value: {fitness}")
-
+"""
 def optimize_perturbed_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams) -> tuple[float, float]:
 
     """
@@ -503,3 +503,4 @@ def optimize_perturbed_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams
     )
 
     return E_positive, E_negative
+"""
