@@ -224,7 +224,7 @@ def optimize(
         kind: npt.NDArray[np.int_]
         counts: npt.NDArray[np.int_]
 
-        if m < 18:
+        if m < 10:
             method: int = 4
         else:
             method = rng.choice([1, 2, 3, 4], p=strategy)
@@ -300,7 +300,7 @@ def optimize(
         K_list[m] = K
         E_list[m] = E
         analyze_score = 0.0
-        if E > 10:
+        if E > 18:
             for L_error_rate, K_error_rate in zip([0.01, 0.1, 1, 10], [1, 10, 100]):
                 analyze_result = analyze(
                     n=1000,
