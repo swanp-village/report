@@ -106,7 +106,7 @@ def _get_3db_band(x: npt.NDArray[np.float_], y: npt.NDArray[np.float_], start: i
     return index
 
 #離散ver
-"""
+
 def _evaluate_pass_band(
     x: npt.NDArray[np.float_], y: npt.NDArray[np.float_], H_p: float, start: int, end: int
 ) -> tuple[np.float_, bool]:
@@ -150,7 +150,7 @@ def _evaluate_insertion_loss(
     insertion_loss = y[x == center_wavelength]
     if insertion_loss[0] < H_i:
         E = H_i / insertion_loss[0]
-        #return (np.float_(0), False)
+        return (np.float_(0), False)
     else:
         E = 1 - insertion_loss[0] / H_i
     #E = 1 - insertion_loss[0] / H_i
@@ -322,22 +322,7 @@ def _evaluate_ripple(
         E = 1 - dif / r_max
 
     return (E, True)
-"""   
-def _evaluate_cross_talk(
-    y: npt.NDArray[np.float_], max_crosstalk: float, pass_band_start: int, pass_band_end: int
-) -> tuple[np.float_, bool]:
-    start = y[:pass_band_start]
-    end = y[pass_band_end:]
-    maxid_start = np.append(0, argrelmax(start))
-    maxid_end = np.append(argrelmax(end), -1)
-    start_peak = start[maxid_start]
-    end_peak = end[maxid_end]
-    a = np.any(start_peak > max_crosstalk)
-    b = np.any(end_peak > max_crosstalk)
-    if a or b:
-        return (np.float_(0), False)
-    return (np.float_(0), True)
-"""
+
 def _evaluate_cross_talk(
     y: npt.NDArray[np.float_], max_crosstalk: float, pass_band_start: int, pass_band_end: int
 ) -> tuple[np.float_, bool]:
