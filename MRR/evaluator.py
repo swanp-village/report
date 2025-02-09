@@ -351,4 +351,5 @@ def _evaluate_shape_factor(
     if E < 0.5:
         return (E ** 2, False)  # ペナルティを連続化
     return (E, True)
+"""
 
