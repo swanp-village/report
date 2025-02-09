@@ -300,7 +300,7 @@ def optimize(
         K_list[m] = K
         E_list[m] = E
         analyze_score = 0.0
-        if E > 18.5:
+        if E > 10:
             for L_error_rate, K_error_rate in zip([0.01, 0.1, 1, 10], [1, 10, 100]):
                 analyze_result = analyze(
                     n=1000,
