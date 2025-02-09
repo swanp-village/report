@@ -224,7 +224,7 @@ def optimize(
         kind: npt.NDArray[np.int_]
         counts: npt.NDArray[np.int_]
 
-        if m < 10:
+        if m < 18:
             method: int = 4
         else:
             method = rng.choice([1, 2, 3, 4], p=strategy)
