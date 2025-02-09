@@ -42,11 +42,10 @@ class Graph:
             self.ax.xaxis.set_minor_locator(MultipleLocator(0.5))
             self.ax.yaxis.set_major_locator(MultipleLocator(2))
         else:
-            self.ax.set_xlim([1549, 1551])
             self.ax.xaxis.set_major_formatter(FormatStrFormatter("%d"))
             self.ax.xaxis.set_minor_formatter(FormatStrFormatter("%d"))
             self.ax.xaxis.set_major_locator(AutoLocator())
-            self.ax.set_ylim([-12, 0])
+            self.ax.set_ylim([-60, 0])
         plt.legend(loc="upper center", fontsize=12, frameon=False)
         #
         # plt.legend(loc="lower right", ncol=2)
