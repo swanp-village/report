@@ -108,7 +108,7 @@ class OptimizeKParams:
     H_i: float
     r_max: float
     weight: list[float]
-
+params:OptimizeKParams
 K1=np.array([
         0.3804785998770388,
         0.04311135245013454,
