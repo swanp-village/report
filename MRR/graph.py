@@ -26,11 +26,11 @@ class Graph:
     ):
         print(label)
         self.ax.plot(x, y, label=label)
-
+"""
     def show_legend(self):
         """凡例を表示"""
         self.ax.legend(loc="upper right",fontsize=10)
-       
+"""       
 
     def show(
         self,
@@ -57,6 +57,6 @@ class Graph:
         #plt.legend(loc="upper center", fontsize=12, frameon=False)
     
     
-        plt.legend(loc="upper right", ncol=2)
+        plt.legend(loc="best",fontsize=10, ncol=2)
         self.fig.savefig(img_path)
         plt.show()
