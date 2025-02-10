@@ -24,6 +24,7 @@ class Graph:
         y: npt.NDArray[np.float_],
         label
     ):
+        print(label)
         self.ax.plot(x, y, label=label)
 
     def show_legend(self):
