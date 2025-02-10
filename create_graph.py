@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import h5py
-from transfer_function import TransferFunction
+from MRR.transfer_function import simulate_transfer_function
 import csv
 from generate_figure import generate_figure
 
