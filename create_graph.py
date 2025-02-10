@@ -1,27 +1,10 @@
-from dataclasses import dataclass
-import math
-import numpy.typing as npt
-from scipy.optimize import differential_evolution
-from cmaes import CMA
-from config.random import get_differential_evolution_rng
-from MRR.analyzer import analyze
-from MRR.evaluator import evaluate_band
-from MRR.graph import Graph
-from MRR.logger import Logger
-from MRR.simulator import (
-    calculate_practical_FSR,
-    calculate_ring_length,
-    calculate_x,
-    optimize_N,
-)
-from MRR.transfer_function import simulate_transfer_function
-from scipy.stats.qmc import LatinHypercube
+
 import numpy as np
 import matplotlib.pyplot as plt
 import numpy as np
-#import h5py
-#import csv
-#from generate_figure import generate_figure
+import h5py
+import csv
+from generate_figure import generate_figure
 
 def graph_cretate(axis,dataset,nameset): #datasetは配列　axisはx軸　namesetは配列で凡例用の名前　Lとsは実験用なので削除予定　一枚表示or二枚重ねる用の関数です
     if len(dataset) == 1:
@@ -91,23 +74,7 @@ def _twotopgraph_create(axis,data1,data2,name1,name2):
     plt.legend(bbox_to_anchor=(1,1),loc="upper right")  #凡例を右上に表示　locだけでなく位置を変えたいならanchorも変える必要ありなため、調べてください
     plt.show()              #グラフ表示
 
-@dataclass
-class OptimizeKParams:
-   # L:np.array([0.000055,0.000055,0.000055,0.0003297,0.0003297,0.0000824,0.0000824,0.0000824])
-    L: npt.NDArray[np.float_]
-    n_g: float
-    n_eff: float
-    eta: float
-    alpha: float
-    center_wavelength: float
-    length_of_3db_band: float
-    FSR: np.float_
-    max_crosstalk: float
-    H_p: float
-    H_s: float
-    H_i: float
-    r_max: float
-    weight: list[float]
+
     
 
 
