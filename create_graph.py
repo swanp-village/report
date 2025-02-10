@@ -75,13 +75,30 @@ def _twotopgraph_create(axis,data1,data2,name1,name2):
 
 
 
-K=np.array([2.5008004,2.0795195,2.2623794])
-L=np.array([55.0e-6,82.4e-6])
-data=TransferFunction(L,K,config={'center_wavelength':1550e-9,'eta':0.996,'n_eff':2.2,'n_g':4.4,'alpha':52.96})
+K1=np.array(
+        0.3804785998770388,
+        0.04311135245013454,
+        0.027324823681336888,
+        0.040581224489887505,
+        0.06934857655822832,
+        0.07267724646180711,
+        0.41197244177117703
+    ])
+L1=np.array( [
+        5.495454545454545e-05,
+        5.495454545454545e-05,
+        5.495454545454545e-05,
+        8.243181818181816e-05,
+        8.243181818181816e-05,
+        8.243181818181816e-05
+    ])
+
+
+data1=TransferFunction(L,K,config={'center_wavelength':1550e-9,'eta':0.996,'n_eff':2.2,'n_g':4.4,'alpha':52.96})
 
 axis = np.arange(1540e-9,1560e-9,0.01e-9)
 xaxis=np.arange(1540,1560.01,0.01)
-data1=data.simulate(axis)
+data_1=data1.simulate(axis)
 
     
 
