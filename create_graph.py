@@ -1,4 +1,4 @@
-
+from dataclasses import dataclass
 import math
 import numpy.typing as npt
 from scipy.optimize import differential_evolution
