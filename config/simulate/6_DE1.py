@@ -24,7 +24,7 @@ config = {
     "n_eff": 2.2,
     "n_g": 4.4,
     "center_wavelength": 1.55e-06,
-    "label":"CMA_no_error"
+    "label":"no_error"
    
     #"lambda_limit": np.arange(1540e-9, 1560e-9, 1e-12)
 }
