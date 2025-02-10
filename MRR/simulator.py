@@ -225,7 +225,7 @@ def optimize_N(
     N: npt.NDArray[np.int_] = ratio * N_0
     return N
 
-
+"""
 def load_parameters_from_py(file_path: str) -> dict:
     """Pythonファイルから `config` 辞書をロードする"""
     spec = importlib.util.spec_from_file_location("config_module", file_path)
@@ -270,3 +270,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+"""
