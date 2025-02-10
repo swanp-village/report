@@ -251,10 +251,10 @@ def main():
     accumulator = Accumulator()
 
     # 1つ目のシミュレーション
-    result1 = simulate_MRR(accumulator, **params1, name="Sim 1", label="Case 1")
+    result1 = simulate_MRR(accumulator, **params1, name="Sim 1", label="差分進化法")
 
     # 2つ目のシミュレーション
-    result2 = simulate_MRR(accumulator, **params2, name="Sim 2", label="Case 2")
+    result2 = simulate_MRR(accumulator, **params2, name="Sim 2", label="CMA-ES")
 
     # 2つの結果を重ねてプロット
     accumulator.graph.plot(result1.x, result1.y, result1.label)
