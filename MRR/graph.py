@@ -22,8 +22,10 @@ class Graph:
         self,
         x: npt.NDArray[np.float_],
         y: npt.NDArray[np.float_],
-        label: self.ax.semilogx(x * 1e9, y, label=label),
-    )
+        label: self.ax.semilogx(x * 1e9, y, label=label),)
+        self.ax.plot(x, y, label=label)
+    
+    
     def show_legend(self):
         """凡例を表示"""
         self.ax.legend()
