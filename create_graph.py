@@ -4,6 +4,7 @@ import numpy as np
 from MRR.transfer_function import simulate_transfer_function
 #import csv
 #from generate_figure import generate_figure
+from dataclasses import dataclass
 
 def graph_cretate(axis,dataset,nameset): #datasetは配列　axisはx軸　namesetは配列で凡例用の名前　Lとsは実験用なので削除予定　一枚表示or二枚重ねる用の関数です
     if len(dataset) == 1:
@@ -73,7 +74,23 @@ def _twotopgraph_create(axis,data1,data2,name1,name2):
     plt.legend(bbox_to_anchor=(1,1),loc="upper right")  #凡例を右上に表示　locだけでなく位置を変えたいならanchorも変える必要ありなため、調べてください
     plt.show()              #グラフ表示
 
-
+@dataclass
+class OptimizeKParams:
+   # L:np.array([0.000055,0.000055,0.000055,0.0003297,0.0003297,0.0000824,0.0000824,0.0000824])
+    L: npt.NDArray[np.float_]
+    n_g: float
+    n_eff: float
+    eta: float
+    alpha: float
+    center_wavelength: float
+    length_of_3db_band: float
+    FSR: np.float_
+    max_crosstalk: float
+    H_p: float
+    H_s: float
+    H_i: float
+    r_max: float
+    weight: list[float]
 
 K1=np.array([
         0.3804785998770388,
@@ -93,8 +110,17 @@ L1=np.array([
         8.243181818181816e-05
     ])
 
-
-data1=simulate_transfer_function(L1,K1,config={'center_wavelength':1550e-9,'eta':0.996,'n_eff':2.2,'n_g':4.4,'alpha':52.96})
+x = calculate_x(center_wavelength=params.center_wavelength, FSR=params.FSR)
+data1=simulate_transfer_function(
+        wavelength=x,
+        L=result_L,
+        K=result_K,
+        alpha=alpha,
+        eta=eta,
+        n_eff=n_eff,
+        n_g=n_g,
+        center_wavelength=center_wavelength,
+    )
 
 axis = np.arange(1540e-9,1560e-9,0.01e-9)
 xaxis=np.arange(1540,1560.01,0.01)
