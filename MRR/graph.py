@@ -12,7 +12,7 @@ rc("font", size=10)
 
 
 class Graph:
-    def __init__(self, is_focus: bool = False):
+    def __init__(self, is_focus: bool = True):
         self.is_focus = is_focus
 
     def create(self) -> None:
