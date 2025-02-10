@@ -94,11 +94,11 @@ L1=np.array([
     ])
 
 
-data1=simulate_transfer_function(L,K,config={'center_wavelength':1550e-9,'eta':0.996,'n_eff':2.2,'n_g':4.4,'alpha':52.96})
+data1=simulate_transfer_function(L1,K1,config={'center_wavelength':1550e-9,'eta':0.996,'n_eff':2.2,'n_g':4.4,'alpha':52.96})
 
 axis = np.arange(1540e-9,1560e-9,0.01e-9)
 xaxis=np.arange(1540,1560.01,0.01)
 data_1=data1.simulate(axis)
-_onegraph_create(axis,data1,"M=1")
+_onegraph_create(axis,data_1,"M=1")
     
 
