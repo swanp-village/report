@@ -1,8 +1,8 @@
 import matplotlib.pyplot as plt
 import numpy as np
-import h5py
+#import h5py
 from MRR.transfer_function import simulate_transfer_function
-import csv
+#import csv
 from generate_figure import generate_figure
 
 def graph_cretate(axis,dataset,nameset): #datasetは配列　axisはx軸　namesetは配列で凡例用の名前　Lとsは実験用なので削除予定　一枚表示or二枚重ねる用の関数です
