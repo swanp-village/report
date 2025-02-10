@@ -128,8 +128,23 @@ L1=np.array([
         8.243181818181816e-05,
         8.243181818181816e-05
     ])
-
-x = calculate_x(center_wavelength=OptimizeKParams.center_wavelength, FSR=OptimizeKParams.FSR)
+params=OptimizeKParams(
+                L=L1,
+                n_g=n_g,
+                n_eff=n_eff,
+                eta=eta,
+                alpha=alpha,
+                center_wavelength=center_wavelength,
+                length_of_3db_band=length_of_3db_band,
+                FSR=practical_FSR,
+                max_crosstalk=max_crosstalk,
+                H_p=H_p,
+                H_s=H_s,
+                H_i=H_i,
+                r_max=r_max,
+                weight=weight,
+            ),
+x = calculate_x(center_wavelength=params.center_wavelength, FSR=params.FSR)
 data1=simulate_transfer_function(
         wavelength=x,
         L=result_L,
