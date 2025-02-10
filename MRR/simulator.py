@@ -225,6 +225,7 @@ def optimize_N(
     N: npt.NDArray[np.int_] = ratio * N_0
     return N
 
+
 def load_parameters_from_py(file_path: str) -> dict:
     """Pythonファイルから `config` 辞書をロードする"""
     spec = importlib.util.spec_from_file_location("config_module", file_path)
@@ -256,9 +257,10 @@ def main():
     result2 = simulate_MRR(accumulator, **params2, name="Sim 2", label="Case 2")
 
     # 2つの結果を重ねてプロット
-    accumulator.graph.plot(result1.x, result1.y, "差分進化法")
-    accumulator.graph.plot(result2.x, result2.y, "CMA-ES")
+    accumulator.graph.plot(result1.x, result1.y, result1.label)
+    accumulator.graph.plot(result2.x, result2.y, result2.label)
 
+    # 凡例を表示
     accumulator.graph.show_legend()
 
     # グラフを表示
