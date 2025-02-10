@@ -109,7 +109,7 @@ class OptimizeKParams:
     r_max: float
     weight: list[float]
     
-params: OptimizeKParams
+
 
 K1=np.array([
         0.3804785998770388,
@@ -129,7 +129,7 @@ L1=np.array([
         8.243181818181816e-05
     ])
 
-x = calculate_x(center_wavelength=params.center_wavelength, FSR=params.FSR)
+x = calculate_x(center_wavelength=OptimizeKParams.center_wavelength, FSR=OptimizeKParams.FSR)
 data1=simulate_transfer_function(
         wavelength=x,
         L=result_L,
