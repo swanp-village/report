@@ -29,7 +29,7 @@ class Graph:
 
     def show_legend(self):
         """凡例を表示"""
-        self.ax.legend(loc="upper right")
+        self.ax.legend(loc="upper right",fontsize=10)
 
     def show(
         self,
