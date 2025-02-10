@@ -8,7 +8,7 @@ from matplotlib import rc
 from matplotlib.ticker import AutoLocator, FormatStrFormatter, MultipleLocator
 
 rc("text", usetex=True)
-rc("font", size=10)
+rc("font", size=16)
 
 
 class Graph:
