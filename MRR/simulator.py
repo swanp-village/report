@@ -9,6 +9,10 @@ from MRR.graph import Graph
 from MRR.logger import Logger
 from MRR.mymath import lcm
 from MRR.transfer_function import simulate_transfer_function
+import argparse
+import importlib.util
+
+
 
 
 @dataclass
@@ -220,3 +224,48 @@ def optimize_N(
             N_0 = best_N_0
     N: npt.NDArray[np.int_] = ratio * N_0
     return N
+import argparse
+import importlib.util
+import numpy as np
+from MRR.accumulator import Accumulator
+from MRR.simulation import simulate_MRR
+
+def load_parameters_from_py(file_path: str) -> dict:
+    """Pythonファイルから `config` 辞書をロードする"""
+    spec = importlib.util.spec_from_file_location("config_module", file_path)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    
+    if not hasattr(module, "config"):
+        raise ValueError(f"{file_path} に `config` 辞書が定義されていません")
+    
+    return module.config
+
+def main():
+    parser = argparse.ArgumentParser(description="MRR Simulator with multiple parameter sets")
+    parser.add_argument("file1", type=str, help="Path to the first parameter file")
+    parser.add_argument("file2", type=str, help="Path to the second parameter file")
+    args = parser.parse_args()
+
+    # パラメータをロード
+    params1 = load_parameters_from_py(args.file1)
+    params2 = load_parameters_from_py(args.file2)
+
+    # Accumulator の作成
+    accumulator = Accumulator()
+
+    # 1つ目のシミュレーション
+    result1 = simulate_MRR(accumulator, **params1, name="Sim 1", label="Case 1")
+
+    # 2つ目のシミュレーション
+    result2 = simulate_MRR(accumulator, **params2, name="Sim 2", label="Case 2")
+
+    # 2つの結果を重ねてプロット
+    accumulator.graph.plot(result1.x, result1.y, "Case 1")
+    accumulator.graph.plot(result2.x, result2.y, "Case 2")
+
+    # グラフを表示
+    accumulator.show()
+
+if __name__ == "__main__":
+    main()
