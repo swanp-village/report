@@ -39,22 +39,22 @@ class Graph:
         self.ax.set_ylabel("Transmittance (dB)", fontsize=24)
         self.ax.axis([None, None, None, 5])
 
-        #if self.is_focus:
-        self.ax.set_xlim([1549, 1551])
-        self.ax.set_ylim([-12, 0])
-        self.ax.xaxis.set_major_formatter(FormatStrFormatter("%.1f"))
-        self.ax.xaxis.set_minor_formatter(FormatStrFormatter("%.1f"))
-        self.ax.xaxis.set_minor_locator(MultipleLocator(0.5))
-        self.ax.yaxis.set_major_locator(MultipleLocator(2))
-        """
+        if self.is_focus:
+            self.ax.set_xlim([1549, 1551])
+            self.ax.set_ylim([-12, 0])
+            self.ax.xaxis.set_major_formatter(FormatStrFormatter("%.1f"))
+            self.ax.xaxis.set_minor_formatter(FormatStrFormatter("%.1f"))
+            self.ax.xaxis.set_minor_locator(MultipleLocator(0.5))
+            self.ax.yaxis.set_major_locator(MultipleLocator(2))
+            
         else:
-           
+            self.ax.set_xlim([1549, 1551])
             self.ax.xaxis.set_major_formatter(FormatStrFormatter("%d"))
             self.ax.xaxis.set_minor_formatter(FormatStrFormatter("%d"))
             self.ax.xaxis.set_major_locator(AutoLocator())
             self.ax.set_ylim([-12, 0])
         #plt.legend(loc="upper center", fontsize=12, frameon=False)
-        """
+    
     
         plt.legend(loc="upper right", ncol=2)
         self.fig.savefig(img_path)
