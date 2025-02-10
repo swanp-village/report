@@ -130,11 +130,11 @@ L1=np.array([
     ])
 params=OptimizeKParams(
                 L=L1,
-                n_g=n_g,
-                n_eff=n_eff,
+                n_g=4.4,
+                n_eff=2.2,
                 eta=eta,
                 alpha=alpha,
-                center_wavelength=center_wavelength,
+                center_wavelength=1.55e-6,
                 length_of_3db_band=length_of_3db_band,
                 FSR=practical_FSR,
                 max_crosstalk=max_crosstalk,
