@@ -24,6 +24,8 @@ class Graph:
         y: npt.NDArray[np.float_],
         label
     ):
+        self.ax.plot(x,y,label=label)
+        
        
 
     def show(
