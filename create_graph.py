@@ -149,10 +149,10 @@ data1=simulate_transfer_function(
         wavelength=x,
         L=L1,
         K=K1,
-        alpha=alpha,
-        eta=eta,
-        n_eff=n_eff,
-        n_g=n_g,
+        alpha=52.96,
+        eta=0.996,
+        n_eff=2.2,
+        n_g=4.4,
         center_wavelength=1.55e-6,
     )
 
