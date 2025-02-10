@@ -1,4 +1,4 @@
-import numpy as np
+#import numpy as np
 
 config = {
     "eta": 0.996,
@@ -23,6 +23,6 @@ config = {
     "n_eff": 2.2,
     "n_g": 4.4,
     "center_wavelength": 1.55e-06,
-    "lambda_limit": np.arange(1540e-9, 1560e-9, 1e-12),
-    "label":"CMA-ES_DE",
+    #"lambda_limit": np.arange(1540e-9, 1560e-9, 1e-12),
+    "label":"CMA-ES_DE"
 }
