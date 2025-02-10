@@ -144,16 +144,16 @@ params=OptimizeKParams(
                 r_max=5,
                 weight=[1.0, 3.5, 1.0, 5.0, 3.5, 1.0, 1.0, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5],
             ),
-x = calculate_x(center_wavelength=params.center_wavelength, FSR=params.FSR)
+x = calculate_x(center_wavelength=1.55e-6, FSR=20e-9)
 data1=simulate_transfer_function(
         wavelength=x,
-        L=result_L,
-        K=result_K,
+        L=L1,
+        K=K1,
         alpha=alpha,
         eta=eta,
         n_eff=n_eff,
         n_g=n_g,
-        center_wavelength=center_wavelength,
+        center_wavelength=1.55e-6,
     )
 
 axis = np.arange(1540e-9,1560e-9,0.01e-9)
