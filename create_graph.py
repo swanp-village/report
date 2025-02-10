@@ -142,7 +142,7 @@ params=OptimizeKParams(
                 H_s=-60,
                 H_i=-10,
                 r_max=5,
-                weight:list[float]=[1.0, 3.5, 1.0, 5.0, 3.5, 1.0, 1.0, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5],
+                weight=[1.0, 3.5, 1.0, 5.0, 3.5, 1.0, 1.0, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5],
             ),
 x = calculate_x(center_wavelength=params.center_wavelength, FSR=params.FSR)
 data1=simulate_transfer_function(
