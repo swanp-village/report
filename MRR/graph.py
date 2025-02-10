@@ -12,7 +12,7 @@ rc("font", size=16)
 
 
 class Graph:
-    def __init__(self, is_focus: bool = True):
+    def __init__(self, is_focus: bool = False):
         self.is_focus = is_focus
 
     def create(self) -> None:
@@ -46,11 +46,10 @@ class Graph:
             self.ax.yaxis.set_major_locator(MultipleLocator(2))
             
         else:
-            self.ax.set_xlim([1549, 1551])
             self.ax.xaxis.set_major_formatter(FormatStrFormatter("%d"))
             self.ax.xaxis.set_minor_formatter(FormatStrFormatter("%d"))
             self.ax.xaxis.set_major_locator(AutoLocator())
-            self.ax.set_ylim([-12, 0])
+            self.ax.set_ylim([-60, 0])
         #plt.legend(loc="upper center", fontsize=12, frameon=False)
     
     
