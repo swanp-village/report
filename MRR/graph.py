@@ -53,6 +53,6 @@ class Graph:
         #plt.legend(loc="upper center", fontsize=12, frameon=False)
     
     
-        plt.legend(loc="best",fontsize=10, ncol=2)
+        #plt.legend(loc="best",fontsize=10, ncol=2)
         self.fig.savefig(img_path)
         plt.show()
