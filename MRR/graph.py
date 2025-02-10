@@ -25,6 +25,10 @@ class Graph:
         label: Optional[str] = None,
     ) -> None:
         self.ax.semilogx(x * 1e9, y, label=label)
+        
+    def show_legend(self):
+        """凡例を表示"""
+        self.ax.legend()
 
     def show(
         self,
