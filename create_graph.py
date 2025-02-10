@@ -99,6 +99,6 @@ data1=simulate_transfer_function(L,K,config={'center_wavelength':1550e-9,'eta':0
 axis = np.arange(1540e-9,1560e-9,0.01e-9)
 xaxis=np.arange(1540,1560.01,0.01)
 data_1=data1.simulate(axis)
-
+_onegraph_create(axis,data1,"M=1")
     
 
