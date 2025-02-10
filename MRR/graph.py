@@ -28,7 +28,7 @@ class Graph:
         self.ax.plot(x, y, label=label)
 """
     def show_legend(self):
-        """凡例を表示"""
+        
         self.ax.legend(loc="upper right",fontsize=10)
 """       
 
