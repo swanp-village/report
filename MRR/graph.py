@@ -28,7 +28,7 @@ class Graph:
 
     def show_legend(self):
         """凡例を表示"""
-        self.ax.legend()
+        self.ax.legend(loc="upper right")
 
     def show(
         self,
