@@ -256,8 +256,10 @@ def main():
     result2 = simulate_MRR(accumulator, **params2, name="Sim 2", label="Case 2")
 
     # 2つの結果を重ねてプロット
-    accumulator.graph.plot(result1.x, result1.y, "Case 1")
-    accumulator.graph.plot(result2.x, result2.y, "Case 2")
+    accumulator.graph.plot(result1.x, result1.y, "差分進化法")
+    accumulator.graph.plot(result2.x, result2.y, "CMA-ES")
+
+    accumulator.graph.show_legend()
 
     # グラフを表示
     accumulator.show()
