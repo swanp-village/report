@@ -111,54 +111,6 @@ class OptimizeKParams:
     
 
 
-K1=np.array([
-        0.3804785998770388,
-        0.04311135245013454,
-        0.027324823681336888,
-        0.040581224489887505,
-        0.06934857655822832,
-        0.07267724646180711,
-        0.41197244177117703
-    ])
-L1=np.array([
-        5.495454545454545e-05,
-        5.495454545454545e-05,
-        5.495454545454545e-05,
-        8.243181818181816e-05,
-        8.243181818181816e-05,
-        8.243181818181816e-05
-    ])
-params=OptimizeKParams(
-                L=L1,
-                n_g=4.4,
-                n_eff=2.2,
-                eta=0.996,
-                alpha=52.96,
-                center_wavelength=1.55e-6,
-                length_of_3db_band=1e-9,
-                FSR=20e-9,
-                max_crosstalk=-30,
-                H_p=-20,
-                H_s=-60,
-                H_i=-10,
-                r_max=5,
-                weight=[1.0, 3.5, 1.0, 5.0, 3.5, 1.0, 1.0, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5],
-            ),
-x = calculate_x(center_wavelength=1.55e-6, FSR=20e-9)
-data1=simulate_transfer_function(
-        wavelength=x,
-        L=L1,
-        K=K1,
-        alpha=52.96,
-        eta=0.996,
-        n_eff=2.2,
-        n_g=4.4,
-        center_wavelength=1.55e-6,
-    )
 
-axis = np.arange(1540e-9,1560e-9,0.01e-9)
-xaxis=np.arange(1540,1560.01,0.01)
-data_1=data1.simulate(axis)
-_onegraph_create(axis,data_1,"M=1")
     
 
