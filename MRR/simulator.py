@@ -260,7 +260,7 @@ def main():
     accumulator.graph.plot(result1.x, result1.y, result1.label)
     accumulator.graph.plot(result2.x, result2.y, result2.label)
     accumulator.graph.ax.set_ylim(-12, 0)
-    accumulator.graph.ax.set_xlim(1549, 1551)
+    accumulator.graph.ax.set_xlim(1.549e-6, 1.551e-6)
 
     # 凡例を表示
     accumulator.graph.show_legend()
