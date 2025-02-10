@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import numpy.typing as npt
 #import h5py
 from MRR.transfer_function import simulate_transfer_function
 #import csv
