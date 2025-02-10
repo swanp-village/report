@@ -227,7 +227,7 @@ def optimize_N(
 
 """
 def load_parameters_from_py(file_path: str) -> dict:
-    """Pythonファイルから `config` 辞書をロードする"""
+    Pythonファイルから `config` 辞書をロードする
     spec = importlib.util.spec_from_file_location("config_module", file_path)
     module = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(module)
