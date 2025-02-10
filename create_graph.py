@@ -72,26 +72,16 @@ def _twotopgraph_create(axis,data1,data2,name1,name2):
     plt.minorticks_on()                             #補助目盛オン
     plt.legend(bbox_to_anchor=(1,1),loc="upper right")  #凡例を右上に表示　locだけでなく位置を変えたいならanchorも変える必要ありなため、調べてください
     plt.show()              #グラフ表示
-    
-    
-    
-#L=np.array([82.4e-6,82.4e-6,55.0e-6,82.4e-6])    
-#K=np.array([0.30880633,0.47819352,0.17589994,0.38287246,0.20949297])
+
+
+
 K=np.array([2.5008004,2.0795195,2.2623794])
 L=np.array([55.0e-6,82.4e-6])
-#K=np.array([0.18594642, 0.18594642, 0.18594642])
 data=TransferFunction(L,K,config={'center_wavelength':1550e-9,'eta':0.996,'n_eff':2.2,'n_g':4.4,'alpha':52.96})
+
 axis = np.arange(1540e-9,1560e-9,0.01e-9)
 xaxis=np.arange(1540,1560.01,0.01)
-name1="M=2"
-name2="ideal"
-
 data1=data.simulate(axis)
-data2=generate_figure(center = 1000,db_length = 80,cross_length = 80,cross = -44,cross2 = -39,number_of_array = 2001,bottom = -100,top = -3)
-dataset=([data1,data2])
-nameset=([name1,name2])
-#print(len(dataset))
-#print(len(nameset))
-_onegraph_create(xaxis,data1,name1)
-#graph_cretate(xaxis,dataset,nameset)
-_twotopgraph_create(axis,data1,data2,name1,name2)
+
+    
+
