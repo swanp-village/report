@@ -267,7 +267,6 @@ def optimize(
         #N = [117,117,117,156,156,156,117,117,156,156] #10th
         #N = [117,117,117,117,468,468,468,78,78,78,78,78] #12th
         #N = [117,117,117,117,468,468,468,468,78,78,78,78,78,78] #14th
-        #N = [78,117,117,117,78,78,78,78]
         
         L = calculate_ring_length(center_wavelength=center_wavelength, n_eff=n_eff, N=N)
         normal_evaluations = []
@@ -300,7 +299,7 @@ def optimize(
         K_list[m] = K
         E_list[m] = E
         analyze_score = 0.0
-        if E > 18:
+        if E > 10:
             for L_error_rate, K_error_rate in zip([0.01, 0.1, 1, 10], [1, 10, 100]):
                 analyze_result = analyze(
                     n=1000,
