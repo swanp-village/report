@@ -20,14 +20,10 @@ def evaluate_band(
     if pass_band.shape[0] == 1:
         start = pass_band[0][0]
         end = pass_band[0][1]
-    # elif cross_talk.shape[0] == 1:
-    #     start = cross_talk[0][0]
-    #     end = cross_talk[0][1]
+
     else:
         return np.float_(0)
 
-    #print(f"Pass band: {pass_band}")
-    #print(f"Cross talk: {cross_talk}")
     result = [
         _evaluate_pass_band(x=x, y=y, H_p=H_p, start=start, end=end),
         _evaluate_stop_band(x=x, y=y, H_p=H_p, H_s=H_s, start=start, end=end),
@@ -107,127 +103,6 @@ def _get_3db_band(x: npt.NDArray[np.float_], y: npt.NDArray[np.float_], start: i
 
     return index
 
-#離散ver
-"""
-def _evaluate_pass_band(
-    x: npt.NDArray[np.float_], y: npt.NDArray[np.float_], H_p: float, start: int, end: int
-) -> tuple[np.float_, bool]:
-    distance: np.float_ = x[1] - x[0]
-    a = abs(H_p * (x[end] - x[start]))
-
-    if a == 0:
-        return (np.float_(0), False)
-
-    b = abs(np.sum(H_p - y[start:end]) * distance)
-    E = b / a
-
-    return (E, True)
-
-
-def _evaluate_stop_band(
-    x: npt.NDArray[np.float_], y: npt.NDArray[np.float_], H_p: float, H_s: float, start: int, end: int
-) -> tuple[np.float_, bool]:
-    distance: np.float_ = x[1] - x[0]
-    c = abs((H_s - H_p) * ((x[start] - x[0]) + (x[-1] - x[end])))
-
-    if c == 0:
-        return (np.float_(0), False)
-
-    y1 = np.where(y[0:start] > H_s, H_p - y[0:start], H_p - H_s)
-    y1 = np.where(y1 > 0, y1, 0)
-    y2 = np.where(y[end:-1] > H_s, H_p - y[end:-1], H_p - H_s)
-    y2 = np.where(y2 > 0, y2, 0)
-    d = abs((np.sum(y1) + np.sum(y2)) * distance)
-    E = d / c
-
-    return (E, True)
-
-
-def _evaluate_insertion_loss(
-    x: npt.NDArray[np.float_],
-    y: npt.NDArray[np.float_],
-    H_i: float,
-    center_wavelength: float,
-) -> tuple[np.float_, bool]:
-    insertion_loss = y[x == center_wavelength]
-    if insertion_loss[0] < H_i:
-        E = H_i / insertion_loss[0]
-        return (np.float_(0), False)
-    else:
-        E = 1 - insertion_loss[0] / H_i
-    #E = 1 - insertion_loss[0] / H_i
-    return (E, True)
-
-
-def _evaluate_3db_band(
-    x: npt.NDArray[np.float_], y: npt.NDArray[np.float_], length_of_3db_band: float, start: int, end: int
-) -> tuple[np.float_, bool]:
-    distance: np.float_ = x[1] - x[0]
-    index = _get_3db_band(x=x, y=y, start=start, end=end)
-    if index.size <= 1:
-        return (np.float_(0), False)
-    practical_length_of_3db_band = distance * (index[-1] - index[0])
-    if practical_length_of_3db_band > length_of_3db_band:
-        E = (2 * length_of_3db_band - practical_length_of_3db_band) / length_of_3db_band
-    else:
-        E = practical_length_of_3db_band / length_of_3db_band
-    E = E ** 3
-    return (E, True)
-
-
-def _evaluate_ripple(
-    x: npt.NDArray[np.float_], y: npt.NDArray[np.float_], r_max: float, start: int, end: int
-) -> tuple[np.float_, bool]:
-    pass_band = y[start:end]
-    index = _get_3db_band(x=x, y=y, start=start, end=end)
-    if index.size <= 1:
-        return (np.float_(0), False)
-    three_db_band = pass_band[index[0] : index[-1]]
-    maxid = argrelmax(three_db_band, order=1)
-    minid = argrelmin(three_db_band, order=1)
-    peak_max = three_db_band[maxid]
-    peak_min = three_db_band[minid]
-    if len(peak_min) == 0:
-        return (1, True)
-    dif = peak_max.max() - peak_min.min()
-    if dif > r_max:
-        return (np.float_(0), False)
-    E = 1 - dif / r_max
-    return (E, True)
-
-
-
-def _evaluate_cross_talk(
-    y: npt.NDArray[np.float_], max_crosstalk: float, pass_band_start: int, pass_band_end: int
-) -> tuple[np.float_, bool]:
-    start = y[:pass_band_start]
-    end = y[pass_band_end:]
-    maxid_start = np.append(0, argrelmax(start))
-    maxid_end = np.append(argrelmax(end), -1)
-    start_peak = start[maxid_start]
-    end_peak = end[maxid_end]
-    a = np.any(start_peak > max_crosstalk)
-    b = np.any(end_peak > max_crosstalk)
-    if a or b:
-        return (np.float_(0), False)
-    return (np.float_(0), True)
-
-
-def _evaluate_shape_factor(
-    x: npt.NDArray[np.float_], y: npt.NDArray[np.float_], start: int, end: int
-) -> tuple[np.float_, bool]:
-    index = _get_3db_band(x=x, y=y, start=start, end=end)
-    if index.size <= 1:
-        return (np.float_(0), False)
-    practical_length = x[index[-1]] - x[index[0]]
-    total_length = x[end] - x[start]
-    E = practical_length / total_length
-    if E < 0.5:
-        return (E, False)
-    return (E, True)
-
-#連続ver
-"""
 def _evaluate_pass_band(
     x: npt.NDArray[np.float_], y: npt.NDArray[np.float_], H_p: float, start: int, end: int
 ) -> tuple[np.float_, bool]:
