@@ -73,10 +73,10 @@ def simulate_MRR(
     y = simulate_transfer_function(
         wavelength=x, L=L, K=K, alpha=alpha, eta=eta, n_eff=n_eff, n_g=n_g, center_wavelength=center_wavelength
     )
-    """
+    
     if skip_evaluation:
         evaluation_result = np.float_(0)
-    """   
+     
     
     evaluation_result = evaluate_band(
             x=x,
@@ -222,50 +222,3 @@ def optimize_N(
             N_0 = best_N_0
     N: npt.NDArray[np.int_] = ratio * N_0
     return N
-
-"""
-def load_parameters_from_py(file_path: str) -> dict:
-    Pythonファイルから `config` 辞書をロードする
-    spec = importlib.util.spec_from_file_location("config_module", file_path)
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    
-    if not hasattr(module, "config"):
-        raise ValueError(f"{file_path} に `config` 辞書が定義されていません")
-    
-    return module.config
-
-def main():
-    parser = argparse.ArgumentParser(description="MRR Simulator with multiple parameter sets")
-    parser.add_argument("file1", type=str, help="Path to the first parameter file")
-    parser.add_argument("file2", type=str, help="Path to the second parameter file")
-    args = parser.parse_args()
-
-    # パラメータをロード
-    params1 = load_parameters_from_py(args.file1)
-    params2 = load_parameters_from_py(args.file2)
-
-    # Accumulator の作成
-    accumulator = Accumulator()
-
-    # 1つ目のシミュレーション
-    result1 = simulate_MRR(accumulator, **params1, name="Sim 1", label="差分進化法")
-
-    # 2つ目のシミュレーション
-    result2 = simulate_MRR(accumulator, **params2, name="Sim 2", label="CMA-ES")
-
-    # 2つの結果を重ねてプロット
-    accumulator.graph.plot(result1.x, result1.y, result1.label)
-    accumulator.graph.plot(result2.x, result2.y, result2.label)
-    accumulator.graph.ax.set_ylim(-12, 0)
-    accumulator.graph.ax.set_xlim(1.549e-6, 1.551e-6)
-
-    # 凡例を表示
-    accumulator.graph.show_legend()
-
-    # グラフを表示
-    accumulator.show()
-
-if __name__ == "__main__":
-    main()
-"""
