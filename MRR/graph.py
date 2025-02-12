@@ -27,8 +27,6 @@ class Graph:
         self.ax.semilogx(x * 1e9, y, label=label)
        
         
-       
-
     def show(
         self,
         img_path: Path = Path("img/out.pdf"),
