@@ -4,7 +4,7 @@ from importlib import import_module
 from config.model import SimulationConfig
 from MRR.analyzer import analyze
 
-# 10_DE4 8_DE29 6_DE7 4_DE18
+
 
 
 if __name__ == "__main__":
