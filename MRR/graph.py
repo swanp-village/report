@@ -56,9 +56,9 @@ class Graph:
             self.ax.xaxis.set_minor_formatter(FormatStrFormatter("%d"))
             self.ax.xaxis.set_major_locator(AutoLocator())
             self.ax.set_ylim([-60, 0])
-        #plt.legend(loc="upper center", fontsize=12, frameon=False)
+        plt.legend(loc="upper center", fontsize=12, frameon=False)
     
     
-        plt.legend(loc="best",fontsize=10, ncol=2)
+        #plt.legend(loc="best",fontsize=10, ncol=2)
         self.fig.savefig(img_path)
         plt.show()
