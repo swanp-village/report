@@ -44,7 +44,7 @@ class Graph:
             self.ax.yaxis.set_major_locator(MultipleLocator(2))
             
         else:
-            """
+
             self.ax.xaxis.set_major_formatter(FormatStrFormatter("%d"))
             self.ax.xaxis.set_minor_formatter(FormatStrFormatter("%d"))
             self.ax.xaxis.set_major_locator(AutoLocator())
@@ -56,6 +56,7 @@ class Graph:
             self.ax.xaxis.set_minor_formatter(FormatStrFormatter("%.1f"))
             self.ax.xaxis.set_minor_locator(MultipleLocator(0.5))
             self.ax.yaxis.set_major_locator(MultipleLocator(2))
+            """
         #plt.legend(loc="upper center", fontsize=12, frameon=False)
     
     
