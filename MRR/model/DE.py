@@ -107,7 +107,7 @@ def combined_evaluation(K: npt.NDArray[np.float_], params: OptimizeKParams) -> f
     total_score = E_optimal + (delta_E_positive + delta_E_negative) / 2
 
     return total_score
-
+"""
 #一般設計
 def optimize_K(
     eta: float,
@@ -120,7 +120,8 @@ def optimize_K(
     #initial=np.random.uniform(1e-12, eta, size=(number_of_rings+1,))
     #sampler = LatinHypercube(d=number_of_rings+1)  # 次元数を1に設定
     #samples = sampler.random(n=1)  # 1サンプルだけ生成（shape: (1, number_of_rings + 1)）
-    initial = np.array([0.31696919,0.03971662,0.03015172,0.03758653,0.06327071,0.11668272,0.6309192])
+    #initial = np.array([0.31696919,0.03971662,0.03015172,0.03758653,0.06327071,0.11668272,0.6309192])
+    initial = np.array([0.47861465815127613, 0.059825303636854066, 0.02833346559136013, 0.03662374979352251, 0.05543866794826918, 0.11350784708500211, 0.45429869056991656])
     #initial = sampler.random(n=number_of_rings + 1).flatten() * eta  # 0からetaの範囲でスケーリング
     popsize = 4 + math.floor(3 * math.log(number_of_rings+1)) + 5
     #sigma = 0.3*(number_of_rings+1)/9
@@ -182,7 +183,7 @@ def optimize_K(
     K: npt.NDArray[np.float_] = result.x
 
     return K, E
-
+"""
 
 
 def optimize(
