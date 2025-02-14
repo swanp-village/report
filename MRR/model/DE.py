@@ -166,16 +166,16 @@ def optimize_K(
     number_of_rings: int,
     rng: np.random.Generator,
     params: OptimizeKParams,
-    initial:np.array([0.3465658521292391,
+) -> tuple[npt.NDArray[np.float_], float]:
+    bounds = [(1e-12, eta) for _ in range(number_of_rings + 1)]
+    best_fitness = float("inf")  # 初期化
+    initial= np.array([0.3465658521292391,
         0.038051217830144035,
         0.024435394368557628,
         0.040438324839299156,
         0.07354604508345125,
         0.08663868387253248,
         0.47304327205712965])
-) -> tuple[npt.NDArray[np.float_], float]:
-    bounds = [(1e-12, eta) for _ in range(number_of_rings + 1)]
-    best_fitness = float("inf")  # 初期化
     result = differential_evolution(
         combined_evaluation,
         bounds,
@@ -287,7 +287,6 @@ def optimize(
             eta=eta,
             number_of_rings=number_of_rings,
             rng=rng,
-            init=initial,
             params=OptimizeKParams(
                 L=L,
                 n_g=n_g,
