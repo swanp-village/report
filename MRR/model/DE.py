@@ -118,8 +118,13 @@ def optimize_K(
     bounds = [(1e-12, eta) for _ in range(number_of_rings + 1)]
     bounds_array=np.array(bounds) 
     initial=np.random.uniform(1e-12, eta, size=(number_of_rings+1,))
-
-    #initial = np.array([0.47861465815127613, 0.059825303636854066, 0.02833346559136013, 0.03662374979352251, 0.05543866794826918, 0.11350784708500211, 0.45429869056991656])
+    initial = np.array([ 0.7426932555254235,
+        0.0989956981193772,
+        0.04074507231562163,
+        0.054788250133932126,
+        0.04949102728838822,
+        0.08173538024174604,
+        0.5157929920570661])
     popsize = 4 + math.floor(3 * math.log(number_of_rings+1)) + 8
     sigma = 0.3
     #sigma = 0.07
