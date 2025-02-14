@@ -126,8 +126,8 @@ def optimize_K(
         0.08173538024174604,
         0.5157929920570661])
     popsize = 4 + math.floor(3 * math.log(number_of_rings+1)) + 8
-    sigma = 0.3
-    #sigma = 0.07
+    #sigma = 0.3
+    sigma = 0.07
     generations = 500
     
 
