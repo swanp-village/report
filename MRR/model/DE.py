@@ -185,7 +185,7 @@ def optimize_K(
         workers=-1,
         updating="deferred",
         popsize=2,
-        maxiter=1000,
+        maxiter=500,
         seed=rng,
         init=initial_population
     )
