@@ -287,6 +287,7 @@ def optimize(
             eta=eta,
             number_of_rings=number_of_rings,
             rng=rng,
+            init=initial,
             params=OptimizeKParams(
                 L=L,
                 n_g=n_g,
