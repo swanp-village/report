@@ -22,9 +22,9 @@ class Graph:
         self,
         x: npt.NDArray[np.float_],
         y: npt.NDArray[np.float_],
-       
+        label
     ):
-        self.ax.semilogx(x * 1e9, y)
+        self.ax.semilogx(x * 1e9, y , label=label)
         
     def show(
         self,
