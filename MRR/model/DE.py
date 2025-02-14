@@ -176,6 +176,7 @@ def optimize_K(
         0.07354604508345125,
         0.08663868387253248,
         0.47304327205712965])
+    initial_population = np.tile(initial, (popsize * (number_of_rings + 1), 1))
     result = differential_evolution(
         combined_evaluation,
         bounds,
@@ -186,7 +187,7 @@ def optimize_K(
         popsize=2,
         maxiter=1000,
         seed=rng,
-        init=initial
+        init=initial_population
     )
     #print(f"Best fitness achieved at generation {best_generation}.")  # 最適な世代を出力
     E: float = -result.fun
