@@ -21,10 +21,9 @@ class Graph:
     def plot(
         self,
         x: npt.NDArray[np.float_],
-        y: npt.NDArray[np.float_],
-        
+        y: npt.NDArray[np.float_]
     ):
-        self.ax.semilogx(x * 1e9, y )
+        self.ax.semilogx(x * 1e9, y)
         
     def show(
         self,
