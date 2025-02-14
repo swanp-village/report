@@ -23,6 +23,6 @@ config = {
     "n_eff": 2.2,
     "n_g": 4.4,
     "center_wavelength": 1.55e-06,
-    "label":"DE_no_error"
+    #"label":"DE_no_error"
 
 }
