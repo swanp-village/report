@@ -77,14 +77,14 @@ normal_evaluations = []
 perturbed_evaluations = []
 def combined_evaluation(K: npt.NDArray[np.float_], params: OptimizeKParams) -> float:
     
-    誤差の正負両方を考慮した総合評価値を計算。
+    #誤差の正負両方を考慮した総合評価値を計算。
 
-    Parameters:
-    - K: 結合率の配列
-    - params: 最適化パラメータ
+   # Parameters:
+    #- K: 結合率の配列
+    #- params: 最適化パラメータ
 
-    Returns:
-    - total_score: 総合評価値
+    #Returns:
+    #- total_score: 総合評価値
     
     global normal_evaluations, perturbed_evaluations
     
