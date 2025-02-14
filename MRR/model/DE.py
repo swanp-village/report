@@ -72,7 +72,7 @@ class OptimizeKParams:
     H_i: float
     r_max: float
     weight: list[float]
-"""
+
 normal_evaluations = []
 perturbed_evaluations = []
 def combined_evaluation(K: npt.NDArray[np.float_], params: OptimizeKParams) -> float:
@@ -166,11 +166,18 @@ def optimize_K(
     number_of_rings: int,
     rng: np.random.Generator,
     params: OptimizeKParams,
+    initial:np.array([0.3465658521292391,
+        0.038051217830144035,
+        0.024435394368557628,
+        0.040438324839299156,
+        0.07354604508345125,
+        0.08663868387253248,
+        0.47304327205712965])
 ) -> tuple[npt.NDArray[np.float_], float]:
     bounds = [(1e-12, eta) for _ in range(number_of_rings + 1)]
     best_fitness = float("inf")  # 初期化
     result = differential_evolution(
-        optimize_K_func,
+        combined_evaluation,
         bounds,
         args=(params,),
         strategy="currenttobest1bin",
@@ -185,7 +192,7 @@ def optimize_K(
     K: npt.NDArray[np.float_] = result.x
 
     return K, E
-"""
+
 
 
 def optimize(
@@ -429,19 +436,19 @@ def optimize_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams) -> np.fl
         ignore_binary_evaluation=False,
     )
     #print(f"Fitness value: {fitness}")
-"""
+
 def optimize_perturbed_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams) -> tuple[float, float]:
 
     
-    誤差として結合率 K に +0.005 および -0.005 を適用した場合の評価値を計算。
+    #誤差として結合率 K に +0.005 および -0.005 を適用した場合の評価値を計算。
 
-    Parameters:
-    - K: 結合率の配列
-    - params: 最適化パラメータ
+    #Parameters:
+    #- K: 結合率の配列
+    #- params: 最適化パラメータ
 
-    Returns:
-    - E_positive: +0.005 の誤差を加えた場合の評価値
-    - E_negative: -0.005 の誤差を加えた場合の評価値
+    #Returns:
+   # - E_positive: +0.005 の誤差を加えた場合の評価値
+    #- E_negative: -0.005 の誤差を加えた場合の評価値
     
 
     # 正の誤差を加える
@@ -505,4 +512,4 @@ def optimize_perturbed_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams
     )
 
     return E_positive, E_negative
-"""
+
