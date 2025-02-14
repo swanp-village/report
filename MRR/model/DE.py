@@ -175,7 +175,7 @@ def optimize_K(
         workers=-1,
         updating="deferred",
         popsize=11,
-        maxiter=100,
+        maxiter=200,
         seed=rng,
     )
     #print(f"Best fitness achieved at generation {best_generation}.")  # 最適な世代を出力
