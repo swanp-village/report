@@ -186,6 +186,7 @@ def optimize_K(
         popsize=2,
         maxiter=1000,
         seed=rng,
+        init=initial
     )
     #print(f"Best fitness achieved at generation {best_generation}.")  # 最適な世代を出力
     E: float = -result.fun
