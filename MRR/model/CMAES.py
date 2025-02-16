@@ -57,7 +57,6 @@ def optimize_L(
 
 @dataclass
 class OptimizeKParams:
-   # L:np.array([0.000055,0.000055,0.000055,0.0003297,0.0003297,0.0000824,0.0000824,0.0000824])
     L: npt.NDArray[np.float_]
     n_g: float
     n_eff: float
@@ -72,7 +71,7 @@ class OptimizeKParams:
     H_i: float
     r_max: float
     weight: list[float]
-
+"""
 normal_evaluations = []
 perturbed_evaluations = []
 def combined_evaluation(K: npt.NDArray[np.float_], params: OptimizeKParams) -> float:
@@ -126,8 +125,8 @@ def optimize_K(
         0.08173538024174604,
         0.5157929920570661])
     popsize = 4 + math.floor(3 * math.log(number_of_rings+1)) + 8
-    #sigma = 0.3
-    sigma = 0.07
+    sigma = 0.3
+    #sigma = 0.07 #誤差検討用σ
     generations = 500
     
 
@@ -194,7 +193,7 @@ def optimize_K(
     K: npt.NDArray[np.float_] = result.x
 
     return K, E
-
+"""
 
 
 def optimize(
@@ -438,7 +437,7 @@ def optimize_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams) -> np.fl
         ignore_binary_evaluation=False,
     )
     #print(f"Fitness value: {fitness}")
-
+"""
 def optimize_perturbed_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams) -> tuple[float, float]:
 
     
@@ -514,4 +513,4 @@ def optimize_perturbed_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams
     )
 
     return E_positive, E_negative
-
+"""
