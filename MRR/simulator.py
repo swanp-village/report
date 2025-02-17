@@ -55,7 +55,7 @@ def simulate_MRR(
     weight: list[float],
     format: bool = False,
     simulate_one_cycle: bool = False,
-    lambda_limit: npt.NDArray[np.float_] = np.array([1510,1560]),
+    lambda_limit: npt.NDArray[np.float_] = np.array([]),
     name: str = "",
     label: str = "",
     skip_graph: bool = False,
