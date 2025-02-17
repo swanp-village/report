@@ -1,4 +1,4 @@
-#import numpy as np
+import numpy as np
 
 config = {
     "eta": 0.996,
