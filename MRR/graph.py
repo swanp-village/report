@@ -44,7 +44,7 @@ class Graph:
             self.ax.yaxis.set_major_locator(MultipleLocator(2))
             
         else:
-        
+            self.ax.set_xlim([1510, 1560])
             self.ax.xaxis.set_major_formatter(FormatStrFormatter("%d"))
             self.ax.xaxis.set_minor_formatter(FormatStrFormatter("%d"))
             self.ax.xaxis.set_major_locator(AutoLocator())
