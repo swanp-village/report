@@ -46,10 +46,10 @@ def evaluate_band(
         return E_c
     E = E_c * E_b
     # 各評価関数の結果を表示
-   # print(E_b)
-    #print(E_c)
-    #for i, res in enumerate(result):
-        #print(f"評価関数 {i+1}: 値 = {res[0]}, バイナリ評価 = {res[1]}")
+    print(E_b)
+    print(E_c)
+    for i, res in enumerate(result):
+        print(f"評価関数 {i+1}: 値 = {res[0]}, バイナリ評価 = {res[1]}")
 
     return E
 
@@ -107,15 +107,15 @@ def _evaluate_pass_band(
     x: npt.NDArray[np.float_], y: npt.NDArray[np.float_], H_p: float, start: int, end: int
 ) -> tuple[np.float_, bool]:
     distance: np.float_ = x[1] - x[0]
-    a = abs(H_p * (x[end] - x[start]))
-
-    if a == 0:
-        # ペナルティを付与
-        return (np.float_(1e-6), False)
+    a = max(abs(H_p * (x[end] - x[start],1e-6)
 
     b = abs(np.sum(H_p - y[start:end]) * distance)
+     
     E = b / a
 
+    if abs(H_p * (x[end] - x[start]) < 1e-6
+        E = abs(H_p * (x[end] - x[start]) / 1e-6
+        
     return (E, True)
 
 
