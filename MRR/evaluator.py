@@ -107,11 +107,10 @@ def _evaluate_pass_band(
     x: npt.NDArray[np.float_], y: npt.NDArray[np.float_], H_p: float, start: int, end: int
 ) -> tuple[np.float_, bool]:
     distance: np.float_ = x[1] - x[0]
+    a = abs(H_p * (x[end] - x[start]))
     if abs(H_p * (x[end] - x[start])) < 1e-6:
         penalty = abs(H_p * (x[end] - x[start])) / 1e-6
-        E_p = 10 * (1 - penalty)
-        return (np.float_(E_p),False)
-    a = max(abs(H_p * (x[end] - x[start])),1e-6)
+        return (np.float_(penalty),False)
     b = abs(np.sum(H_p - y[start:end]) * distance)
     E = b / a
     return (E, True)
