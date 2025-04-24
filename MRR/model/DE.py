@@ -167,33 +167,22 @@ def optimize_K(
     params: OptimizeKParams,
 ) -> tuple[npt.NDArray[np.float_], float]:
     bounds = [(1e-12, eta) for _ in range(number_of_rings + 1)]
-    best_fitness = float("inf")  # 初期化
-    initial= np.array([0.3465658521292391,
-        0.038051217830144035,
-        0.024435394368557628,
-        0.040438324839299156,
-        0.07354604508345125,
-        0.08663868387253248,
-        0.47304327205712965])
-    initial_population = np.tile(initial, (2 * (6 + 1), 1))
+
     result = differential_evolution(
-        combined_evaluation,
+        optimize_K_func,
         bounds,
         args=(params,),
         strategy="currenttobest1bin",
         workers=-1,
         updating="deferred",
-        popsize=2,
+        popsize=15,
         maxiter=500,
         seed=rng,
-        init=initial_population
     )
-    #print(f"Best fitness achieved at generation {best_generation}.")  # 最適な世代を出力
     E: float = -result.fun
     K: npt.NDArray[np.float_] = result.x
 
     return K, E
-
 
 
 def optimize(
