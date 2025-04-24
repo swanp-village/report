@@ -108,8 +108,8 @@ def _evaluate_pass_band(
 ) -> tuple[np.float_, bool]:
     distance: np.float_ = x[1] - x[0]
     a = abs(H_p * (x[end] - x[start]))
-    if abs(H_p * (x[end] - x[start])) < 1e-6:
-        penalty = abs(H_p * (x[end] - x[start])) / 1e-6
+    if a < 1e-6:
+        penalty = np.exp(-a/1e-6)
         return (np.float_(penalty),False)
     b = abs(np.sum(H_p - y[start:end]) * distance)
     E = b / a
