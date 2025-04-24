@@ -110,7 +110,7 @@ def _evaluate_pass_band(
     if abs(H_p * (x[end] - x[start])) < 1e-6:
         penalty = abs(H_p * (x[end] - x[start])) / 1e-6
         E_p = 10 * (1 - penalty)
-        return (np.float_(E),False)
+        return (np.float_(E_p),False)
     a = max(abs(H_p * (x[end] - x[start])),1e-6)
     b = abs(np.sum(H_p - y[start:end]) * distance)
     E = b / a
