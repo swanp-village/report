@@ -122,8 +122,9 @@ def _evaluate_stop_band(
     distance: np.float_ = x[1] - x[0]
     c = abs((H_s - H_p) * ((x[start] - x[0]) + (x[-1] - x[end])))
 
-    if c == 0:
-        return (np.float_(1e-6), False)
+    if c < 1e-6:
+        penalty = np.exp(-c/1e-6)
+        return (np.float_(penalty),False)
 
     y1 = np.where(y[0:start] > H_s, H_p - y[0:start], H_p - H_s)
     y1 = np.where(y1 > 0, y1, 0)
