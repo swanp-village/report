@@ -111,7 +111,7 @@ def _evaluate_pass_band(
     a = abs(H_p * (x[end] - x[start]))
     print(a)
     if a < 1e-9:
-        penalty = np.exp(-a/1e-6)
+        penalty = np.exp(-a/1e-9)
         return (np.float_(penalty),False)
     b = abs(np.sum(H_p - y[start:end]) * distance)
     E = b / a
@@ -125,7 +125,7 @@ def _evaluate_stop_band(
     c = abs((H_s - H_p) * ((x[start] - x[0]) + (x[-1] - x[end])))
 
     if c < 1e-9:
-        penalty = np.exp(-c/1e-6)
+        penalty = np.exp(-c/1e-9)
         return (np.float_(penalty),False)
 
     y1 = np.where(y[0:start] > H_s, H_p - y[0:start], H_p - H_s)
