@@ -161,7 +161,7 @@ def _evaluate_3db_band(
     index = _get_3db_band(x=x, y=y, start=start, end=end)
     if index.size <= 1:
         # ペナルティ計算を追加
-        return (np.float_(1e-6), False)
+        return (np.float_(0), False)
 
     practical_length_of_3db_band = distance * (index[-1] - index[0])
     if practical_length_of_3db_band > length_of_3db_band:
@@ -179,7 +179,7 @@ def _evaluate_ripple(
     index = _get_3db_band(x=x, y=y, start=start, end=end)
     if index.size <= 1:
         # ペナルティ計算
-        return (np.float_(1e-6), False)
+        return (np.float_(0), False)
 
     three_db_band = pass_band[index[0] : index[-1]]
     maxid = argrelmax(three_db_band, order=1)
