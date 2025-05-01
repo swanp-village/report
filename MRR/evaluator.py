@@ -109,6 +109,7 @@ def _evaluate_pass_band(
     distance: np.float_ = x[1] - x[0]
     print(H_p)
     a = abs(H_p * (x[end] - x[start]))
+    print(a)
     if a < 1e-6:
         penalty = np.exp(-a/1e-6)
         return (np.float_(penalty),False)
