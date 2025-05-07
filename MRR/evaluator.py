@@ -51,9 +51,10 @@ def evaluate_band(
     print(E_c)
     for i, res in enumerate(result):
         print(f"評価関数 {i+1}: 値 = {res[0]}, バイナリ評価 = {res[1]}")
+    """
 
     return E
-    """
+    
 
 
 def _calculate_pass_band_range(
