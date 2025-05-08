@@ -196,8 +196,7 @@ def _evaluate_ripple(
 
     dif = peak_max.max() - peak_min.min()
     if dif > r_max:
-        # ペナルティ計算を連続化
-        E = 1 / (1 + dif - r_max)
+        E = 0
     else:
         E = 1 - dif / r_max
 
