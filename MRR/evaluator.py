@@ -185,15 +185,19 @@ def _evaluate_ripple(
         return (np.float_(0), False)
 
     three_db_band = pass_band[index[0] : index[-1]]
+    """
     maxid = argrelmax(three_db_band, order=1)
     minid = argrelmin(three_db_band, order=1)
+   
     if len(minid[0])==0 or len(maxid[0])==0:
         peak_max = three_db_band.max()
         peak_min = three_db_band.min()
     else:
         peak_max = three_db_band[maxid].max()
         peak_min = three_db_band[minid].min()
-
+    """
+    peak_max = three_db_band.max()
+    peak_min = three_db_band.min()
     dif = peak_max.max() - peak_min.min()
     if dif > r_max:
         E = 0
