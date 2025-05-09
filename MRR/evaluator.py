@@ -174,7 +174,28 @@ def _evaluate_3db_band(
     E = E ** 3
     return (E, True)
 
+def _evaluate_ripple(
+    x: npt.NDArray[np.float_], y: npt.NDArray[np.float_], r_max: float, start: int, end: int
+) -> tuple[np.float_, bool]:
+    pass_band = y[start:end]
+    index = _get_3db_band(x=x, y=y, start=start, end=end)
+    if index.size <= 1:
+        return (np.float_(0), False)
+    three_db_band = pass_band[index[0] : index[-1]]
+    maxid = argrelmax(three_db_band, order=1)
+    minid = argrelmin(three_db_band, order=1)
+    peak_max = three_db_band[maxid]
+    peak_min = three_db_band[minid]
+    if len(peak_min) == 0:
+        return (1, True)
+    dif = peak_max.max() - peak_min.min()
+    if dif > r_max:
+        E = 0
+    else:
+        E = 1 - dif / r_max
 
+    return (E, True)
+"""
 def _evaluate_ripple(
     x: npt.NDArray[np.float_], y: npt.NDArray[np.float_], r_max: float, start: int, end: int
 ) -> tuple[np.float_, bool]:
@@ -195,10 +216,7 @@ def _evaluate_ripple(
     else:
         peak_max = three_db_band[maxid].max()
         peak_min = three_db_band[minid].min()
-    """
-    peak_max = three_db_band.max()
-    peak_min = three_db_band.min()
-    """
+
     dif = peak_max.max() - peak_min.min()
     if dif > r_max:
         E = 0
@@ -206,7 +224,7 @@ def _evaluate_ripple(
         E = 1 - dif / r_max
 
     return (E, True)
-
+"""
 def _evaluate_cross_talk(
     y: npt.NDArray[np.float_], max_crosstalk: float, pass_band_start: int, pass_band_end: int
 ) -> tuple[np.float_, bool]:
