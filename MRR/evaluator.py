@@ -173,7 +173,7 @@ def _evaluate_3db_band(
         E = practical_length_of_3db_band / length_of_3db_band
     E = E ** 3
     return (E, True)
-
+"""
 def _evaluate_ripple(
     x: npt.NDArray[np.float_], y: npt.NDArray[np.float_], r_max: float, start: int, end: int
 ) -> tuple[np.float_, bool]:
@@ -224,7 +224,7 @@ def _evaluate_ripple(
         E = 1 - dif / r_max
 
     return (E, True)
-"""
+
 def _evaluate_cross_talk(
     y: npt.NDArray[np.float_], max_crosstalk: float, pass_band_start: int, pass_band_end: int
 ) -> tuple[np.float_, bool]:
