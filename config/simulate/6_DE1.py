@@ -24,6 +24,6 @@ config = {
     "n_eff": 2.2,
     "n_g": 4.4,
     "center_wavelength": 1.55e-06,
-    "label":"after",
+    "label":"DE",
     "lambda_limit": np.arange(1549e-9, 1551e-9, 1e-12)
 }
