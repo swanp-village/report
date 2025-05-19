@@ -232,6 +232,7 @@ def _evaluate_ripple(
 ) -> tuple[np.float_, bool]:
     pass_band = y[start:end]
     index = _get_3db_band(x=x, y=y, start=start, end=end)
+    three_db_band = pass_band[index[0] : index[-1]]
     if index.size <= 1:
         # ペナルティ計算
         return (np.float_(0), False)
