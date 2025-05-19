@@ -264,7 +264,7 @@ def _evaluate_ripple(
     range_ripple = three_db_band.max() - three_db_band.min()
     print(std_ripple)
     print(range_ripple)
-    r_max = 0.01
+    
 
     if std_ripple > r_max or range_ripple > r_max:
         E = 0
