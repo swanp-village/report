@@ -264,12 +264,12 @@ def _evaluate_ripple(
     range_ripple = three_db_band.max() - three_db_band.min()
     print(std_ripple)
     print(range_ripple)
-    
+    r_max1 = 1.0
 
-    if std_ripple > r_max or range_ripple > r_max:
+    if std_ripple > r_max1 or range_ripple > r_max:
         E = 0
     else:
-        E = 1 - (std_ripple + range_ripple) / (2 * r_max)
+        E = 1 - (std_ripple + range_ripple) / (2 * r_max1 * r_max)
 
     return (np.float_(E), True)
 
