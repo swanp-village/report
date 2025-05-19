@@ -234,6 +234,7 @@ def _evaluate_ripple(
     index = _get_3db_band(x=x, y=y, start=start, end=end)
     
     if index.size <= 1:
+        return (np.float_(0), False)
         # ペナルティ計算
 
     three_db_band = pass_band[index[0] : index[-1]]
