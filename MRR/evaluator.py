@@ -259,6 +259,7 @@ def _evaluate_ripple(
         # ペナルティ計算
 
     n = index.size
+    print(n)
     if n > 10:  # 十分な点数あるとき
         central_index = index[int(0.1 * n) : int(0.9 * n)]
         three_db_band = pass_band[central_index]
@@ -268,7 +269,7 @@ def _evaluate_ripple(
     std_ripple = np.std(three_db_band)
     range_ripple = three_db_band.max() - three_db_band.min()
 
-    print(range_ripple)
+ 
     r_max1 = 1.0
 
     if std_ripple > r_max1 or range_ripple > r_max:
