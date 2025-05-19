@@ -259,9 +259,8 @@ def _evaluate_ripple(
         # ペナルティ計算
 
     n = index.size
-    print(n)
-    if n > 10:  # 十分な点数あるとき
-        central_index = index[int(0.1 * n) : int(0.9 * n)]
+    if n > 100:  # 十分な点数あるとき
+        central_index = index[int(0.01 * n) : int(0.09 * n)]
         three_db_band = pass_band[central_index]
     else:
         three_db_band = pass_band[index]  # 点数少ない時はそのまま使う
