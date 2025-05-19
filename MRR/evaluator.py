@@ -262,6 +262,8 @@ def _evaluate_ripple(
     three_db_band = pass_band[index]
     std_ripple = np.std(three_db_band)
     range_ripple = three_db_band.max() - three_db_band.min()
+    print(std_ripple)
+    print(range_ripple)
     r_max = 0.01
 
     if std_ripple > r_max or range_ripple > r_max:
