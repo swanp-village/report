@@ -253,7 +253,6 @@ def _evaluate_ripple(
 ) -> tuple[np.float_, bool]:
     pass_band = y[start:end]
     index = _get_3db_band(x=x, y=y, start=start, end=end)
-    print("ok")
     if index.size <= 3:
         print("すくない",index)
         return (np.float_(0), False)
@@ -268,7 +267,7 @@ def _evaluate_ripple(
         
     std_ripple = np.std(three_db_band)
     range_ripple = three_db_band.max() - three_db_band.min()
-    print(std_ripple)
+
     print(range_ripple)
     r_max1 = 1.0
 
