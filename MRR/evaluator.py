@@ -227,6 +227,7 @@ def _evaluate_ripple(
 
     return (E, True)
 """
+#標準偏差型
 def _evaluate_ripple(
     x: npt.NDArray[np.float_], y: npt.NDArray[np.float_], r_max: float, start: int, end: int
 ) -> tuple[np.float_, bool]:
@@ -239,12 +240,13 @@ def _evaluate_ripple(
 
     three_db_band = pass_band[index[0] : index[-1]]
     std_ripple = np.std(three_db_band)
-    r_max = 1e-4
+    range_ripple = three_db_band.max() - three_db_band.min()
+    r_max = 0.01
 
-    if std_ripple > r_max:
+    if std_ripple > r_max or range_ripple > r_max:
         E = 0
     else:
-        E = 1 - std_ripple / r_max
+        E = 1 - (std_ripple + range_ripple) / (2 * r_max)
 
     return (np.float_(E), True)
 
