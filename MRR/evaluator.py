@@ -174,6 +174,7 @@ def _evaluate_3db_band(
     E = E ** 3
     return (E, True)
 """
+#最大最小型
 def _evaluate_ripple(
     x: npt.NDArray[np.float_], y: npt.NDArray[np.float_], r_max: float, start: int, end: int
 ) -> tuple[np.float_, bool]:
@@ -195,7 +196,8 @@ def _evaluate_ripple(
         E = 1 - dif / r_max
 
     return (E, True)
-"""
+
+#条件分岐型
 def _evaluate_ripple(
     x: npt.NDArray[np.float_], y: npt.NDArray[np.float_], r_max: float, start: int, end: int
 ) -> tuple[np.float_, bool]:
@@ -224,6 +226,26 @@ def _evaluate_ripple(
         E = 1 - dif / r_max
 
     return (E, True)
+"""
+def _evaluate_ripple(
+    x: npt.NDArray[np.float_], y: npt.NDArray[np.float_], r_max: float, start: int, end: int
+) -> tuple[np.float_, bool]:
+    pass_band = y[start:end]
+    index = _get_3db_band(x=x, y=y, start=start, end=end)
+    if index.size <= 1:
+        # ペナルティ計算
+        return (np.float_(0), False)
+    std_ripple = np.std(three_db_band)
+    r_max = 1e-4
+
+    if std_ripple > r_max:
+        E = 0
+    else:
+        E = 1 - std_ripple / r_max
+
+    return (np.float_(E), True)
+
+
 
 def _evaluate_cross_talk(
     y: npt.NDArray[np.float_], max_crosstalk: float, pass_band_start: int, pass_band_end: int
