@@ -97,7 +97,7 @@ def _get_pass_band(
 
     return pass_band, cross_talk
 
-
+"""
 def _get_3db_band(x: npt.NDArray[np.float_], y: npt.NDArray[np.float_], start: int, end: int) -> npt.ArrayLike:
     border: np.float_ = y.max() - 3
     a = np.where(y[start:end] <= border, True, False)
@@ -105,6 +105,26 @@ def _get_3db_band(x: npt.NDArray[np.float_], y: npt.NDArray[np.float_], start: i
     index = np.where(np.logical_xor(a, b))[0]
 
     return index
+"""
+def _get_3db_band(
+    x: npt.NDArray[np.float_],
+    y: npt.NDArray[np.float_],
+    start: int,
+    end: int
+) -> npt.NDArray[np.int_]:
+    # dBスケール前提（最大値から3dB以内）
+    y_db = y[start:end]
+    threshold = y_db.max() - 3
+
+    # 条件を満たすインデックス
+    mask = y_db >= threshold
+    idx = np.where(mask)[0]
+
+    if idx.size == 0:
+        return np.array([], dtype=int)
+
+    # 通過帯域の範囲（インデックスそのものを返す）
+    return idx
 
 def _evaluate_pass_band(
     x: npt.NDArray[np.float_], y: npt.NDArray[np.float_], H_p: float, start: int, end: int
@@ -234,11 +254,11 @@ def _evaluate_ripple(
     pass_band = y[start:end]
     index = _get_3db_band(x=x, y=y, start=start, end=end)
     
-    if index.size <= 1:
+    if index.size <= 3:
         return (np.float_(0), False)
         # ペナルティ計算
 
-    three_db_band = pass_band[index[0] : index[-1]]
+    three_db_band = pass_band[index]
     std_ripple = np.std(three_db_band)
     range_ripple = three_db_band.max() - three_db_band.min()
     r_max = 0.01
