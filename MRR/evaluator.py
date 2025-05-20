@@ -97,7 +97,7 @@ def _get_pass_band(
 
     return pass_band, cross_talk
 
-"""
+
 def _get_3db_band(x: npt.NDArray[np.float_], y: npt.NDArray[np.float_], start: int, end: int) -> npt.ArrayLike:
     border: np.float_ = y.max() - 3
     a = np.where(y[start:end] <= border, True, False)
@@ -105,8 +105,9 @@ def _get_3db_band(x: npt.NDArray[np.float_], y: npt.NDArray[np.float_], start: i
     index = np.where(np.logical_xor(a, b))[0]
 
     return index
-"""
-def _get_3db_band(
+
+
+def _get_3db_band2(
     x: npt.NDArray[np.float_],
     y: npt.NDArray[np.float_],
     start: int,
@@ -252,7 +253,7 @@ def _evaluate_ripple(
     x: npt.NDArray[np.float_], y: npt.NDArray[np.float_], r_max: float, start: int, end: int
 ) -> tuple[np.float_, bool]:
     pass_band = y[start:end]
-    index = _get_3db_band(x=x, y=y, start=start, end=end)
+    index = _get_3db_band2(x=x, y=y, start=start, end=end)
     if index.size <= 3:
         print("すくない",index)
         return (np.float_(0), False)
