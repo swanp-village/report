@@ -275,7 +275,7 @@ def _evaluate_ripple(
     if std_ripple > r_max1 or range_ripple > r_max:
         E = 0
     else:
-        E = 1 - (std_ripple + range_ripple) / (2 * r_max1 * r_max)
+        E = 1 - (std_ripple + range_ripple) / (r_max1 * r_max)
 
     return (np.float_(E), True)
 
