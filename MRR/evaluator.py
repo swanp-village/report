@@ -97,15 +97,15 @@ def _get_pass_band(
 
     return pass_band, cross_talk
 
-"""
-def _get_3db_band(x: npt.NDArray[np.float_], y: npt.NDArray[np.float_], start: int, end: int) -> npt.ArrayLike:
+
+def _get_3db_band1(x: npt.NDArray[np.float_], y: npt.NDArray[np.float_], start: int, end: int) -> npt.ArrayLike:
     border: np.float_ = y.max() - 3
     a = np.where(y[start:end] <= border, True, False)
     b = np.append(a[1:], a[-1])
     index = np.where(np.logical_xor(a, b))[0]
 
     return index
-"""
+
 
 def _get_3db_band(
     x: npt.NDArray[np.float_],
@@ -299,7 +299,7 @@ def _evaluate_cross_talk(
 def _evaluate_shape_factor(
     x: npt.NDArray[np.float_], y: npt.NDArray[np.float_], start: int, end: int
 ) -> tuple[np.float_, bool]:
-    index = _get_3db_band(x=x, y=y, start=start, end=end)
+    index = _get_3db_band1(x=x, y=y, start=start, end=end)
     if index.size <= 1:
         return (np.float_(1e-6), False)
 
