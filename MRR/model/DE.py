@@ -106,7 +106,7 @@ def combined_evaluation(K: npt.NDArray[np.float_], params: OptimizeKParams) -> f
     total_score = E_optimal + (delta_E_positive + delta_E_negative) / 2
 
     return total_score
-
+"""
 #一般設計
 def optimize_K(
     eta: float,
@@ -117,15 +117,6 @@ def optimize_K(
     bounds = [(1e-12, eta) for _ in range(number_of_rings + 1)]
     bounds_array=np.array(bounds) 
     initial=np.random.uniform(1e-12, eta, size=(number_of_rings+1,))
-    initial = np.array( [
-        0.352289802024055,
-        0.041527771579684736,
-        0.03163490938517566,
-        0.040354181062250694,
-        0.05786087646662724,
-        0.0896402567977328,
-        0.4964331046990408
-    ],)
     popsize = 4 + math.floor(3 * math.log(number_of_rings+1)) + 8
     sigma = 0.3
     #sigma = 0.07 #誤差検討用σ
@@ -185,7 +176,7 @@ def optimize_K(
     K: npt.NDArray[np.float_] = result.x
 
     return K, E
-
+"""
 
 def optimize(
     n_g: float,
