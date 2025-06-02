@@ -113,38 +113,46 @@ def optimize_K(
     number_of_rings: int,
     rng: np.random.Generator,
     params: OptimizeKParams,
+    num_start: int = 6
 ) -> tuple[npt.NDArray[np.float_], float]:
     bounds = [(1e-12, eta) for _ in range(number_of_rings + 1)]
     bounds_array=np.array(bounds) 
-    initial=np.random.uniform(1e-12, eta, size=(number_of_rings+1,))
+    #initial=np.random.uniform(1e-12, eta, size=(number_of_rings+1,))
     popsize = 4 + math.floor(3 * math.log(number_of_rings+1)) + 8
     sigma = 0.3
     #sigma = 0.07 #誤差検討用σ
     generations = 500
-    
+
+    best_all_solution = None
+    best_all_fitness = float("inf")
+    for start_idx in range(num_start):
+        initial=np.random.uniform(1e-12, eta, size=(number_of_rings+1,))
 
 
-    optimizer=CMA(
-        bounds=bounds_array,
-        mean=initial,
-        sigma=sigma,
-        population_size=popsize
-    )
-    best_solution = None
-    best_fitness = float("inf")
-    for generation in range(generations):
-        solutions = []
-        for _ in range(popsize):
-            # Ask a parameter
-            x=optimizer.ask()
-            value = optimize_K_func(x, params)
-            solutions.append((x,value))
-            if value < best_fitness :
-                best_fitness = value
-                best_solution = x 
+        optimizer=CMA(
+            bounds=bounds_array,
+            mean=initial,
+            sigma=sigma,
+            population_size=popsize
+        )
+        best_solution = None
+        best_fitness = float("inf")
+        for generation in range(generations):
+            solutions = []
+            for _ in range(popsize):
+                # Ask a parameter
+                x=optimizer.ask()
+                value = optimize_K_func(x, params)
+                solutions.append((x,value))
+                if value < best_fitness :
+                    best_fitness = value
+                    best_solution = x 
        
-        optimizer.tell(solutions)
+            optimizer.tell(solutions)
         print(best_fitness)
+        if best_fitness < best_all_fitness:
+            best_all_fitness = best_fitness
+            best_all_solution = best_solution
         
     E: float = -best_fitness
     K: npt.NDArray[np.float_] = best_solution
