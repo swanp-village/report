@@ -17,6 +17,7 @@ from MRR.simulator import (
 )
 from MRR.transfer_function import simulate_transfer_function
 from scipy.stats.qmc import LatinHypercube
+from concurrent.futures import ProcessPoolExecutor
 import numpy as np
 
 
