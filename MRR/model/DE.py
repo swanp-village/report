@@ -127,7 +127,7 @@ def cma_run(initial, bounds_array, popsize, sigma, generations, params):
             x=optimizer.ask()
             value = optimize_K_func(x, params)
             solutions.append((x,value))
-              if value < best_fitness :
+            if value < best_fitness :
                 best_fitness = value
                 best_solution = x 
        
