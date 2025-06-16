@@ -56,6 +56,8 @@ def optimize_L(
     return N, L, practical_FSR
 
 
+
+
 @dataclass
 class OptimizeKParams:
     L: npt.NDArray[np.float_]
@@ -107,6 +109,61 @@ def combined_evaluation(K: npt.NDArray[np.float_], params: OptimizeKParams) -> f
     total_score = E_optimal + (delta_E_positive + delta_E_negative) / 2
 
     return total_score
+"""
+#CMA-ES動作コード
+def cma_run(initial, bounds_array, popsize, sigma, generations, params):
+    optimizer=CMA(
+            bounds=bounds_array,
+            mean=initial,
+            sigma=sigma,
+            population_size=popsize
+        )
+        best_solution = None
+        best_fitness = float("inf")
+        for generation in range(generations):
+            solutions = []
+            for _ in range(popsize):
+                # Ask a parameter
+                x=optimizer.ask()
+                value = optimize_K_func(x, params)
+                solutions.append((x,value))
+                if value < best_fitness :
+                    best_fitness = value
+                    best_solution = x 
+       
+            optimizer.tell(solutions)
+            
+        return best_solution,best_fitness
+
+def optimize_K(
+    eta: float,
+    number_of_rings: int,
+    rng: np.random.Generator,
+    params: OptimizeKParams,
+    num_start: int = 6
+) -> tuple[npt.NDArray[np.float_], float]:
+    bounds = [(1e-12, eta) for _ in range(number_of_rings + 1)]
+    bounds_array=np.array(bounds) 
+    #initial=np.random.uniform(1e-12, eta, size=(number_of_rings+1,))
+    popsize = 4 + math.floor(3 * math.log(number_of_rings+1)) + 8
+    sigma = 0.3
+    #sigma = 0.07 #誤差検討用σ
+    generations = 500
+    initials = [rng.uniform(1e-12, eta, size=(number_of_rings + 1,))
+                for _ in range(num_starts)]
+
+    with ProcessPoolExecutor() as executor:
+        futures = [executor.submit(single_cma_run, initial, bounds_array, popsize, sigma, generations, params)
+                   for initial in initials]
+
+        results = [f.result() for f in futures]
+
+    # 一番良かったやつを選ぶ
+    best_solution, best_fitness = min(results, key=lambda x: x[1])
+    E: float = -best_fitness
+    K: npt.NDArray[np.float_] = best_solution
+    return K,E
+"""
 
 #一般設計
 def optimize_K(
@@ -160,7 +217,7 @@ def optimize_K(
     
 
     return K,E
-"""
+
 #差分進化法
 def optimize_K(
     eta: float,
@@ -185,7 +242,7 @@ def optimize_K(
     K: npt.NDArray[np.float_] = result.x
 
     return K, E
-
+"""
 
 def optimize(
     n_g: float,
