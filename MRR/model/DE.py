@@ -154,7 +154,7 @@ def optimize_K(
                 for _ in range(num_starts)]
 
     with ProcessPoolExecutor() as executor:
-        futures = [executor.submit(single_cma_run, initial, bounds_array, popsize, sigma, generations, params)
+        futures = [executor.submit(cma_run, initial, bounds_array, popsize, sigma, generations, params)
                    for initial in initials]
 
         results = [f.result() for f in futures]
