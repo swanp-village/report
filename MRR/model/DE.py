@@ -118,22 +118,22 @@ def cma_run(initial, bounds_array, popsize, sigma, generations, params):
             sigma=sigma,
             population_size=popsize
         )
-        best_solution = None
-        best_fitness = float("inf")
-        for generation in range(generations):
-            solutions = []
-            for _ in range(popsize):
-                # Ask a parameter
-                x=optimizer.ask()
-                value = optimize_K_func(x, params)
-                solutions.append((x,value))
-                if value < best_fitness :
-                    best_fitness = value
-                    best_solution = x 
+    best_solution = None
+    best_fitness = float("inf")
+    for generation in range(generations):
+        solutions = []
+        for _ in range(popsize):
+            # Ask a parameter
+            x=optimizer.ask()
+            value = optimize_K_func(x, params)
+            solutions.append((x,value))
+              if value < best_fitness :
+                best_fitness = value
+                best_solution = x 
        
-            optimizer.tell(solutions)
+        optimizer.tell(solutions)
             
-        return best_solution,best_fitness
+    return best_solution,best_fitness
 
 def optimize_K(
     eta: float,
