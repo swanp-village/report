@@ -149,7 +149,7 @@ def optimize_K(
     sigma = 0.3
     #sigma = 0.07 #誤差検討用σ
     generations = 500
-    num_start = 6
+    num_starts = 6
     initials = [rng.uniform(1e-12, eta, size=(number_of_rings + 1,))
                 for _ in range(num_starts)]
 
