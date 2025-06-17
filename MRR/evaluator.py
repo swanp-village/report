@@ -294,7 +294,7 @@ def _evaluate_cross_talk(
         return (np.float_(0), False)
     return (np.float_(0), True)
 
-
+"""
 def _evaluate_cross_talk(
     y: npt.NDArray[np.float_], max_crosstalk: float, pass_band_start: int, pass_band_end: int
 ) -> tuple[np.float_, bool]:
@@ -312,7 +312,7 @@ def _evaluate_cross_talk(
     if a or b:
         return (np.float_(0),False)
     return (1 / (1 + penalty), True)
-
+"""
 
 def _evaluate_shape_factor(
     x: npt.NDArray[np.float_], y: npt.NDArray[np.float_], start: int, end: int
