@@ -109,7 +109,7 @@ def combined_evaluation(K: npt.NDArray[np.float_], params: OptimizeKParams) -> f
     total_score = E_optimal + (delta_E_positive + delta_E_negative) / 2
 
     return total_score
-"""
+
 #CMA-ES動作コード
 def cma_run(initial, bounds_array, popsize, sigma, generations, params):
     optimizer=CMA(
@@ -165,7 +165,7 @@ def optimize_K(
     E: float = -best_fitness
     K: npt.NDArray[np.float_] = best_solution
     return K,E
-"""
+
 
 #一般設計
 def optimize_K(
@@ -219,7 +219,7 @@ def optimize_K(
     
 
     return K,E
-
+"""
 #差分進化法
 def optimize_K(
     eta: float,
@@ -244,7 +244,7 @@ def optimize_K(
     K: npt.NDArray[np.float_] = result.x
 
     return K, E
-"""
+
 
 def optimize(
     n_g: float,
