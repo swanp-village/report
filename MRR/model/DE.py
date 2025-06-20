@@ -144,10 +144,8 @@ def optimize_K(
 ) -> tuple[npt.NDArray[np.float_], float]:
     bounds = [(1e-12, eta) for _ in range(number_of_rings + 1)]
     bounds_array=np.array(bounds) 
-    #initial=np.random.uniform(1e-12, eta, size=(number_of_rings+1,))
     popsize = 4 + math.floor(3 * math.log(number_of_rings+1)) + 8
     sigma = 0.3
-    #sigma = 0.07 #誤差検討用σ
     generations = 500
     num_starts = 6
     initials = [rng.uniform(1e-12, eta, size=(number_of_rings + 1,))
