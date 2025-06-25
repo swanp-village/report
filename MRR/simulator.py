@@ -74,8 +74,8 @@ def simulate_MRR(
         wavelength=x, L=L, K=K, alpha=alpha, eta=eta, n_eff=n_eff, n_g=n_g, center_wavelength=center_wavelength
     )
     
-    if skip_evaluation:
-        evaluation_result = np.float_(0)
+    #if skip_evaluation:
+        #evaluation_result = np.float_(0)
      
     
     evaluation_result = evaluate_band(
