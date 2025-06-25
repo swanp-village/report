@@ -163,7 +163,7 @@ def optimize_K(
     E: float = -best_fitness
     K: npt.NDArray[np.float_] = best_solution
     return K,E
-"""
+
 
 #一般設計
 def optimize_K(
@@ -237,7 +237,7 @@ def optimize_K(
     K: npt.NDArray[np.float_] = result.x
 
     return K, E
-"""
+
 
 def optimize(
     n_g: float,
