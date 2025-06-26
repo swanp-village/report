@@ -109,7 +109,7 @@ def combined_evaluation(K: npt.NDArray[np.float_], params: OptimizeKParams) -> f
     total_score = E_optimal + (delta_E_positive + delta_E_negative) / 2
 
     return total_score
-"""
+
 #CMA-ES動作コード
 def cma_run(initial, bounds_array, popsize, sigma, generations, params):
     optimizer=CMA(
@@ -212,7 +212,7 @@ def optimize_K(
     
 
     return K,E
-"""
+
 #差分進化法
 def optimize_K(
     eta: float,
@@ -445,7 +445,7 @@ def optimize(
         graph.plot(x, y)
         graph.show(logger.generate_image_path())
 
-"""
+
 def optimize_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams) -> np.float_:
     
     
@@ -481,8 +481,8 @@ def optimize_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams) -> np.fl
         ignore_binary_evaluation=False,
     )
     #print(f"Fitness value: {fitness}")
-"""
-def optimize_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams) -> tuple[float, float]:
+
+def optimize_perturbed_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams) -> tuple[float, float]:
 
     
     #誤差として結合率 K に +0.005 および -0.005 を適用した場合の評価値を計算。
