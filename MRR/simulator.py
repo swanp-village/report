@@ -91,7 +91,6 @@ def simulate_MRR(
             weight=weight,
             ignore_binary_evaluation=ignore_binary_evaluation,
     )
-    print(evaluation_result)
       
     accumulator.logger.print_parameters(K=K, L=L, N=N, FSR=practical_FSR, E=evaluation_result, format=format)
 
