@@ -46,7 +46,7 @@ def evaluate_band(
         return E_c
     E = E_c * E_b
     # 各評価関数の結果を表示
-    
+    """
     print(E_b)
     print(E_c)
     for i, res in enumerate(result):
@@ -54,7 +54,7 @@ def evaluate_band(
     
 
     return E
-    
+    """
 
 
 def _calculate_pass_band_range(
