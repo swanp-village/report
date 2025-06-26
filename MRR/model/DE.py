@@ -557,4 +557,4 @@ def optimize_perturbed_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams
     )
 
     return E_positive, E_negative
-"""
+
