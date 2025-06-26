@@ -93,6 +93,8 @@ def combined_evaluation(K: npt.NDArray[np.float_], params: OptimizeKParams) -> f
 
     # 通常の評価値
     E_optimal = optimize_K_func(K, params)
+    print(E_positive)
+    print(E_negative)
 
     # 正負の誤差による評価値
     E_positive, E_negative = optimize_perturbed_K_func(K, params)
