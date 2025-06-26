@@ -482,7 +482,7 @@ def optimize_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams) -> np.fl
     )
     #print(f"Fitness value: {fitness}")
 """
-def optimize_perturbed_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams) -> tuple[float, float]:
+def optimize_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams) -> tuple[float, float]:
 
     
     #誤差として結合率 K に +0.005 および -0.005 を適用した場合の評価値を計算。
