@@ -59,7 +59,7 @@ def simulate_MRR(
     name: str = "",
     label: str = "",
     skip_graph: bool = False,
-    skip_evaluation: bool = False,
+    skip_evaluation: bool = True,
     ignore_binary_evaluation: bool = False,
 ) -> SimulatorResult:
     N = calculate_N(center_wavelength=center_wavelength, n_eff=n_eff, L=L)
