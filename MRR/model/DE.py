@@ -74,7 +74,7 @@ class OptimizeKParams:
     H_i: float
     r_max: float
     weight: list[float]
-"""
+
 normal_evaluations = []
 perturbed_evaluations = []
 def combined_evaluation(K: npt.NDArray[np.float_], params: OptimizeKParams) -> float:
@@ -164,7 +164,7 @@ def optimize_K(
     K: npt.NDArray[np.float_] = best_solution
     return K,E
 
-
+"""
 #一般設計
 def optimize_K(
     eta: float,
@@ -212,7 +212,7 @@ def optimize_K(
     
 
     return K,E
-"""
+
 #差分進化法
 def optimize_K(
     eta: float,
@@ -237,7 +237,7 @@ def optimize_K(
     K: npt.NDArray[np.float_] = result.x
 
     return K, E
-
+"""
 
 def optimize(
     n_g: float,
@@ -445,7 +445,7 @@ def optimize(
         graph.plot(x, y)
         graph.show(logger.generate_image_path())
 
-
+"""
 def optimize_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams) -> np.float_:
     
     
