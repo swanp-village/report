@@ -166,11 +166,9 @@ def _evaluate_insertion_loss(
     H_i: float,
     center_wavelength: float,
 ) -> tuple[np.float_, bool]:
-    print("center_wavelength =", center_wavelength)
-    print("x[近い10個] =", x[np.argsort(np.abs(x - center_wavelength))[:10]])
-    print("(x == center_wavelength).any() =", (x == center_wavelength).any())
-
-    insertion_loss = y[x == center_wavelength]
+    
+    idx = np.argmin(np.abs(x - center_wavelength))
+    insertion_loss = y[idx]
     if insertion_loss.size == 0:
         return (np.float_(1e-6), False)
 
