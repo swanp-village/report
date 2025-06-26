@@ -55,7 +55,7 @@ def simulate_MRR(
     weight: list[float],
     format: bool = False,
     simulate_one_cycle: bool = True,
-    lamda_limit: npt.NDArray[np.float_] = np.array([]),
+    lambda_limit: npt.NDArray[np.float_] = np.array([]),
     name: str = "",
     label: str = "",
     skip_graph: bool = False,
@@ -68,7 +68,7 @@ def simulate_MRR(
     if simulate_one_cycle:
         x = calculate_x(center_wavelength=center_wavelength, FSR=practical_FSR)
     else:
-        x = lamda_limit
+        x = lambda_limit
 
     y = simulate_transfer_function(
         wavelength=x, L=L, K=K, alpha=alpha, eta=eta, n_eff=n_eff, n_g=n_g, center_wavelength=center_wavelength
