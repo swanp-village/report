@@ -125,7 +125,7 @@ def cma_run(initial, bounds_array, popsize, sigma, generations, params):
         for _ in range(popsize):
             # Ask a parameter
             x=optimizer.ask()
-            value = optimize_K_func(x, params)
+            value = combined_evaluation(x, params)
             solutions.append((x,value))
             if value < best_fitness :
                 best_fitness = value
