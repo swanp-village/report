@@ -74,7 +74,7 @@ class OptimizeKParams:
     H_i: float
     r_max: float
     weight: list[float]
-
+"""
 normal_evaluations = []
 perturbed_evaluations = []
 def combined_evaluation(K: npt.NDArray[np.float_], params: OptimizeKParams) -> float:
@@ -109,7 +109,7 @@ def combined_evaluation(K: npt.NDArray[np.float_], params: OptimizeKParams) -> f
     total_score = E_optimal + (delta_E_positive + delta_E_negative) / 2
 
     return total_score
-"""
+
 #CMA-ES動作コード
 def cma_run(initial, bounds_array, popsize, sigma, generations, params):
     optimizer=CMA(
@@ -223,7 +223,7 @@ def optimize_K(
     bounds = [(1e-12, eta) for _ in range(number_of_rings + 1)]
 
     result = differential_evolution(
-        combined_evaluation,
+        optimize_K_func,
         bounds,
         args=(params,),
         strategy="currenttobest1bin",
