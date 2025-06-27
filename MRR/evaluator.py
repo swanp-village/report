@@ -174,10 +174,10 @@ def _evaluate_insertion_loss(
     if insertion_loss.size == 0:
         return (np.float_(1e-6), False)
 
-    if insertion_loss < H_i[0]:
-        E = H_i[0] / (insertion_loss + 1e-6)  # ペナルティ計算を連続化
+    if insertion_loss[0] < H_i:
+        E = H_i / (insertion_loss[0] + 1e-6)  # ペナルティ計算を連続化
     else:
-        E = 1 - insertion_loss / H_i[0]
+        E = 1 - insertion_loss[0] / H_i
 
     return (E, True)
 
