@@ -481,7 +481,7 @@ def optimize_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams) -> np.fl
         ignore_binary_evaluation=False,
     )
     #print(f"Fitness value: {fitness}")
-
+"""
 def optimize_perturbed_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams) -> tuple[float, float]:
 
     
@@ -557,4 +557,5 @@ def optimize_perturbed_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams
  
 
     return E_positive, E_negative
+"""
 
