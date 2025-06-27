@@ -166,16 +166,18 @@ def _evaluate_insertion_loss(
     H_i: float,
     center_wavelength: float,
 ) -> tuple[np.float_, bool]:
-    
+    """
     idx = np.argmin(np.abs(x - center_wavelength))
     insertion_loss = y[idx]
+    """
+    insertion_loss = y[x == center_wavelength]  # これは配列（長さ1の配列）
     if insertion_loss.size == 0:
         return (np.float_(1e-6), False)
 
-    if insertion_loss < H_i:
-        E = H_i / (insertion_loss + 1e-6)  # ペナルティ計算を連続化
+    if insertion_loss < H_i[0]:
+        E = H_i[0] / (insertion_loss + 1e-6)  # ペナルティ計算を連続化
     else:
-        E = 1 - insertion_loss / H_i
+        E = 1 - insertion_loss / H_i[0]
 
     return (E, True)
 
