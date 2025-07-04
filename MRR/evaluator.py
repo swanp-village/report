@@ -298,7 +298,7 @@ def _evaluate_cross_talk(
         return (np.float_(0), False)
     return (np.float_(0), True)
 
-"""
+
 def _evaluate_cross_talk(
     y: npt.NDArray[np.float_], max_crosstalk: float, pass_band_start: int, pass_band_end: int
 ) -> tuple[np.float_, bool]:
@@ -316,7 +316,25 @@ def _evaluate_cross_talk(
     if a or b:
         return (np.float_(0),False)
     return (1 / (1 + penalty), True)
-
+"""
+def _evaluate_cross_talk(
+     y: npt.NDArray[np.float_], max_crosstalk: float, pass_band_start: int, pass_band_end: int
+) -> tuple[np.float_, bool]:
+    start = y[:pass_band_start]
+    end = y[pass_band_end:]
+    maxid_start = np.max(start)
+    maxid_end = np.max(end)
+    excess_start = np.maximum(maxid_start - max_crosstalk,0)
+    excess_end = np.maximum(maxid_end - max_crosstalk,0)
+    total_excess = excess_start + excess_end 
+    if total_excess > 0:
+        # 例えば、total_excess がある程度の値を超えたら E=0 とする
+        # あるいは、r_max のように許容超過量を設定する
+        E = 1.0 / (1.0 + total_excess * 10) # 10 はペナルティの重み付け係数、調整が必要
+        return (E, False) # 超過があればFalse
+    else:
+        E = 1.0
+        return(E, True)
 
 def _evaluate_shape_factor(
     x: npt.NDArray[np.float_], y: npt.NDArray[np.float_], start: int, end: int
