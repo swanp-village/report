@@ -331,10 +331,12 @@ def _evaluate_cross_talk(
         # 例えば、total_excess がある程度の値を超えたら E=0 とする
         # あるいは、r_max のように許容超過量を設定する
         E = np.float_(np.exp(-total_excess))
-        return (E, False) # 超過があればFalse
+    return (E, True) # 超過があればFalse
+    """
     else:
         E = 1.0
         return(E, True)
+    """
 
 def _evaluate_shape_factor(
     x: npt.NDArray[np.float_], y: npt.NDArray[np.float_], start: int, end: int
