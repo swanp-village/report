@@ -330,7 +330,7 @@ def _evaluate_cross_talk(
     if total_excess > 0:
         # 例えば、total_excess がある程度の値を超えたら E=0 とする
         # あるいは、r_max のように許容超過量を設定する
-        E = 1.0 / (1.0 + total_excess * 10) # 10 はペナルティの重み付け係数、調整が必要
+        E = 1.0 / (1.0 + total_excess) # 10 はペナルティの重み付け係数、調整が必要
         return (E, False) # 超過があればFalse
     else:
         E = 1.0
