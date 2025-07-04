@@ -7,7 +7,7 @@ config = OptimizationConfig(
     n_g=4.4,
     number_of_rings=6,
     center_wavelength=1550e-9,
-    FSR=20e-9,
+    FSR=35e-9,
     length_of_3db_band=1e-9,
     max_crosstalk=-30,
     H_p=-20,
@@ -16,6 +16,6 @@ config = OptimizationConfig(
     r_max=5,
     weight=[1.0, 3.5, 1.0, 5.0, 3.5, 1.0, 1.0, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5],
     min_ring_length=50e-6,
-    number_of_generations=100,
+    number_of_generations=1,
     strategy=[0.03, 0.07, 0.2, 0.7],
 )
