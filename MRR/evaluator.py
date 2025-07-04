@@ -324,6 +324,8 @@ def _evaluate_cross_talk(
     end = y[pass_band_end:]
     maxid_start = np.max(start)
     maxid_end = np.max(end)
+    print(maxid_start)
+    print(maxid_end)
     excess_start = np.maximum(maxid_start - max_crosstalk,0)
     excess_end = np.maximum(maxid_end - max_crosstalk,0)
     total_excess = excess_start + excess_end 
