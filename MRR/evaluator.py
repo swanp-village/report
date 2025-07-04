@@ -327,10 +327,11 @@ def _evaluate_cross_talk(
     excess_start = np.maximum(maxid_start - max_crosstalk,0)
     excess_end = np.maximum(maxid_end - max_crosstalk,0)
     total_excess = excess_start + excess_end 
+    penalty = 5
     if total_excess > 0:
         # 例えば、total_excess がある程度の値を超えたら E=0 とする
         # あるいは、r_max のように許容超過量を設定する
-        E = 1.0 / (1.0 + total_excess) # 10 はペナルティの重み付け係数、調整が必要
+        E = np.float_(np.exp(-penalty * total_excess))
         return (E, False) # 超過があればFalse
     else:
         E = 1.0
