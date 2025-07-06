@@ -332,7 +332,7 @@ def _evaluate_cross_talk(
     if total_excess > 0:
         # 例えば、total_excess がある程度の値を超えたら E=0 とする
         # あるいは、r_max のように許容超過量を設定する
-        E = 1 / (1 + total_excess)
+        E = np.float_(np.exp(-total_excess))
     return (E, True) # 超過があればFalse
 
 
