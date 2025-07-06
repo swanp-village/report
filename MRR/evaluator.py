@@ -334,10 +334,7 @@ def _evaluate_cross_talk(
         # あるいは、r_max のように許容超過量を設定する
         E = 1 / (1 + total_excess)
     return (E, True) # 超過があればFalse
-    
-    else:
-        E = 1.0
-        return(E, True)
+
 
 
 def _evaluate_shape_factor(
