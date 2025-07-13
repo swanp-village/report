@@ -74,7 +74,7 @@ class OptimizeKParams:
     H_i: float
     r_max: float
     weight: list[float]
-"""
+
 normal_evaluations = []
 perturbed_evaluations = []
 def combined_evaluation(K: npt.NDArray[np.float_], params: OptimizeKParams) -> float:
@@ -109,7 +109,7 @@ def combined_evaluation(K: npt.NDArray[np.float_], params: OptimizeKParams) -> f
     total_score = E_optimal + (delta_E_positive + delta_E_negative) / 2
 
     return total_score
-"""
+
 #CMA-ES動作コード
 def cma_run(initial, bounds_array, popsize, sigma, generations, params):
     optimizer=CMA(
@@ -125,7 +125,7 @@ def cma_run(initial, bounds_array, popsize, sigma, generations, params):
         for _ in range(popsize):
             # Ask a parameter
             x=optimizer.ask()
-            value = optimize_K_func(x, params)
+            value = optimize_perturbed_K_func(x, params)
             solutions.append((x,value))
             if value < best_fitness :
                 best_fitness = value
@@ -145,7 +145,7 @@ def optimize_K(
     bounds = [(1e-12, eta) for _ in range(number_of_rings + 1)]
     bounds_array=np.array(bounds) 
     popsize = 4 + math.floor(3 * math.log(number_of_rings+1)) + 8
-    sigma = 0.1
+    sigma = 0.3
     generations = 500
     num_starts = 6
     initials = [rng.uniform(1e-12, eta, size=(number_of_rings + 1,))
@@ -316,8 +316,8 @@ def optimize(
                 number_of_rings=number_of_rings,
                 rng=rng,
             )
-        #N = [78,78,78,117,117,117] #6th
-        N = [88,88,110,110,110,110]
+        N = [78,78,78,117,117,117] #6th
+        #N = [88,88,110,110,110,110]
         #N = [110,110,88,88,88,88,110,110]
         #N = [78,78,78,468,468,117,117,117] #8th
         #N = [117,117,117,156,156,156,117,117,156,156] #10th
@@ -482,7 +482,7 @@ def optimize_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams) -> np.fl
         ignore_binary_evaluation=False,
     )
     #print(f"Fitness value: {fitness}")
-"""
+
 def optimize_perturbed_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams) -> tuple[float, float]:
 
     
@@ -558,5 +558,4 @@ def optimize_perturbed_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams
  
 
     return E_positive, E_negative
-"""
 
