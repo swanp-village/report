@@ -223,7 +223,7 @@ def optimize_K(
     bounds = [(1e-12, eta) for _ in range(number_of_rings + 1)]
 
     result = differential_evolution(
-        optimize_perturbed_K_func,
+        combined_evaluation,
         bounds,
         args=(params,),
         strategy="currenttobest1bin",
