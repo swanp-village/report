@@ -125,7 +125,7 @@ def cma_run(initial, bounds_array, popsize, sigma, generations, params):
         for _ in range(popsize):
             # Ask a parameter
             x=optimizer.ask()
-            value = optimize_perturbed_K_func(x, params)
+            value = combined_evaluation(x, params)
             solutions.append((x,value))
             if value < best_fitness :
                 best_fitness = value
@@ -134,7 +134,7 @@ def cma_run(initial, bounds_array, popsize, sigma, generations, params):
         optimizer.tell(solutions)
             
     return best_solution,best_fitness
-"""
+
 def optimize_K(
     eta: float,
     number_of_rings: int,
@@ -164,7 +164,7 @@ def optimize_K(
     K: npt.NDArray[np.float_] = best_solution
     return K,E
 
-
+"""
 #一般設計
 def optimize_K(
     eta: float,
@@ -212,7 +212,7 @@ def optimize_K(
     
 
     return K,E
-"""
+
 #差分進化法
 def optimize_K(
     eta: float,
@@ -237,7 +237,7 @@ def optimize_K(
     K: npt.NDArray[np.float_] = result.x
 
     return K, E
-
+"""
 
 def optimize(
     n_g: float,
