@@ -159,7 +159,18 @@ def _evaluate_stop_band(
 
     return (E, True)
 
-
+def _evaluate_insertion_loss(
+    x: npt.NDArray[np.float_],
+    y: npt.NDArray[np.float_],
+    H_i: float,
+    center_wavelength: float,
+) -> tuple[np.float_, bool]:
+    insertion_loss = y[x == center_wavelength]
+    if insertion_loss[0] < H_i:
+        return (np.float_(0), False)
+    E = 1 - insertion_loss[0] / H_i
+    return (E, True)
+"""
 def _evaluate_insertion_loss(
     x: npt.NDArray[np.float_],
     y: npt.NDArray[np.float_],
@@ -180,7 +191,7 @@ def _evaluate_insertion_loss(
         E = 1 - insertion_loss[0] / H_i
 
     return (E, True)
-
+"""
 
 def _evaluate_3db_band(
     x: npt.NDArray[np.float_], y: npt.NDArray[np.float_], length_of_3db_band: float, start: int, end: int
