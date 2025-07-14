@@ -19,6 +19,8 @@ from MRR.transfer_function import simulate_transfer_function
 from scipy.stats.qmc import LatinHypercube
 from concurrent.futures import ProcessPoolExecutor
 import numpy as np
+import matplotlib
+matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 
 
