@@ -60,7 +60,7 @@ def simulate_MRR(
     label: str = "",
     skip_graph: bool = False,
     skip_evaluation: bool = False,
-    ignore_binary_evaluation: bool = True,
+    ignore_binary_evaluation: bool = False,
 ) -> SimulatorResult:
     #N = calculate_N(center_wavelength=center_wavelength, n_eff=n_eff, L=L)
     N = [78,78,78,117,117,117]
@@ -75,11 +75,10 @@ def simulate_MRR(
         wavelength=x, L=L, K=K, alpha=alpha, eta=eta, n_eff=n_eff, n_g=n_g, center_wavelength=center_wavelength
     )
    
-    #if skip_evaluation:
-        #evaluation_result = np.float_(0)
-  
-    
-    evaluation_result = evaluate_band(
+    if skip_evaluation:
+        evaluation_result = np.float_(0)
+    else:
+        evaluation_result = evaluate_band(
             x=x,
             y=y,
             center_wavelength=center_wavelength,
@@ -91,7 +90,8 @@ def simulate_MRR(
             r_max=r_max,
             weight=weight,
             ignore_binary_evaluation=ignore_binary_evaluation,
-    )
+        )
+        
       
     accumulator.logger.print_parameters(K=K, L=L, N=N, FSR=practical_FSR, E=evaluation_result, format=format)
 
