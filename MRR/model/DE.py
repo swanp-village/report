@@ -19,7 +19,7 @@ from MRR.transfer_function import simulate_transfer_function
 from scipy.stats.qmc import LatinHypercube
 from concurrent.futures import ProcessPoolExecutor
 import numpy as np
-
+import matplotlib.pyplot as plt
 
 
 
@@ -445,6 +445,13 @@ def optimize(
         graph.create()
         graph.plot(x, y)
         graph.show(logger.generate_image_path())
+        plt.figure()
+        plt.plot(x, y)
+        plt.title("Transfer Function")
+        plt.xlabel("Wavelength (nm)")
+        plt.ylabel("Transmittance (dB)")
+        plt.grid(True)
+        plt.show()
 
 
 def optimize_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams) -> np.float_:
