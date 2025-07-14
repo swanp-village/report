@@ -165,12 +165,32 @@ def _evaluate_insertion_loss(
     H_i: float,
     center_wavelength: float,
 ) -> tuple[np.float_, bool]:
+    # center_wavelength に最も近い x のインデックスを探す
+    idx = np.argmin(np.abs(x - center_wavelength))
+    insertion_loss_at_center = y[idx] # これで単一の数値が得られる
+
+    # insertion_loss_at_center が単一の値なので、サイズチェックは不要
+
+    if insertion_loss_at_center < H_i:
+        # ペナルティ計算を連続化
+        E = H_i / (insertion_loss_at_center + 1e-6)
+    else:
+        E = 1 - insertion_loss_at_center / H_i
+
+    return (E, True)
+"""
+def _evaluate_insertion_loss(
+    x: npt.NDArray[np.float_],
+    y: npt.NDArray[np.float_],
+    H_i: float,
+    center_wavelength: float,
+) -> tuple[np.float_, bool]:
     insertion_loss = y[x == center_wavelength]
     if insertion_loss[0] < H_i:
         return (np.float_(0), False)
     E = 1 - insertion_loss[0] / H_i
     return (E, True)
-"""
+
 def _evaluate_insertion_loss(
     x: npt.NDArray[np.float_],
     y: npt.NDArray[np.float_],
