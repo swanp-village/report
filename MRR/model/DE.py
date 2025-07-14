@@ -74,7 +74,7 @@ class OptimizeKParams:
     H_i: float
     r_max: float
     weight: list[float]
-
+"""
 normal_evaluations = []
 perturbed_evaluations = []
 def combined_evaluation(K: npt.NDArray[np.float_], params: OptimizeKParams) -> float:
@@ -109,7 +109,7 @@ def combined_evaluation(K: npt.NDArray[np.float_], params: OptimizeKParams) -> f
     total_score = E_optimal + (delta_E_positive + delta_E_negative) / 2
 
     return total_score
-
+"""
 #CMA-ES動作コード
 def cma_run(initial, bounds_array, popsize, sigma, generations, params):
     optimizer=CMA(
@@ -125,7 +125,7 @@ def cma_run(initial, bounds_array, popsize, sigma, generations, params):
         for _ in range(popsize):
             # Ask a parameter
             x=optimizer.ask()
-            value = combined_evaluation(x, params)
+            value = optimize_K_func(x, params)
             solutions.append((x,value))
             if value < best_fitness :
                 best_fitness = value
@@ -482,7 +482,7 @@ def optimize_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams) -> np.fl
         ignore_binary_evaluation=False,
     )
     #print(f"Fitness value: {fitness}")
-
+"""
 def optimize_perturbed_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams) -> tuple[float, float]:
 
     
@@ -558,4 +558,5 @@ def optimize_perturbed_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams
  
 
     return E_positive, E_negative
+    """
 
