@@ -47,12 +47,12 @@ def evaluate_band(
         return E_c
     E = E_c * E_b
     # 各評価関数の結果を表示
-    """
+    
     print(E_b)
     print(E_c)
     for i, res in enumerate(result):
         print(f"評価関数 {i+1}: 値 = {res[0]}, バイナリ評価 = {res[1]}")
-    """
+    
     
     return E
     
@@ -179,7 +179,7 @@ def _evaluate_insertion_loss(
         E = 1 - insertion_loss_at_center / H_i
 
     return (E, True)
-"""
+
 def _evaluate_insertion_loss(
     x: npt.NDArray[np.float_],
     y: npt.NDArray[np.float_],
@@ -208,7 +208,7 @@ def _evaluate_insertion_loss(
         E = 1 - insertion_loss[0] / H_i
 
     return (E, True)
-"""
+
 
 def _evaluate_3db_band(
     x: npt.NDArray[np.float_], y: npt.NDArray[np.float_], length_of_3db_band: float, start: int, end: int
@@ -227,27 +227,8 @@ def _evaluate_3db_band(
     E = E ** 3
     return (E, True)
     
-#宇田川さんの
-def _evaluate_ripple(
-    x: npt.NDArray[np.float_], y: npt.NDArray[np.float_], r_max: float, start: int, end: int
-) -> tuple[np.float_, bool]:
-    pass_band = y[start:end]
-    index = _get_3db_band(x=x, y=y, start=start, end=end)
-    if index.size <= 1:
-        return (np.float_(0), False)
-    three_db_band = pass_band[index[0] : index[-1]]
-    maxid = argrelmax(three_db_band, order=1)
-    minid = argrelmin(three_db_band, order=1)
-    peak_max = three_db_band[maxid]
-    peak_min = three_db_band[minid]
-    if len(peak_min) == 0:
-        return (1, True)
-    dif = peak_max.max() - peak_min.min()
-    if dif > r_max:
-        return (np.float_(0), False)
-    E = 1 - dif / r_max
-    return (E, True)
-"""
+
+
 #標準偏差型
 def _evaluate_ripple(
     x: npt.NDArray[np.float_], y: npt.NDArray[np.float_], r_max: float, start: int, end: int
@@ -278,7 +259,7 @@ def _evaluate_ripple(
         E = 1 - (std_ripple + range_ripple) / (r_max1 * r_max)
 
     return (np.float_(E), True)
-""" 
+
 def _evaluate_cross_talk(
     y: npt.NDArray[np.float_], max_crosstalk: float, pass_band_start: int, pass_band_end: int
 ) -> tuple[np.float_, bool]:
@@ -293,25 +274,9 @@ def _evaluate_cross_talk(
     if a or b:
         return (np.float_(0), False)
     return (np.float_(0), True)
-"""
-def _evaluate_cross_talk(
-     y: npt.NDArray[np.float_], max_crosstalk: float, pass_band_start: int, pass_band_end: int
-) -> tuple[np.float_, bool]:
-    start = y[:pass_band_start]
-    end = y[pass_band_end:]
-    maxid_start = np.max(start)
-    maxid_end = np.max(end)
-    print(maxid_start)
-    print(maxid_end)
-    excess_start = np.maximum(maxid_start - max_crosstalk,0)
-    excess_end = np.maximum(maxid_end - max_crosstalk,0)
-    total_excess = excess_start + excess_end 
-    if total_excess > 0:
-        # 例えば、total_excess がある程度の値を超えたら E=0 とする
-        # あるいは、r_max のように許容超過量を設定する
-        E = np.float_(np.exp(-total_excess))
-    return (E, True) # 超過があればFalse
-"""
+
+
+
 
 def _evaluate_shape_factor(
     x: npt.NDArray[np.float_], y: npt.NDArray[np.float_], start: int, end: int
