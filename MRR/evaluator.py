@@ -286,9 +286,9 @@ def _evaluate_cross_talk(
     # もしクロストーク領域が空の場合（インデックスがおかしいなど）は、適切なデフォルト値を与える
     max_crosstalk_value = -np.inf # 十分に小さな値で初期化
     if crosstalk_region_left.size > 0:
-        max_crosstalk_value = max(max_crosstalk_value, np.max(crosstalk_region_left))
+        max_crosstalk_value = max(max_crosstalk, np.max(crosstalk_region_left))
     if crosstalk_region_right.size > 0:
-        max_crosstalk_value = max(max_crosstalk_value, np.max(crosstalk_region_right))
+        max_crosstalk_value = max(max_crosstalk, np.max(crosstalk_region_right))
 
     # 目標クロストーク値を超えているかチェック
     # max_crosstalk_value が target_crosstalk_db より「大きい」（-30dBより-20dBの方が大きいので注意）場合
