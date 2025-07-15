@@ -247,6 +247,7 @@ def _evaluate_cross_talk(
     if a or b:
         return (np.float_(0), False)
     return (np.float_(0), True)
+"""
 
 def _evaluate_cross_talk(
     y: npt.NDArray[np.float_], max_crosstalk: float, pass_band_start: int, pass_band_end: int
@@ -261,49 +262,6 @@ def _evaluate_cross_talk(
     excess_end = np.maximum(end_peak - max_crosstalk, 0)
     penalty = np.sum(excess_start) + np.sum(excess_end)
     return (1 / (1 + penalty), True)
-"""
-def _evaluate_cross_talk(
-    y: npt.NDArray[np.float_], target_crosstalk_db: float, pass_band_start_idx: int, pass_band_end_idx: int
-) -> tuple[np.float_, bool]:
-    """
-    クロストーク評価関数 v1: クロストーク領域の最大値を評価し、ペナルティを課す。
-
-    Args:
-        y (npt.NDArray[np.float_]): 透過率のdB値配列。
-        target_crosstalk_db (float): 目標とする最大クロストーク値（dB）。例: -30dB
-        pass_band_start_idx (int): パスバンドの開始インデックス。
-        pass_band_end_idx (int): パスバンドの終了インデックス。
-
-    Returns:
-        tuple[np.float_, bool]: 目的関数値 (0〜1、1が最適)、常にTrue。
-    """
-    
-    # パスバンド外の領域を抽出
-    crosstalk_region_left = y[:pass_band_start_idx]
-    crosstalk_region_right = y[pass_band_end_idx:]
-
-    # クロストーク領域全体の最大値を取得
-    # もしクロストーク領域が空の場合（インデックスがおかしいなど）は、適切なデフォルト値を与える
-    max_crosstalk_value = -np.inf # 十分に小さな値で初期化
-    if crosstalk_region_left.size > 0:
-        max_crosstalk_value = max(max_crosstalk, np.max(crosstalk_region_left))
-    if crosstalk_region_right.size > 0:
-        max_crosstalk_value = max(max_crosstalk, np.max(crosstalk_region_right))
-
-    # 目標クロストーク値を超えているかチェック
-    # max_crosstalk_value が target_crosstalk_db より「大きい」（-30dBより-20dBの方が大きいので注意）場合
-    excess = max_crosstalk_value - target_crosstalk_db
-
-    if excess > 0:
-        # 超過分に応じてペナルティを課す
-        # 例えば、超過分の二乗でペナルティを重くする
-        penalty = excess**2 * 100 # ペナルティの重み（係数）は調整が必要
-        E = 1 / (1 + penalty)
-    else:
-        # 目標クロストーク値をクリアしていればペナルティなし
-        E = 1.0 
-    return(E,True)
-    
 
 
 def _evaluate_shape_factor(
