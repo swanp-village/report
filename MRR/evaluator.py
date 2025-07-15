@@ -302,6 +302,7 @@ def _evaluate_cross_talk(
     else:
         # 目標クロストーク値をクリアしていればペナルティなし
         E = 1.0 
+    return(E,True)
     
 
 
