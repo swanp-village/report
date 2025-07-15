@@ -162,6 +162,8 @@ def cma_run(initial, bounds_array, popsize, sigma, generations, params):
         es.tell(candidates, fitnesses)
         if es.sigma < 0.1:
             es.sigma = 0.1
+        elif es.sigma > 0.71:
+            es.sigma = 0.7
 
         min_fit = min(fitnesses)
         if min_fit < best_fitness:
