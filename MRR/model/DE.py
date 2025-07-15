@@ -160,8 +160,8 @@ def cma_run(initial, bounds_array, popsize, sigma, generations, params):
         candidates = es.ask()
         fitnesses = [optimize_K_func(x, params) for x in candidates]
         es.tell(candidates, fitnesses)
-        if es.sigma < 0.15:
-            es.sigma = 0.15
+        if es.sigma < 0.05:
+            es.sigma = 0.05
         elif es.sigma > 0.71:
             es.sigma = 0.7
 
