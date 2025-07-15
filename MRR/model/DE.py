@@ -22,9 +22,9 @@ import numpy as np
 import matplotlib
 matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
-
-
-
+from cma import CMAEvolutionStrategy
+from typing import Tuple
+import numpy.typing as npt
 
 
 def optimize_L(
@@ -111,8 +111,8 @@ def combined_evaluation(K: npt.NDArray[np.float_], params: OptimizeKParams) -> f
     total_score = E_optimal + (delta_E_positive + delta_E_negative) / 2
 
     return total_score
-"""
-#CMA-ES動作コード
+
+#CMA-ES動作コード_CMA
 def cma_run(initial, bounds_array, popsize, sigma, generations, params):
     optimizer=CMA(
             bounds=bounds_array,
@@ -136,7 +136,41 @@ def cma_run(initial, bounds_array, popsize, sigma, generations, params):
         optimizer.tell(solutions)
             
     return best_solution,best_fitness
+ """   
+#CMA-ES動作コード_pycma
+def cma_run(initial, bounds_array, popsize, sigma, generations, params):
+    # bounds_array: shape (N, 2)
+    lower_bounds = bounds_array[:, 0]
+    upper_bounds = bounds_array[:, 1]
 
+    opts = {
+        'bounds': [lower_bounds, upper_bounds],
+        'popsize': popsize,
+        'verb_log': 0,
+        'verbose': -9,  # suppress internal logs
+    }
+
+    es = CMAEvolutionStrategy(initial, sigma, opts)
+
+    best_solution = None
+    best_fitness = float("inf")
+
+    for generation in range(generations):
+        candidates = es.ask()
+        fitnesses = [optimize_K_func(x, params) for x in candidates]
+        es.tell(candidates, fitnesses)
+
+        min_fit = min(fitnesses)
+        if min_fit < best_fitness:
+            best_fitness = min_fit
+            best_solution = candidates[fitnesses.index(min_fit)]
+
+        # ログ出力（任意）
+        if generation % 50 == 0 or generation == generations - 1:
+            print(f"Gen {generation}: sigma = {es.sigma:.4f}, best_fitness = {best_fitness:.6f}")
+
+    return best_solution, best_fitness
+    
 def optimize_K(
     eta: float,
     number_of_rings: int,
