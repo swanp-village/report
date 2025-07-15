@@ -111,6 +111,39 @@ def combined_evaluation(K: npt.NDArray[np.float_], params: OptimizeKParams) -> f
     total_score = E_optimal + (delta_E_positive + delta_E_negative) / 2
 
     return total_score
+"""
+#CMA-ES動作コード_σアダプティブ
+def cma_run_sigma(initial, bounds_array, popsize, sigma_init, sigma_final, generations, params):
+    best_solution = None
+    best_fitness = float("inf")
+
+    decay_rate = (sigma_final / sigma_init) ** (1 / (generations - 1))
+
+    current_mean = initial.copy()
+
+    for generation in range(generations):
+        sigma = sigma_init * (decay_rate ** generation)
+        
+        optimizer = CMA(mean=current_mean, sigma=sigma, bounds=bounds_array, population_size=popsize)
+
+        solutions = []
+        for _ in range(popsize):
+            x = optimizer.ask()
+            value = optimize_K_func(x, params)
+            solutions.append((x, value))
+
+            if value < best_fitness:
+                best_fitness = value
+                best_solution = x
+
+        optimizer.tell(solutions)
+        current_mean = best_solution  # もしくは optimizer.mean でもOK
+
+        if generation % 50 == 0 or generation == generations - 1:
+            print(f"Gen {generation}: sigma = {sigma:.4f}, best_fitness = {best_fitness:.6f}")
+
+    return best_solution, best_fitness
+"""
 
 #CMA-ES動作コード_CMA
 def cma_run(initial, bounds_array, popsize, sigma, generations, params):
@@ -136,7 +169,7 @@ def cma_run(initial, bounds_array, popsize, sigma, generations, params):
         optimizer.tell(solutions)
             
     return best_solution,best_fitness
- """   
+ 
 #CMA-ES動作コード_pycma
 def cma_run(initial, bounds_array, popsize, sigma, generations, params):
     # bounds_array: shape (N, 2)
@@ -170,7 +203,7 @@ def cma_run(initial, bounds_array, popsize, sigma, generations, params):
             print(f"Gen {generation}: sigma = {es.sigma:.4f}, best_fitness = {best_fitness:.6f}")
 
     return best_solution, best_fitness
-    
+ """   
 def optimize_K(
     eta: float,
     number_of_rings: int,
@@ -188,7 +221,7 @@ def optimize_K(
                 for _ in range(num_starts)]
 
     with ProcessPoolExecutor() as executor:
-        futures = [executor.submit(cma_run, initial, bounds_array, popsize, sigma, generations, params)
+        futures = [executor.submit(cma_run_sigma, initial, bounds_array, popsize, sigma, generations, params)
                    for initial in initials]
 
         results = [f.result() for f in futures]
