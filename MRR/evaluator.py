@@ -248,6 +248,25 @@ def _evaluate_cross_talk(
         return (1 / (1 + penalty), False)
     return (np.float_(1), True)
 """
+def _evaluate_cross_talk(  y: npt.NDArray[np.float_], max_crosstalk: float, pass_band_start: int, pass_band_end: int
+) -> tuple[np.float_, bool]:
+    overall_peak = np.max(y)
+    start = y[:pass_band_start]
+    end = y[pass_band_end:]
+    maxid_start = np.append(0, argrelmax(start))
+    maxid_end = np.append(argrelmax(end), -1)
+    start_peak = start[maxid_start]
+    end_peak = end[maxid_end]
+    excess_start = overall_peak - start_peak
+    excess_end = overall_peak - end_peak
+    penalty = np.sum(excess_start) + np.sum(excess_end)
+    a = np.any(start_peak > max_crosstalk)
+    b = np.any(end_peak > max_crosstalk)
+    if a or b :
+        E = 1 - 1 / penalty
+        return(E,False)
+    else:
+        return(1,True)
 
 def _evaluate_cross_talk(
     y: npt.NDArray[np.float_], max_crosstalk: float, pass_band_start: int, pass_band_end: int
