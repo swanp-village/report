@@ -259,11 +259,15 @@ def _evaluate_cross_talk(  y: npt.NDArray[np.float_], max_crosstalk: float, pass
     end_peak = end[maxid_end]
     excess_start = overall_peak - start_peak
     excess_end = overall_peak - end_peak
-    penalty = np.sum(excess_start) + np.sum(excess_end)
+    score = np.sum(excess_start) + np.sum(excess_end)
     a = np.any(start_peak > max_crosstalk)
     b = np.any(end_peak > max_crosstalk)
     if a or b :
-        E = 1 - 1 / penalty
+        if score <= 0 :
+            E = 0
+        else:
+            normalized_score = np.log(score)
+            E = 1 - np.exp(-normalized_score)
         return(E,False)
     else:
         return(1,True)
