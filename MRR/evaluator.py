@@ -47,12 +47,12 @@ def evaluate_band(
         return E_c
     E = E_c * E_b
     # 各評価関数の結果を表示
-    """
+    
     print(E_b)
     print(E_c)
     for i, res in enumerate(result):
         print(f"評価関数 {i+1}: 値 = {res[0]}, バイナリ評価 = {res[1]}")
-    """
+    
     
     return E
     
@@ -261,12 +261,14 @@ def _evaluate_cross_talk(  y: npt.NDArray[np.float_], max_crosstalk: float, pass
     end_peak_db = np.max(end_peak)
     excess_start = overall_peak - start_peak_db
     excess_end = overall_peak - end_peak_db
+    """
     print("start_peak:" , start_peak_db)
     print("end_peak" , end_peak_db)
     print(excess_start)
     print(excess_end)
+    """
     score = np.sum(excess_start) + np.sum(excess_end)
-    print(score)
+    #print(score)
     a = np.any(start_peak > max_crosstalk)
     b = np.any(end_peak > max_crosstalk)
     if a or b :
