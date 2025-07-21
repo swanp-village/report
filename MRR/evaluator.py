@@ -178,7 +178,7 @@ def _evaluate_insertion_loss(
         E = H_i / (insertion_loss_at_center + 1e-6)
         return(E, False)
     else:
-        E = 1
+        E =  E = 1 - insertion_loss_at_center / H_i
         return (E, True)
 
 
@@ -281,6 +281,31 @@ def _evaluate_cross_talk(  y: npt.NDArray[np.float_], max_crosstalk: float, pass
         return(E,False)
     else:
         return(1,True)
+
+def _evaluate_cross_talk(  y: npt.NDArray[np.float_], max_crosstalk: float, pass_band_start: int, pass_band_end: int
+) -> tuple[np.float_, bool]:
+    overall_peak = np.max(y)
+    start = y[:pass_band_start]
+    end = y[pass_band_end:]
+    maxid_start = np.append(0, argrelmax(start))
+    maxid_end = np.append(argrelmax(end), -1)
+    start_peak = start[maxid_start]
+    end_peak = end[maxid_end]
+    start_peak_db = np.max(start_peak)
+    end_peak_db = np.max(end_peak)
+    excess_start = overall_peak - start_peak_db
+    excess_end = overall_peak - end_peak_db
+    score = np.sum(excess_start) + np.sum(excess_end)
+    a = np.any(start_peak > max_crosstalk)
+    b = np.any(end_peak > max_crosstalk)
+    normalized_score = np.log(score + 1)
+    E = 1 - np.exp(-normalized_score/4)
+    if a or b:
+        return(E, False)
+    else:
+        return(E, True)
+        
+       
 """
 def _evaluate_cross_talk(
     y: npt.NDArray[np.float_], max_crosstalk: float, pass_band_start: int, pass_band_end: int
