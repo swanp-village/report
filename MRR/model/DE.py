@@ -149,7 +149,6 @@ def cma_run(initial, bounds_array, popsize, sigma, generations, params):
         'popsize': popsize,
         'verb_log': 0,
         'verbose': -9,  # suppress internal logs
-        'tolfun': 1e-12,
     }
 
     es = CMAEvolutionStrategy(initial, sigma, opts)
