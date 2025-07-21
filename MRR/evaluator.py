@@ -176,10 +176,10 @@ def _evaluate_insertion_loss(
     if insertion_loss_at_center < H_i:
         # ペナルティ計算を連続化
         E = H_i / (insertion_loss_at_center + 1e-6)
-        return(E, False)
+ 
     else:
         E =  E = 1 - insertion_loss_at_center / H_i
-        return (E, True)
+    return (E, True)
 
 
 
