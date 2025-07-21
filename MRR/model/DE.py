@@ -149,6 +149,7 @@ def cma_run(initial, bounds_array, popsize, sigma, generations, params):
         'popsize': popsize,
         'verb_log': 0,
         'verbose': -9,  # suppress internal logs
+        'tolfun':1e-13,
     }
 
     es = CMAEvolutionStrategy(initial, sigma, opts)
@@ -160,9 +161,11 @@ def cma_run(initial, bounds_array, popsize, sigma, generations, params):
         candidates = es.ask()
         fitnesses = [optimize_K_func(x, params) for x in candidates]
         es.tell(candidates, fitnesses)
+        """
         if es.sigma < 0.1:
             es.sigma = 0.1
-        elif es.sigma > 0.7:
+        """
+        if es.sigma > 0.7:
             es.sigma = 0.7
 
         min_fit = min(fitnesses)
