@@ -160,6 +160,7 @@ def _evaluate_stop_band(
 
     return (E, True)
 
+
 def _evaluate_insertion_loss(
     x: npt.NDArray[np.float_],
     y: npt.NDArray[np.float_],
@@ -175,10 +176,10 @@ def _evaluate_insertion_loss(
     if insertion_loss_at_center < H_i:
         # ペナルティ計算を連続化
         E = H_i / (insertion_loss_at_center + 1e-6)
+        return(E, False)
     else:
-        E = 1 - insertion_loss_at_center / H_i
-
-    return (E, True)
+        E = 1
+        return (E, True)
 
 
 
