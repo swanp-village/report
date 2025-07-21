@@ -149,6 +149,7 @@ def cma_run(initial, bounds_array, popsize, sigma, generations, params):
         'popsize': popsize,
         'verb_log': 0,
         'verbose': -9,  # suppress internal logs
+        'ftol": 1e-12,
     }
 
     es = CMAEvolutionStrategy(initial, sigma, opts)
@@ -174,6 +175,12 @@ def cma_run(initial, bounds_array, popsize, sigma, generations, params):
         if generation % 50 == 0 or generation == generations - 1:
             print(f"Gen {generation}: sigma = {es.sigma:.4f}, best_fitness = {best_fitness:.6f}")
 
+        if es.stop():
+            print(f"Optimization stopped at generation {generation}.")
+            print(f"Stop conditions met: {es.stop()}")
+            break # ループを抜ける
+
+
     return best_solution, best_fitness
   
 def optimize_K(
@@ -187,7 +194,7 @@ def optimize_K(
     bounds_array=np.array(bounds) 
     popsize = 4 + math.floor(3 * math.log(number_of_rings+1)) + 8
     sigma = 0.7
-    generations = 500
+    generations = 1000
     num_starts = 6
     initials = [rng.uniform(1e-12, eta, size=(number_of_rings + 1,))
                 for _ in range(num_starts)]
