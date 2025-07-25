@@ -170,15 +170,10 @@ def _evaluate_insertion_loss(
     # center_wavelength に最も近い x のインデックスを探す
     idx = np.argmin(np.abs(x - center_wavelength))
     insertion_loss_at_center = y[idx] # これで単一の数値が得られる
+    loss_abs = np.abs(insertion_loss_at_center)
+    H_i_abs = np.abs(H_i)
 
-    # insertion_loss_at_center が単一の値なので、サイズチェックは不要
-
-    if insertion_loss_at_center < H_i:
-        # ペナルティ計算を連続化
-        E = H_i / (insertion_loss_at_center + 1e-6)
- 
-    else:
-        E =  E = 1 - insertion_loss_at_center / H_i
+    E = 1 / (1 + np.exp(loss_abs - H_i_abs)
     return (E, True)
 
 
