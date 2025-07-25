@@ -196,7 +196,7 @@ def optimize_K(
     bounds_array=np.array(bounds) 
     popsize = 4 + math.floor(3 * math.log(number_of_rings+1)) + 8
     sigma = 0.7
-    generations = 1000
+    generations = 500
     num_starts = 6
     initials = [rng.uniform(1e-12, eta, size=(number_of_rings + 1,))
                 for _ in range(num_starts)]
@@ -366,8 +366,8 @@ def optimize(
                 number_of_rings=number_of_rings,
                 rng=rng,
             )
-        #N = [78,78,78,117,117,117] #6th
-        N = [88,88,110,110,110,110]
+        N = [78,78,78,117,117,117] #6th
+        #N = [88,88,110,110,110,110]
         #N = [110,110,88,88,88,88,110,110]
         #N = [78,78,78,468,468,117,117,117] #8th
         #N = [117,117,117,156,156,156,117,117,156,156] #10th
