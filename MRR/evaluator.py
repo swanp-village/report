@@ -231,21 +231,7 @@ def _evaluate_ripple(
         E = 1 - (std_ripple + range_ripple) / (r_max1 * r_max)
 
     return (np.float_(E), True)
-"""
-def _evaluate_cross_talk(
-    y: npt.NDArray[np.float_], max_crosstalk: float, pass_band_start: int, pass_band_end: int
-) -> tuple[np.float_, bool]:
-    start = y[:pass_band_start]
-    end = y[pass_band_end:]
-    maxid_start = np.append(0, argrelmax(start))
-    maxid_end = np.append(argrelmax(end), -1)
-    start_peak = start[maxid_start]
-    end_peak = end[maxid_end]
-    a = np.any(start_peak > max_crosstalk)
-    b = np.any(end_peak > max_crosstalk)
-    if a or b:
-        return (1 / (1 + penalty), False)
-    return (np.float_(1), True)
+
 """
 def _evaluate_cross_talk(  y: npt.NDArray[np.float_], max_crosstalk: float, pass_band_start: int, pass_band_end: int
 ) -> tuple[np.float_, bool]:
@@ -260,12 +246,6 @@ def _evaluate_cross_talk(  y: npt.NDArray[np.float_], max_crosstalk: float, pass
     end_peak_db = np.max(end_peak)
     excess_start = overall_peak - start_peak_db
     excess_end = overall_peak - end_peak_db
-    """
-    print("start_peak:" , start_peak_db)
-    print("end_peak" , end_peak_db)
-    print(excess_start)
-    print(excess_end)
-    """
     score = np.sum(excess_start) + np.sum(excess_end)
     #print(score)
     a = np.any(start_peak > max_crosstalk)
@@ -296,7 +276,7 @@ def _evaluate_cross_talk(  y: npt.NDArray[np.float_], max_crosstalk: float, pass
     score = np.sum(excess_start) + np.sum(excess_end)
     a = np.any(start_peak > max_crosstalk)
     b = np.any(end_peak > max_crosstalk)
-    E = 1 / (1 + np.exp(score - 60))
+    E = 1 / (1 + np.exp(score - 50))
     #normalized_score = np.log(score + 1)
     #E = 1 - np.exp(-normalized_score/4)
     if a or b:
@@ -306,26 +286,6 @@ def _evaluate_cross_talk(  y: npt.NDArray[np.float_], max_crosstalk: float, pass
         
        
 
-def _evaluate_cross_talk(
-    y: npt.NDArray[np.float_], max_crosstalk: float, pass_band_start: int, pass_band_end: int
-) -> tuple[np.float_, bool]:
-    start = y[:pass_band_start]
-    end = y[pass_band_end:]
-    maxid_start = np.append(0, argrelmax(start))
-    maxid_end = np.append(argrelmax(end), -1)
-    start_peak = start[maxid_start]
-    end_peak = end[maxid_end]
-    excess_start = np.maximum(start_peak - max_crosstalk, 0)
-    excess_end = np.maximum(end_peak - max_crosstalk, 0)
-    penalty = np.sum(excess_start) + np.sum(excess_end)
-    a = np.any(start_peak > max_crosstalk)
-    b = np.any(end_peak > max_crosstalk)
-    if a or b:
-        return (1 / (1 + penalty), False)
-    else:
-        E = 1
-        return(E,True)
-"""
     
 
 def _evaluate_shape_factor(
