@@ -111,7 +111,7 @@ def combined_evaluation(K: npt.NDArray[np.float_], params: OptimizeKParams) -> f
     total_score = E_optimal + (delta_E_positive + delta_E_negative) / 2
 
     return total_score
-"""
+
 
 #CMA-ES動作コード_CMA
 def cma_run(initial, bounds_array, popsize, sigma, generations, params):
@@ -162,8 +162,8 @@ def cma_run(initial, bounds_array, popsize, sigma, generations, params):
         fitnesses = [optimize_K_func(x, params) for x in candidates]
         es.tell(candidates, fitnesses)
         
-        if es.sigma < 0.05:
-            es.sigma = 0.05
+        if es.sigma < 0.1:
+            es.sigma = 0.1
         
         elif es.sigma > 0.7:
             es.sigma = 0.7
@@ -184,7 +184,7 @@ def cma_run(initial, bounds_array, popsize, sigma, generations, params):
 
 
     return best_solution, best_fitness
-""" 
+
 def optimize_K(
     eta: float,
     number_of_rings: int,
