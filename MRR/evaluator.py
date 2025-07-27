@@ -172,10 +172,7 @@ def _evaluate_insertion_loss(
     insertion_loss_at_center = y[idx] # これで単一の数値が得られる
     loss_abs = np.abs(insertion_loss_at_center)
     H_i_abs = np.abs(H_i)
-    """
-    E = 1 / (1 + np.exp(loss_abs - H_i_abs))
-    """
-    E = 1 / (1 + 0.1 * loss_abs)
+    E = 1 / (1 + 2 * (np.exp(loss_abs - H_i_abs)))
     if insertion_loss_at_center < H_i:
         return(E, False)
     else:
