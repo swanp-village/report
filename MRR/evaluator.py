@@ -175,7 +175,7 @@ def _evaluate_insertion_loss(
     """
     E = 1 / (1 + np.exp(loss_abs - H_i_abs))
     """
-    E = 1 / (1 + loss_abs)
+    E = 1 / (1 + 0.1 * loss_abs)
     if insertion_loss_at_center < H_i:
         return(E, False)
     else:
