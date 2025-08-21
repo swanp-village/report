@@ -137,7 +137,7 @@ def cma_run(initial, bounds_array, popsize, sigma, generations, params):
         optimizer.tell(solutions)
             
     return best_solution,best_fitness
-
+"""
 #CMA-ES動作コード_pycma
 def cma_run(initial, bounds_array, popsize, sigma, generations, params):
     # bounds_array: shape (N, 2)
@@ -213,7 +213,7 @@ def optimize_K(
     E: float = -best_fitness
     K: npt.NDArray[np.float_] = best_solution
     return K,E
-
+"""
 
 #一般設計
 def optimize_K(
@@ -263,7 +263,7 @@ def optimize_K(
     
 
     return K,E
-"""
+
 #差分進化法
 def optimize_K(
     eta: float,
@@ -288,7 +288,7 @@ def optimize_K(
     K: npt.NDArray[np.float_] = result.x
 
     return K, E
-
+"""
 
 def optimize(
     n_g: float,
