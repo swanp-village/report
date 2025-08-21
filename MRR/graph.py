@@ -52,7 +52,7 @@ class Graph:
             self.ax.xaxis.set_minor_locator(MultipleLocator(0.5))
             self.ax.yaxis.set_major_locator(MultipleLocator(2))
             """
-            self.ax.set_xlim([1500, 1560])
+            self.ax.set_xlim([1540, 1560])
             self.ax.xaxis.set_major_formatter(FormatStrFormatter("%d"))
             self.ax.xaxis.set_minor_formatter(FormatStrFormatter("%d"))
             self.ax.xaxis.set_major_locator(AutoLocator())
