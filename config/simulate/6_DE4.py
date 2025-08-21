@@ -24,6 +24,6 @@ config = {
     "n_g": 4.4,
     "center_wavelength": 1.55e-06,
     "label":"Multi_CMA_ES",
-    "lambda_limit": np.arange(1510e-9, 1560e-9, 1e-12)
+    "lambda_limit": np.arange(1500e-9, 1560e-9, 1e-12)
 
 }
