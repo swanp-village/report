@@ -225,7 +225,7 @@ def _evaluate_ripple(
 
     return (np.float_(E), True)
 
-
+"""
 def _evaluate_cross_talk(  y: npt.NDArray[np.float_], max_crosstalk: float, pass_band_start: int, pass_band_end: int
 ) -> tuple[np.float_, bool]:
     overall_peak = np.max(y)
@@ -277,7 +277,7 @@ def _evaluate_cross_talk(  y: npt.NDArray[np.float_], max_crosstalk: float, pass
         return(E, False)
     else:
         return(E, True)
- """       
+ 
        
 
     
