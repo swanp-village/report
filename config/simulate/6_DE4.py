@@ -23,7 +23,7 @@ config = {
     "n_eff": 2.2,
     "n_g": 4.4,
     "center_wavelength": 1.55e-06,
-    "label":"Multi_CMA_ES",
+    "label":"after",
     "lambda_limit": np.arange(1500e-9, 1560e-9, 1e-12)
 
 }
