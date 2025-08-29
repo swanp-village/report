@@ -112,31 +112,103 @@ def combined_evaluation(K: npt.NDArray[np.float_], params: OptimizeKParams) -> f
 
     return total_score
 
+"""
+# ===== IR（再分布）用の関数 =====
+def differential_evolution_redistribute(pop, F=0.5, CR=0.9, rng=np.random):
+    """DE風の個体再分布: popから新しい候補を生成"""
+    n = len(pop)
+    dim = len(pop[0])
+    new_pop = []
+    for i in range(n):
+        a, b, c = rng.choice(n, 3, replace=False)
+        mutant = pop[a] + F * (pop[b] - pop[c])
+        cross = rng.random(dim) < CR
+        if not np.any(cross):
+            cross[rng.integers(0, dim)] = True
+        trial = np.where(cross, mutant, pop[i])
+        new_pop.append(trial)
+    return new_pop
 
-#CMA-ES動作コード_CMA
-def cma_run(initial, bounds_array, popsize, sigma, generations, params):
-    optimizer=CMA(
-            bounds=bounds_array,
-            mean=initial,
-            sigma=sigma,
-            population_size=popsize
-        )
+
+# ===== CMA-ES 実行（IR組込み） =====
+def cma_run_ir(initial, bounds_array, popsize, sigma, generations, params, rng=np.random):
+    lower_bounds = bounds_array[:, 0]
+    upper_bounds = bounds_array[:, 1]
+
+    opts = {
+        'bounds': [lower_bounds, upper_bounds],
+        'popsize': popsize,
+        'verb_log': 0,
+        'verbose': -9,
+        'tolfun': 1e-13,
+    }
+
+    es = CMAEvolutionStrategy(initial, sigma, opts)
+
     best_solution = None
     best_fitness = float("inf")
+    no_improve_count = 0
+    stagnation_threshold = 40  # 世代数しきい値
+
     for generation in range(generations):
-        solutions = []
-        for _ in range(popsize):
-            # Ask a parameter
-            x=optimizer.ask()
-            value = optimize_K_func(x, params)
-            solutions.append((x,value))
-            if value < best_fitness :
-                best_fitness = value
-                best_solution = x 
-       
-        optimizer.tell(solutions)
-            
-    return best_solution,best_fitness
+        candidates = es.ask()
+        fitnesses = [optimize_K_func(x, params) for x in candidates]
+        es.tell(candidates, fitnesses)
+
+        # ベスト更新チェック
+        min_fit = min(fitnesses)
+        if min_fit < best_fitness - 1e-12:  # わずかでも改善
+            best_fitness = min_fit
+            best_solution = candidates[fitnesses.index(min_fit)]
+            no_improve_count = 0
+        else:
+            no_improve_count += 1
+
+        # === IR処理（停滞時に多様性回復） ===
+        if no_improve_count >= stagnation_threshold:
+            new_candidates = differential_evolution_redistribute(
+                np.array(candidates), rng=rng
+            )
+            new_candidates = np.clip(new_candidates, lower_bounds, upper_bounds)
+            new_fits = [optimize_K_func(x, params) for x in new_candidates]
+            es.tell(new_candidates, new_fits)
+            no_improve_count = 0
+            print(f"[IR] Redistribution triggered at generation {generation}")
+
+        # ログ出力（任意）
+        if generation % 50 == 0 or generation == generations - 1:
+            print(f"Gen {generation}: best_fitness = {best_fitness:.6f}")
+
+        if es.stop():
+            print(f"Optimization stopped at generation {generation}.")
+            print(f"Stop conditions met: {es.stop()}")
+            break
+
+    return best_solution, best_fitness
+
+
+# ===== 上位ラッパ関数 =====
+def optimize_K(
+    eta: float,
+    number_of_rings: int,
+    rng: np.random.Generator,
+    params,
+) -> tuple[npt.NDArray[np.float_], float]:
+    bounds = [(1e-12, eta) for _ in range(number_of_rings + 1)]
+    bounds_array = np.array(bounds)
+    popsize = 4 + math.floor(3 * math.log(number_of_rings + 1)) + 8
+    sigma = 0.3
+    generations = 500
+
+    # 初期点（単発）
+    initial = rng.uniform(1e-12, eta, size=(number_of_rings + 1,))
+
+    # IR-CMA-ES 実行
+    best_solution, best_fitness = cma_run_ir(initial, bounds_array, popsize, sigma, generations, params, rng)
+
+    E: float = -best_fitness
+    K: npt.NDArray[np.float_] = best_solution
+    return K, E
 """
 #CMA-ES動作コード_pycma
 def cma_run(initial, bounds_array, popsize, sigma, generations, params):
@@ -184,7 +256,7 @@ def cma_run(initial, bounds_array, popsize, sigma, generations, params):
 
 
     return best_solution, best_fitness
-
+    
 def optimize_K(
     eta: float,
     number_of_rings: int,
@@ -213,7 +285,7 @@ def optimize_K(
     E: float = -best_fitness
     K: npt.NDArray[np.float_] = best_solution
     return K,E
-"""
+
 
 #一般設計
 def optimize_K(
@@ -231,9 +303,6 @@ def optimize_K(
     sigma = 0.1
     #sigma = 0.07 #誤差検討用σ
     generations = 500
-
-
-
 
     optimizer=CMA(
         bounds=bounds_array,
