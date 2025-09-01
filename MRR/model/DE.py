@@ -189,7 +189,7 @@ def optimize_K(
     E: float = -best_fitness
     K: npt.NDArray[np.float_] = best_solution
     return K,E
-"""
+
 
 #一般設計
 def optimize_K(
@@ -236,7 +236,7 @@ def optimize_K(
     
 
     return K,E
-"""
+
 #差分進化法
 def optimize_K(
     eta: float,
@@ -262,6 +262,40 @@ def optimize_K(
 
     return K, E
 """
+
+def optimize_K(
+    eta: float,
+    number_of_rings: int,
+    rng: np.random.Generator,
+    params: OptimizeKParams,
+    num_start: int = 6
+) -> tuple[npt.NDArray[np.float_], float]:
+    
+    # 初期解
+    initial = np.random.uniform(1e-12, eta, size=(number_of_rings+1,))
+    sigma = 0.3
+    popsize = 4 + math.floor(3 * math.log(number_of_rings+1)) + 8
+    generations = 500
+    
+    # CMA-ES のセットアップ
+    es = cma.CMAEvolutionStrategy(initial, sigma, {
+        'bounds': [1e-12, eta],
+        'popsize': popsize,
+        'maxiter': generations,
+    })
+    
+    while not es.stop():
+        solutions = es.ask()
+        values = [optimize_K_func(x, params) for x in solutions]
+        es.tell(solutions, values)
+        es.disp()
+    
+    best_solution, best_fitness = es.result.xbest, es.result.fbest
+    
+    E: float = -best_fitness
+    K: npt.NDArray[np.float_] = best_solution
+    
+    return K, E
 
 def optimize(
     n_g: float,
