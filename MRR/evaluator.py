@@ -211,13 +211,13 @@ def _evaluate_ripple(
 
     n = index.size
     band = pass_band[index]
-    """
+    
     if n > 10:  # 十分な点数あるとき
         central_index = index[int(0.1 * n) : int(0.9 * n)]
         three_db_band = pass_band[central_index]
     else:
         three_db_band = pass_band[index]  # 点数少ない時はそのまま使う
-    
+    """
     band = pass_band[index]    
     lo, hi = np.percentile(band, [5, 95])
     band = band[(band >= lo) & (band <= hi)]
@@ -233,8 +233,8 @@ def _evaluate_ripple(
     else:
         range_ripple = band[peaks].max() - band[valleys].min()
     """
-    std_ripple = np.std(band)
-    range_ripple = band.max() - band.min()
+    std_ripple = np.std(three_pass_band)
+    range_ripple = three_pass_band.max() - three_pass_band.min()
     r_max1 = 1.0
 
     if std_ripple > r_max1 or range_ripple > r_max:
