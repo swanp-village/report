@@ -223,7 +223,7 @@ def _evaluate_ripple(
     band = band[(band >= lo) & (band <= hi)]
     if band.size == 0:  # 万が一全部落ちた場合の保険
         return (np.float_(0), False)
-    """
+    
     peaks, _ = signal.find_peaks(band)
     valleys, _ = signal.find_peaks(-band)
 
@@ -232,14 +232,15 @@ def _evaluate_ripple(
         range_ripple = band.max() - band.min()
     else:
         range_ripple = band[peaks].max() - band[valleys].min()
+    """
     std_ripple = np.std(band)
-    #range_ripple = band.max() - band.min()
+    range_ripple = band.max() - band.min()
     r_max1 = 1.0
 
     if std_ripple > r_max1 or range_ripple > r_max:
         E = 0
     else:
-        E = 1 - (1.5 * std_ripple + 0.5 * range_ripple) / (r_max1 * r_max)
+        E = 1 - (std_ripple + range_ripple) / (r_max1 * r_max)
 
     return (np.float_(E), True)
 
