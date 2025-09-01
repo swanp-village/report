@@ -112,7 +112,7 @@ def combined_evaluation(K: npt.NDArray[np.float_], params: OptimizeKParams) -> f
 
     return total_score
 
-"""
+
 
 #CMA-ES動作コード_pycma
 def cma_run(initial, bounds_array, popsize, sigma, generations, params):
@@ -201,10 +201,10 @@ def optimize_K(
 ) -> tuple[npt.NDArray[np.float_], float]:
     bounds = [(1e-12, eta) for _ in range(number_of_rings + 1)]
     bounds_array=np.array(bounds) 
-    #initial=np.random.uniform(1e-12, eta, size=(number_of_rings+1,))
-    initial = np.array([0.12484643296226677, 0.036710779261270976, 0.051774287018901466, 0.05316126701931484, 0.06599615182916485, 0.12140802936347012, 0.6007128349784299])
+    initial=np.random.uniform(1e-12, eta, size=(number_of_rings+1,))
+    #initial = np.array([0.12484643296226677, 0.036710779261270976, 0.051774287018901466, 0.05316126701931484, 0.06599615182916485, 0.12140802936347012, 0.6007128349784299])
     popsize = 4 + math.floor(3 * math.log(number_of_rings+1)) + 8
-    sigma = 0.1
+    sigma = 0.3
     #sigma = 0.07 #誤差検討用σ
     generations = 500
 
@@ -236,7 +236,7 @@ def optimize_K(
     
 
     return K,E
-
+"""
 #差分進化法
 def optimize_K(
     eta: float,
