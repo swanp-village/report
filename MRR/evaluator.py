@@ -233,8 +233,8 @@ def _evaluate_ripple(
     else:
         range_ripple = band[peaks].max() - band[valleys].min()
     """
-    std_ripple = np.std(three_pass_band)
-    range_ripple = three_pass_band.max() - three_pass_band.min()
+    std_ripple = np.std(three_db_band)
+    range_ripple = three_db_band.max() - three_db_band.min()
     r_max1 = 1.0
 
     if std_ripple > r_max1 or range_ripple > r_max:
