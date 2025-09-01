@@ -216,7 +216,7 @@ def _evaluate_ripple(
     else:
         three_db_band = pass_band[index]  # 点数少ない時はそのまま使う
     """
-        
+    band = pass_band[index]    
     lo, hi = np.percentile(band, [5, 95])
     band = band[(band >= lo) & (band <= hi)]
     if band.size == 0:  # 万が一全部落ちた場合の保険
