@@ -224,8 +224,8 @@ def _evaluate_ripple(
     if band.size == 0:  # 万が一全部落ちた場合の保険
         return (np.float_(0), False)
     """
-    peaks = signal.find_peaks(band)
-    valleys = signal.find_peaks(-band)
+    peaks, _ = signal.find_peaks(band)
+    valleys, _ = signal.find_peaks(-band)
 
     if peaks.size == 0 or valleys.size == 0:
         # 極大極小が取れなかった場合は従来通り max-min
