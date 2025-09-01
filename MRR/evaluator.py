@@ -222,8 +222,8 @@ def _evaluate_ripple(
     if band.size == 0:  # 万が一全部落ちた場合の保険
         return (np.float_(0), False)
     
-    std_ripple = np.std(three_db_band)
-    range_ripple = three_db_band.max() - three_db_band.min()
+    std_ripple = np.std(band)
+    range_ripple = band.max() - band.min()
     r_max1 = 1.0
 
     if std_ripple > r_max1 or range_ripple > r_max:
