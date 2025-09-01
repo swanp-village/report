@@ -2,6 +2,7 @@
 import numpy as np
 import numpy.typing as npt
 from scipy.signal import argrelmax, argrelmin
+import scipy.signal as signal
 
 
 def evaluate_band(
@@ -223,8 +224,16 @@ def _evaluate_ripple(
     if band.size == 0:  # 万が一全部落ちた場合の保険
         return (np.float_(0), False)
     """
+    peaks = signal.find_peaks(band)
+    valleys = signal.find_peaks(-band)
+
+    if peaks.size == 0 or valleys.size == 0:
+        # 極大極小が取れなかった場合は従来通り max-min
+        range_ripple = band.max() - band.min()
+    else:
+        range_ripple = band[peaks].max() - band[valleys].min()
     std_ripple = np.std(band)
-    range_ripple = band.max() - band.min()
+    #range_ripple = band.max() - band.min()
     r_max1 = 1.0
 
     if std_ripple > r_max1 or range_ripple > r_max:
