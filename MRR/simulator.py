@@ -4,7 +4,7 @@ import numpy as np
 import numpy.typing as npt
 from scipy.stats import norm
 
-from MRR.evaluator import evaluate_band, _evaluate_pass_band,_evaluate_stop_band,_evaluate_insertion_loss
+from MRR.evaluator import evaluate_band
 from MRR.graph import Graph
 from MRR.logger import Logger
 from MRR.mymath import lcm
@@ -93,17 +93,6 @@ def simulate_MRR(
             ignore_binary_evaluation=ignore_binary_evaluation,
     )
    
-    _evaluate_pass_band(x=x, y=y, H_p=H_p, start=start, end=end)
-    _evaluate_stop_band(x=x, y=y, H_p=H_p, H_s=H_s, start=start, end=end)
-    _evaluate_insertion_loss(x=x, y=y, H_i=H_i, center_wavelength=center_wavelength)
-    _evaluate_3db_band(x=x, y=y, length_of_3db_band=length_of_3db_band, start=start, end=end)
-    _evaluate_ripple(x=x, y=y, r_max=r_max, start=start, end=end)
-    _evaluate_cross_talk(y=y, max_crosstalk=max_crosstalk, pass_band_start=start, pass_band_end=end)
-    _evaluate_shape_factor(x=x, y=y, start=start, end=end)
-    print(_evaluate_pass_band)
-    print(_evaluate_stop_band)
-    
-        
       
     accumulator.logger.print_parameters(K=K, L=L, N=N, FSR=practical_FSR, E=evaluation_result, format=format)
 
