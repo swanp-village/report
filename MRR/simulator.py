@@ -9,6 +9,7 @@ from MRR.graph import Graph
 from MRR.logger import Logger
 from MRR.mymath import lcm
 from MRR.transfer_function import simulate_transfer_function
+import evaluator
 
 
 
