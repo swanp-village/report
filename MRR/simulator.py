@@ -4,7 +4,7 @@ import numpy as np
 import numpy.typing as npt
 from scipy.stats import norm
 
-from MRR.evaluator import evaluate_band
+from MRR.evaluator import evaluate_band, _evaluate_pass_band,_evaluate_stop_band,_evaluate_insertion_loss
 from MRR.graph import Graph
 from MRR.logger import Logger
 from MRR.mymath import lcm
