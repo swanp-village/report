@@ -38,7 +38,7 @@ class Graph:
             self.ax.semilogx(x * 1e9, y, label=label, linestyle="--",color = "orange")
         else:
             # 2本目以降は破線
-            self.ax.semilogx(x * 1e9, y, label=label, linestyle="-",color = "blue")
+            self.ax.semilogx(x * 1e9, y, label=label, linestyle="-",color = "#1f77b4")
         self.plot_count += 1
         
     def show(
