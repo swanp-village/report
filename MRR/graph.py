@@ -17,7 +17,7 @@ class Graph:
 
     def create(self) -> None:
         self.fig, self.ax = plt.subplots(figsize=(8, 6))
-
+"""
     def plot(
         self,
         x: npt.NDArray[np.float_],
@@ -25,7 +25,20 @@ class Graph:
         label: Optional[str] = None,
     ) -> None:
         self.ax.semilogx(x * 1e9, y, label=label)
-
+"""
+    def plot(
+        self,
+        x: npt.NDArray[np.float_],
+        y: npt.NDArray[np.float_],
+        label: Optional[str] = None,
+    ) -> None:
+        if self.plot_count == 0:
+            # 1本目は実線
+            self.ax.semilogx(x * 1e9, y, label=label, linestyle="-")
+        else:
+            # 2本目以降は破線
+            self.ax.semilogx(x * 1e9, y, label=label, linestyle="--")
+        self.plot_count += 1
         
     def show(
         self,
