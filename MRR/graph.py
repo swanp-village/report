@@ -17,7 +17,7 @@ class Graph:
 
     def create(self) -> None:
         self.fig, self.ax = plt.subplots(figsize=(8, 6))
-"""
+    """
     def plot(
         self,
         x: npt.NDArray[np.float_],
@@ -25,7 +25,7 @@ class Graph:
         label: Optional[str] = None,
     ) -> None:
         self.ax.semilogx(x * 1e9, y, label=label)
-"""
+    """
     def plot(
         self,
         x: npt.NDArray[np.float_],
