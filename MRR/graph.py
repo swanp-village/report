@@ -18,7 +18,7 @@ class Graph:
 
     def create(self) -> None:
         self.fig, self.ax = plt.subplots(figsize=(8, 6))
-    """
+    
     def plot(
         self,
         x: npt.NDArray[np.float_],
@@ -40,7 +40,7 @@ class Graph:
             # 2本目以降は破線
             self.ax.semilogx(x * 1e9, y, label=label, linestyle="-",color = "#1f77b4")
         self.plot_count += 1
-        
+    """
     def show(
         self,
         img_path: Path = Path("img/out.pdf"),
