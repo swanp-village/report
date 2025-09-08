@@ -35,10 +35,10 @@ class Graph:
     ) -> None:
         if self.plot_count == 0:
             # 1本目は実線
-            self.ax.semilogx(x * 1e9, y, label=label, linestyle="-")
+            self.ax.semilogx(x * 1e9, y, label=label, linestyle="--",color = "tab.orange")
         else:
             # 2本目以降は破線
-            self.ax.semilogx(x * 1e9, y, label=label, linestyle="--")
+            self.ax.semilogx(x * 1e9, y, label=label, linestyle="-",color = "tab.blue")
         self.plot_count += 1
         
     def show(
