@@ -14,6 +14,7 @@ rc("font", size=16)
 class Graph:
     def __init__(self, is_focus: bool = False):
         self.is_focus = is_focus
+        self.plot_count = 0
 
     def create(self) -> None:
         self.fig, self.ax = plt.subplots(figsize=(8, 6))
