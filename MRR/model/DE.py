@@ -182,6 +182,7 @@ def optimize_K(
                    for initial in initials]
 
         results = [f.result() for f in futures]
+        print(len(results))
         print(results)
 
     # 一番良かったやつを選ぶ
