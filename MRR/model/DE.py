@@ -182,8 +182,8 @@ def optimize_K(
                    for initial in initials]
 
         results = [f.result() for f in futures]
-        print(len(results))
         print(results)
+    print(len(results))
 
     # 一番良かったやつを選ぶ
     best_solution, best_fitness = min(results, key=lambda x: x[1])
