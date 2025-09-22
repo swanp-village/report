@@ -178,7 +178,7 @@ def optimize_K(
     popsize = 4 + math.floor(3 * math.log(number_of_rings+1)) + 8
     sigma = 0.7
     generations = 500
-    num_starts = 7
+    num_starts = 8
     initials = [rng.uniform(1e-12, eta, size=(number_of_rings + 1,))
                 for _ in range(num_starts)]
 
