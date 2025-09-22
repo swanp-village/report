@@ -25,6 +25,7 @@ import matplotlib.pyplot as plt
 from cma import CMAEvolutionStrategy
 from typing import Tuple
 import numpy.typing as npt
+import os
 
 
 def optimize_L(
@@ -168,6 +169,10 @@ def optimize_K(
     params: OptimizeKParams,
     num_start: int = 10
 ) -> tuple[npt.NDArray[np.float_], float]:
+
+    os.environ["OMP_NUM_THREADS"] = "1"
+    os.environ["OPENBLAS_NUM_THREADS"] = "1"
+    os.environ["MKL_NUM_THREADS"] = "1"
     bounds = [(1e-12, eta) for _ in range(number_of_rings + 1)]
     bounds_array=np.array(bounds) 
     popsize = 4 + math.floor(3 * math.log(number_of_rings+1)) + 8
@@ -177,7 +182,7 @@ def optimize_K(
     initials = [rng.uniform(1e-12, eta, size=(number_of_rings + 1,))
                 for _ in range(num_starts)]
 
-    with ProcessPoolExecutor() as executor:
+    with ProcessPoolExecutor(max_workers=20) as executor:
         futures = [executor.submit(cma_run, initial, bounds_array, popsize, sigma, generations, params)
                    for initial in initials]
 
