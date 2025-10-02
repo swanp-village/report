@@ -26,6 +26,8 @@ from cma import CMAEvolutionStrategy
 from typing import Tuple
 import numpy.typing as npt
 import os
+from sklearn.gaussian_process import GaussianProcessRegressor
+from sklearn.gaussian_process.kernels import RBF, ConstantKernel as C
 
 
 def optimize_L(
@@ -77,6 +79,15 @@ class OptimizeKParams:
     H_i: float
     r_max: float
     weight: list[float]
+
+def optimize_K_SAO(
+    eta: float,
+    number_of_rings: int,
+    rng: np.random.Generator,
+    params: OptimizeKParams,
+) -> tuple[npt.NDArray[np.float_], float]:
+    #初期設定
+    
 """
 normal_evaluations = []
 perturbed_evaluations = []
@@ -112,7 +123,7 @@ def combined_evaluation(K: npt.NDArray[np.float_], params: OptimizeKParams) -> f
     total_score = E_optimal + (delta_E_positive + delta_E_negative) / 2
 
     return total_score
-"""
+
 
 
 #CMA-ES動作コード_pycma
@@ -195,7 +206,7 @@ def optimize_K(
     E: float = -best_fitness
     K: npt.NDArray[np.float_] = best_solution
     return K,E
-"""
+
 
 #一般設計
 def optimize_K(
