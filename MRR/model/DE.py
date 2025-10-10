@@ -163,7 +163,7 @@ def optimize_K(
 ) -> tuple[npt.NDArray[np.float_], float]:
     #-----初期設定-----
     #model
-    kernel = C(1.0, (1e-3, 1e3)) * RBF(1.0, (1e-3, 1e3))
+    kernel = C(1.0, (1e-5, 1e3)) * RBF(1.0, (1e-5, 1e3))
     gpr_model = GaussianProcessRegressor(kernel=kernel, n_restarts_optimizer=10)
     #変数
     bounds = [(1e-12, eta) for _ in range(number_of_rings + 1)]
@@ -190,7 +190,7 @@ def optimize_K(
             best_K = K_sample
 
     MAX_SAO_ITERATIONS = 50
-    for interation in range (MAX_SAO_ITERATIONS):
+    for iteration in range (MAX_SAO_ITERATIONS):
         X_arr = np.array(X_train)
         Y_arr = np.array(Y_train)
         gpr_model.fit(X_arr, Y_arr)
