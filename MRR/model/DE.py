@@ -80,14 +80,163 @@ class OptimizeKParams:
     r_max: float
     weight: list[float]
 
+
+def cma_run(initial, bounds_array, popsize, sigma, generations, params):
+    # bounds_array: shape (N, 2)
+    lower_bounds = bounds_array[:, 0]
+    upper_bounds = bounds_array[:, 1]
+
+    opts = {
+        'bounds': [lower_bounds, upper_bounds],
+        'popsize': popsize,
+        'verb_log': 0,
+        'verbose': -9,  # suppress internal logs
+        'tolfun':1e-13,
+    }
+
+    es = CMAEvolutionStrategy(initial, sigma, opts)
+
+    best_solution = None
+    best_fitness = float("inf")
+
+    for generation in range(generations):
+        candidates = es.ask()
+        fitnesses = [objective_func(x, params) for x in candidates]
+        es.tell(candidates, fitnesses)
+        
+        if es.sigma < 0.1:
+            es.sigma = 0.1
+        
+        elif es.sigma > 0.7:
+            es.sigma = 0.7
+
+        min_fit = min(fitnesses)
+        if min_fit < best_fitness:
+            best_fitness = min_fit
+            best_solution = candidates[fitnesses.index(min_fit)]
+
+        # ログ出力（任意）
+        if generation % 50 == 0 or generation == generations - 1:
+            print(f"Gen {generation}: sigma = {es.sigma:.4f}, best_fitness = {best_fitness:.6f}")
+
+        if es.stop():
+            print(f"Optimization stopped at generation {generation}.")
+            print(f"Stop conditions met: {es.stop()}")
+            break # ループを抜ける
+
+
+    return best_solution, best_fitness    
+    
+def acquisition_function(K: npt.NDArray[np.float_], gpr_model: GaussianProcessRegressor, best_so_far: float) -> float:
+    """
+    サロゲートモデルの予測値と不確実性を利用して、次に評価すべき点のスコアを計算する。
+    
+    ここでは、単純な「予測値 + 探索ボーナス」で局所解脱出を促す例を示す。
+    """
+    K_2d = K.reshape(1, -1)
+    
+    # 予測の平均値 (mu) と標準偏差 (sigma/不確実性) を取得
+    mu, sigma = gpr_model.predict(K_2d, return_std=True)
+    
+    # [局所解脱出のためのロジック]
+    # 不確実性(sigma)が大きいほどスコアが高くなるようにする（探索を促す）。
+    # CMA-ESは minimize を行うため、評価値 E = -F で定義されていると仮定し、
+    # 獲得関数は最大化したいので、マイナスをつけて返す。
+    
+    # 探索と活用のバランスを取るロジックの例 (Upper Confidence Bound的なもの)
+    # betaは探索（不確実性）をどれだけ重視するかのパラメータ (FSR 35nmでは高めに設定)
+    beta = 5.0
+    
+    # GPRの予測値 (mu) を活用しつつ、不確実性 (sigma) を探索ボーナスとして加算
+    # 注: optimize_K_funcは -E を返すため、muも最小化したい値のマイナスであると仮定
+    
+    acquisition_value = mu[0] - beta * sigma[0] 
+    
+    # CMA-ESに渡すために最小化形式に戻す
+    return acquisition_value
+
 def optimize_K_SAO(
     eta: float,
     number_of_rings: int,
     rng: np.random.Generator,
     params: OptimizeKParams,
 ) -> tuple[npt.NDArray[np.float_], float]:
-    #初期設定
+    #-----初期設定-----
+    #model
+    kernel = C(1.0, (1e-3, 1e3)) * RBF(1.0, (1e-3, 1e3))
+    gpr_model = GaussianProcessRegressor(kernel=kernel, n_restarts_optimizer=10)
+    #変数
+    bounds = [(1e-12, eta) for _ in range(number_of_rings + 1)]
+    bounds_array = np.array(bounds) 
+    initial_samples = 3 * (number_of_rings + 1) + 10
+    #データセット
+    X_train = []
+    Y_train = []
+    best_K = None
+    best_fitness = float("inf")
     
+    #-----データ収集-----
+    print("データ収集開始")
+    lhs = LatinHypercube(d=number_of_rings + 1, seed=rng)
+    initial_K_samples = lhs.random(n=initial_samples) * (eta - 1e-12) + 1e-12
+    for K_sample in initial_K_samples:
+        #評価関数で計算
+        train_fitness = optimize_K_func(K_sample,params)
+        X_train.append(K_sample)
+        Y_train.append(train_fitness)
+
+        if train_fitness < best_fitness:
+            best_fitness = train_fitness
+            best_K = K_sample
+
+    MAX_SAO_ITERATIONS = 50
+    for interation in range (MAX_SAO_ITERATIONS):
+        X_arr = np.array(X_train)
+        Y_arr = np.array(Y_train)
+        gpr_model.fit(X_arr, Y_arr)
+        print(f"STEP 3: SAO Iteration {iteration+1}. モデル訓練完了。")
+        
+        # 5. 獲得関数 (Acquisition Function) の最適化
+        # CMA-ESを呼び出し、獲得関数を最大化（最小化形式のためマイナス）
+        
+        def acquisition_wrapper(K_candidate):
+            # acquisition_function が最大化したい値を返すため、最小化のためにマイナスを付ける
+            return -acquisition_function(K_candidate, gpr_model, best_fitness)
+
+        # CMA-ESを使って、獲得関数が最大になるKの候補を探す
+        # ここでは既存の cma_run を Acquisition Function の最適化に再利用
+        # 注意: generations は短く設定し、高速なサロゲートモデル上での探索に専念させる
+        acq_best_K, _ = cma_run(
+            initial=X_arr[np.argmin(Y_arr)], # 最良解の近傍から開始
+            bounds_array=bounds_array,
+            popsize=10, 
+            sigma=0.3, 
+            generations=50, 
+            params=params,
+            objective_func=acquisition_wrapper # 目的関数を獲得関数に置き換え
+        )
+        
+        # 6. 真値の再評価とデータの更新 (モデルの検証)
+        
+        # 獲得関数が提案した点 (acq_best_K) を元の評価関数で確認
+        true_fitness_new = optimize_K_func(acq_best_K, params)
+        
+        # データセットを更新
+        X_train.append(acq_best_K)
+        Y_train.append(true_fitness_new)
+        
+        # 全体の最良解を更新
+        if true_fitness_new < best_fitness:
+            best_fitness = true_fitness_new
+            best_K = acq_best_K
+            
+        print(f"STEP 4: 真値再評価完了。Best Fitness (True) = {best_fitness:.6f}")
+    
+    # --- [最終結果] ----------------------------------------------------
+    E: float = -best_fitness
+    K: npt.NDArray[np.float_] = best_K
+    
+    return K, E
 
 
 
