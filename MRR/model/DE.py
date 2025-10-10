@@ -28,6 +28,7 @@ import numpy.typing as npt
 import os
 from sklearn.gaussian_process import GaussianProcessRegressor
 from sklearn.gaussian_process.kernels import RBF, ConstantKernel as C
+from sklearn.gaussian_process.kernels import WhiteKernel
 
 
 def optimize_L(
