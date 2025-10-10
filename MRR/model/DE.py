@@ -187,7 +187,7 @@ def optimize_K(
     #変数
     bounds = [(1e-12, eta) for _ in range(number_of_rings + 1)]
     bounds_array = np.array(bounds) 
-    initial_samples = 3 * (number_of_rings + 1) + 10
+    initial_samples = 10 * (number_of_rings + 1) 
     #データセット
     X_train = []
     Y_train = []
