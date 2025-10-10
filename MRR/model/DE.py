@@ -90,7 +90,7 @@ def cma_run(initial, bounds_array, popsize, sigma, generations, params,objective
         'bounds': [lower_bounds, upper_bounds],
         'popsize': popsize,
         'verb_log': 0,
-        'verbose': -9,  # suppress internal logs
+        'verbose': -9  # suppress internal logs
        
     }
 
