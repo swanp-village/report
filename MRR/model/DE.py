@@ -155,7 +155,7 @@ def acquisition_function(K: npt.NDArray[np.float_], gpr_model: GaussianProcessRe
     # CMA-ESに渡すために最小化形式に戻す
     return acquisition_value
 
-def optimize_K_SAO(
+def optimize_K(
     eta: float,
     number_of_rings: int,
     rng: np.random.Generator,
