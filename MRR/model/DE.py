@@ -198,8 +198,8 @@ def optimize_K(
     print("データ収集開始")
     bounds_normalized = np.array([(0.0, 1.0) for _ in range(number_of_rings + 1)]) 
     lhs = LatinHypercube(d=number_of_rings + 1, seed=rng)
-    # [0, 1]の空間で初期サンプルを生成
-　  initial_K_samples_norm = lhs.random(n=initial_samples) 
+    #[0, 1]の空間で初期サンプルを生成
+    initial_K_samples_norm = lhs.random(n=initial_samples) 
     for K_sample in initial_K_samples:
         #評価関数で計算
         train_fitness = optimize_K_func(K_sample,params)
