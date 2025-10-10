@@ -148,7 +148,7 @@ def acquisition_function(K: npt.NDArray[np.float_], gpr_model: GaussianProcessRe
     
     # 探索と活用のバランスを取るロジックの例 (Upper Confidence Bound的なもの)
     # betaは探索（不確実性）をどれだけ重視するかのパラメータ (FSR 35nmでは高めに設定)
-    beta = 30
+    beta = 10
     
     # GPRの予測値 (mu) を活用しつつ、不確実性 (sigma) を探索ボーナスとして加算
     # 注: optimize_K_funcは -E を返すため、muも最小化したい値のマイナスであると仮定
