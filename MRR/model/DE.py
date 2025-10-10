@@ -165,8 +165,8 @@ def optimize_K(
 ) -> tuple[npt.NDArray[np.float_], float]:
     #-----初期設定-----
     #model
-    kernel = C(1.0, (1e-15, 1e3)) * RBF(1.0, (1e-15, 1e3))
-    gpr_model = GaussianProcessRegressor(kernel=kernel, n_restarts_optimizer=10)
+    kernel = C(1.0, (1e-15, 1e3)) * RBF(1.0, (1e-15, 1e3)) + WhiteKernel(noise_level=1e-5)
+    gpr_model = GaussianProcessRegressor(kernel=kernel, n_restarts_optimizer=20)
     #変数
     bounds = [(1e-12, eta) for _ in range(number_of_rings + 1)]
     bounds_array = np.array(bounds) 
