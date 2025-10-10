@@ -91,9 +91,11 @@ def cma_run(initial, bounds_array, popsize, sigma, generations, params,objective
         'popsize': popsize,
         'verb_log': 0,
         'verbose': -9,
-        'tolfun': 0,
-        'tolflatfitness': 0# suppress internal logs
-       
+        'tolfun': 0,        # 目的関数値の改善による停止を無効化
+        'tolx': 0,          # 探索空間の変化による停止を無効化
+        'tolfunhist': 0,    # 過去の履歴による停止を無効化
+        'tolflatfitness': 0, # フィットネスが平坦になったことによる停止を無効化
+        'maxiter': generations,  
     }
 
     es = CMAEvolutionStrategy(initial, sigma, opts)
