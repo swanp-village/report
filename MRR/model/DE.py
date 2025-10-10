@@ -81,7 +81,7 @@ class OptimizeKParams:
     weight: list[float]
 
 
-def cma_run(initial, bounds_array, popsize, sigma, generations, params):
+def cma_run(initial, bounds_array, popsize, sigma, generations, params,objective_func):
     # bounds_array: shape (N, 2)
     lower_bounds = bounds_array[:, 0]
     upper_bounds = bounds_array[:, 1]
@@ -163,7 +163,7 @@ def optimize_K(
 ) -> tuple[npt.NDArray[np.float_], float]:
     #-----初期設定-----
     #model
-    kernel = C(1.0, (1e-5, 1e3)) * RBF(1.0, (1e-5, 1e3))
+    kernel = C(1.0, (1e-7, 1e3)) * RBF(1.0, (1e-7, 1e3))
     gpr_model = GaussianProcessRegressor(kernel=kernel, n_restarts_optimizer=10)
     #変数
     bounds = [(1e-12, eta) for _ in range(number_of_rings + 1)]
