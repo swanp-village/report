@@ -239,7 +239,7 @@ def optimize_K(
         
         # 6. 真値の再評価とデータの更新 (モデルの検証)
 
-        acq_best_K_physical = denormalize_K(acq_best_K_norm, params.eta)
+        acq_best_K_physical = denormalize_K(acq_best_K, params.eta)
         # 獲得関数が提案した点 (acq_best_K) を元の評価関数で確認
         true_fitness_new = optimize_K_func(acq_best_K_physical, params)
         
