@@ -128,23 +128,7 @@ def cma_run(initial, bounds_array, popsize, sigma, generations, params,objective
 
     return best_solution, best_fitness  
     
-def normalize_K(K_physical: np.ndarray, eta_max: float) -> np.ndarray:
-    """物理スケール [1e-12, eta] から [0, 1] に正規化する"""
-    K_min = 1e-12
-    K_range = eta_max - K_min
-    # K_physicalを K_min でシフトし、K_rangeで割る
-    K_normalized = (K_physical - K_min) / K_range
-    # 浮動小数点誤差による範囲外の値をクリップ
-    return np.clip(K_normalized, 0.0, 1.0)
 
-def denormalize_K(K_normalized: np.ndarray, eta_max: float) -> np.ndarray:
-    """正規化スケール [0, 1] から物理スケール [1e-12, eta] に戻す"""
-    K_min = 1e-12
-    K_range = eta_max - K_min
-    # 正規化された値を K_range で掛け、K_min を加える
-    K_physical = K_normalized * K_range + K_min
-    # 物理的な制約内にクリップ (K > 0 かつ K <= eta)
-    return np.clip(K_physical, K_min, eta_max) 
     
 def acquisition_function(K: npt.NDArray[np.float_], gpr_model: GaussianProcessRegressor, best_so_far: float) -> float:
     """
@@ -196,10 +180,9 @@ def optimize_K(
     
     #-----データ収集-----
     print("データ収集開始")
-    bounds_normalized = np.array([(0.0, 1.0) for _ in range(number_of_rings + 1)]) 
     lhs = LatinHypercube(d=number_of_rings + 1, seed=rng)
     #[0, 1]の空間で初期サンプルを生成
-    initial_K_samples = lhs.random(n=initial_samples) 
+    initial_K_samples =  lhs.random(n=initial_samples) * (eta - 1e-12) + 1e-12
     for K_sample in initial_K_samples:
         #評価関数で計算
         train_fitness = optimize_K_func(K_sample,params)
@@ -229,7 +212,7 @@ def optimize_K(
         # 注意: generations は短く設定し、高速なサロゲートモデル上での探索に専念させる
         acq_best_K, _ = cma_run(
             initial=X_arr[np.argmin(Y_arr)], # 最良解の近傍から開始
-            bounds_array=bounds_normalized,
+            bounds_array=bounds_array,
             popsize=10, 
             sigma=0.3, 
             generations=300, 
@@ -239,7 +222,7 @@ def optimize_K(
         
         # 6. 真値の再評価とデータの更新 (モデルの検証)
 
-        acq_best_K_physical = denormalize_K(acq_best_K, params.eta)
+        
         # 獲得関数が提案した点 (acq_best_K) を元の評価関数で確認
         true_fitness_new = optimize_K_func(acq_best_K_physical, params)
         
