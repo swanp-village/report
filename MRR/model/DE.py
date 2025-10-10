@@ -91,7 +91,8 @@ def cma_run(initial, bounds_array, popsize, sigma, generations, params,objective
         'popsize': popsize,
         'verb_log': 0,
         'verbose': -9,
-        'tolfun': 0 # suppress internal logs
+        'tolfun': 0,
+        'tolflatfitness': 0# suppress internal logs
        
     }
 
