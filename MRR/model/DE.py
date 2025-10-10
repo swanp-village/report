@@ -101,7 +101,7 @@ def cma_run(initial, bounds_array, popsize, sigma, generations, params,objective
 
     for generation in range(generations):
         candidates = es.ask()
-        fitnesses = [objective_func(x, params) for x in candidates]
+        fitnesses = [objective_func(x) for x in candidates]
         es.tell(candidates, fitnesses)
         
         if es.sigma < 0.1:
