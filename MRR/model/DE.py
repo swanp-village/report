@@ -124,11 +124,6 @@ def cma_run(initial, bounds_array, popsize, sigma, generations, params,objective
         if generation % 50 == 0 or generation == generations - 1:
             print(f"Gen {generation}: sigma = {es.sigma:.4f}, best_fitness = {best_fitness:.6f}")
 
-        if es.stop():
-            print(f"Optimization stopped at generation {generation}.")
-            print(f"Stop conditions met: {es.stop()}")
-            break # ループを抜ける
-
 
     return best_solution, best_fitness  
     
