@@ -192,7 +192,7 @@ def optimize_K(
         if train_fitness < best_fitness:
             best_fitness = train_fitness
             best_K = K_sample
-
+    print("finish")
     MAX_SAO_ITERATIONS = 100
     for iteration in range (MAX_SAO_ITERATIONS):
         X_arr = np.array(X_train)
@@ -224,7 +224,7 @@ def optimize_K(
 
         
         # 獲得関数が提案した点 (acq_best_K) を元の評価関数で確認
-        true_fitness_new = optimize_K_func(acq_best_K_physical, params)
+        true_fitness_new = optimize_K_func(acq_best_K, params)
         
         # データセットを更新
         X_train.append(acq_best_K)
