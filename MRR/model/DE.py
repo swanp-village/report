@@ -210,11 +210,19 @@ def optimize_K(
         # CMA-ESを使って、獲得関数が最大になるKの候補を探す
         # ここでは既存の cma_run を Acquisition Function の最適化に再利用
         # 注意: generations は短く設定し、高速なサロゲートモデル上での探索に専念させる
+        lower_bounds = bounds_normalized[:, 0]
+        upper_bounds = bounds_normalized[:, 1]
+        N_dim = number_of_rings + 1
+
+        # 2. 初期解をランダムに生成する（フリーズ対策）
+        # 以前の「最良点から開始」を止め、ランダムな初期解を生成します。
+        initial_random_norm = rng.uniform(low=lower_bounds, high=upper_bounds, size=(N_dim,))
+
         acq_best_K, _ = cma_run(
-            initial=X_arr[np.argmin(Y_arr)], # 最良解の近傍から開始
+            initial=initial_random_norm, # 最良解の近傍から開始
             bounds_array=bounds_array,
             popsize=10, 
-            sigma=0.3, 
+            sigma=0.7, 
             generations=300, 
             params=params,
             objective_func=acquisition_wrapper # 目的関数を獲得関数に置き換え
