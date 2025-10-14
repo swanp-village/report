@@ -129,7 +129,7 @@ def cma_run(initial, bounds_array, popsize, sigma, generations, params,objective
     return best_solution, best_fitness  
     
 
-    
+"""    
 def acquisition_function(K: npt.NDArray[np.float_], gpr_model: GaussianProcessRegressor, best_so_far: float) -> float:
     """
     サロゲートモデルの予測値と不確実性を利用して、次に評価すべき点のスコアを計算する。
@@ -157,7 +157,7 @@ def acquisition_function(K: npt.NDArray[np.float_], gpr_model: GaussianProcessRe
     
     # CMA-ESに渡すために最小化形式に戻す
     return acquisition_value
-
+"""
 def optimize_K(
     eta: float,
     number_of_rings: int,
