@@ -161,7 +161,7 @@ def predict_ensemble(K_2d: np.ndarray, ensemble_models: List[MLPRegressor]) -> T
 
 
 # --- 【獲得関数 (Acquisition Function) - ANNベースに修正】 ---
-def acquisition_function_ann(K: npt.NDArray[np.float_], ensemble_models: List[MLPRegressor], best_so_far: float) -> float:
+def acquisition_function(K: npt.NDArray[np.float_], ensemble_models: List[MLPRegressor], best_so_far: float) -> float:
     """ANNアンサンブルの予測値と不確実性を利用した獲得関数"""
     K_2d = K.reshape(1, -1)
     
@@ -218,23 +218,31 @@ def optimize_K(
 ) -> tuple[npt.NDArray[np.float_], float]:
     #-----初期設定-----
     #model
-    kernel = C(1.0, (1e-15, 1e3)) * RBF(1.0, (1e-15, 1e3)) + WhiteKernel(noise_level=1e-5)
-    gpr_model = GaussianProcessRegressor(kernel=kernel, n_restarts_optimizer=20)
-    #変数
-    bounds = [(1e-12, eta) for _ in range(number_of_rings + 1)]
-    bounds_array = np.array(bounds) 
-    initial_samples = 10 * (number_of_rings + 1) 
-    #データセット
-    X_train = []
+    N_dim = number_of_rings + 1
+
+    num_ann = 8
+    hidden_layar_size = (100,50,20)
+    bese_ann_model = MLPRegressor(
+        hidden_layer_sizes=hidden_layer_sizes,
+        max_iter=500,
+        activation='relu',
+        solver='adam',
+        random_state=42,
+        learning_rate_init=0.01 
+    )
+    ensemble_models = [clone(base_ann_model) for _ in range(num_ann)]
+    initial_samples = N_dim * 10 # 初期サンプル数を10Nに増やす
+    MAX_SAO_ITERATIONS = 200 # SAOの総予算
+    X_train = [] 
     Y_train = []
-    best_K = None
+    best_K_norm = None
     best_fitness = float("inf")
-    
     #-----データ収集-----
     print("データ収集開始")
+    bounds_normalized = np.array([(0.0, 1.0) for _ in range(N_dim)])
     lhs = LatinHypercube(d=number_of_rings + 1, seed=rng)
     #[0, 1]の空間で初期サンプルを生成
-    initial_K_samples =  lhs.random(n=initial_samples) * (eta - 1e-12) + 1e-12
+    initial_K_samples =  lhs.random(n=initial_samples) 
     for K_sample in initial_K_samples:
         #評価関数で計算
         train_fitness = optimize_K_func(K_sample,params)
@@ -245,7 +253,6 @@ def optimize_K(
             best_fitness = train_fitness
             best_K = K_sample
     print("finish")
-    MAX_SAO_ITERATIONS = 100
     for iteration in range (MAX_SAO_ITERATIONS):
         X_arr = np.array(X_train)
         Y_arr = np.array(Y_train)
