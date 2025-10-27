@@ -223,7 +223,7 @@ def optimize_K(
     num_ann = 8
     hidden_layar_size = (100,50,20)
     bese_ann_model = MLPRegressor(
-        hidden_layer_sizes=hidden_layer_sizes,
+        hidden_layer_sizes=hidden_layer_size,
         max_iter=500,
         activation='relu',
         solver='adam',
