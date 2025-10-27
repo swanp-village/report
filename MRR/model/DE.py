@@ -80,8 +80,86 @@ class OptimizeKParams:
     H_i: float
     r_max: float
     weight: list[float]
+def cma_run(initial, bounds_array, popsize, sigma, generations, params):
+    # bounds_array: shape (N, 2)
+    lower_bounds = bounds_array[:, 0]
+    upper_bounds = bounds_array[:, 1]
+
+    opts = {
+        'bounds': [lower_bounds, upper_bounds],
+        'popsize': popsize,
+        'verb_log': 0,
+        'verbose': -9,  # suppress internal logs
+        'tolfun':1e-13,
+    }
+
+    es = CMAEvolutionStrategy(initial, sigma, opts)
+
+    best_solution = None
+    best_fitness = float("inf")
+
+    for generation in range(generations):
+        candidates = es.ask()
+        fitnesses = [objective_func(x, params) for x in candidates]
+        es.tell(candidates, fitnesses)
+        
+        if es.sigma < 0.1:
+            es.sigma = 0.1
+        
+        elif es.sigma > 0.7:
+            es.sigma = 0.7
+
+        min_fit = min(fitnesses)
+        if min_fit < best_fitness:
+            best_fitness = min_fit
+            best_solution = candidates[fitnesses.index(min_fit)]
+
+        # ログ出力（任意）
+        if generation % 50 == 0 or generation == generations - 1:
+            print(f"Gen {generation}: sigma = {es.sigma:.4f}, best_fitness = {best_fitness:.6f}")
+
+        if es.stop():
+            print(f"Optimization stopped at generation {generation}.")
+            print(f"Stop conditions met: {es.stop()}")
+            break # ループを抜ける
 
 
+    return best_solution, best_fitness
+    
+def optimize_K(
+    eta: float,
+    number_of_rings: int,
+    rng: np.random.Generator,
+    params: OptimizeKParams,
+    num_start: int = 10
+) -> tuple[npt.NDArray[np.float_], float]:
+
+    os.environ["OMP_NUM_THREADS"] = "1"
+    os.environ["OPENBLAS_NUM_THREADS"] = "1"
+    os.environ["MKL_NUM_THREADS"] = "1"
+    bounds = [(1e-12, eta) for _ in range(number_of_rings + 1)]
+    bounds_array=np.array(bounds) 
+    popsize = 4 + math.floor(3 * math.log(number_of_rings+1)) + 8
+    sigma = 0.7
+    generations = 500
+    num_starts = 6
+    initials = [rng.uniform(1e-12, eta, size=(number_of_rings + 1,))
+                for _ in range(num_starts)]
+
+    with ProcessPoolExecutor(max_workers=20) as executor:
+        futures = [executor.submit(cma_run, initial, bounds_array, popsize, sigma, generations, params)
+                   for initial in initials]
+
+        results = [f.result() for f in futures]
+        print(results)
+    print(len(results))
+
+    # 一番良かったやつを選ぶ
+    best_solution, best_fitness = min(results, key=lambda x: x[1])
+    E: float = -best_fitness
+    K: npt.NDArray[np.float_] = best_solution
+    return K,E
+"""
 def cma_run(initial, bounds_array, popsize, sigma, generations, params,objective_func):
     # bounds_array: shape (N, 2)
     lower_bounds = bounds_array[:, 0]
@@ -247,7 +325,7 @@ def optimize_K(
     K: npt.NDArray[np.float_] = best_K
     
     return K, E
-
+"""
 
 
 
