@@ -221,9 +221,9 @@ def optimize_K(
     N_dim = number_of_rings + 1
 
     num_ann = 8
-    hidden_layar_size = (100,50,20)
+    hidden_layar_sizes = (100,50,20)
     bese_ann_model = MLPRegressor(
-        hidden_layer_sizes=hidden_layer_size,
+        hidden_layer_sizes=hidden_layer_sizes,
         max_iter=500,
         activation='relu',
         solver='adam',
