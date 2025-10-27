@@ -29,7 +29,9 @@ import os
 from sklearn.gaussian_process import GaussianProcessRegressor
 from sklearn.gaussian_process.kernels import RBF, ConstantKernel as C
 from sklearn.gaussian_process.kernels import WhiteKernel
-
+from sklearn.neural_network import MLPRegressor
+from sklearn.base import clone
+# ----------------------------------------------------
 
 def optimize_L(
     n_g: float,
@@ -80,86 +82,8 @@ class OptimizeKParams:
     H_i: float
     r_max: float
     weight: list[float]
-def cma_run(initial, bounds_array, popsize, sigma, generations, params):
-    # bounds_array: shape (N, 2)
-    lower_bounds = bounds_array[:, 0]
-    upper_bounds = bounds_array[:, 1]
-
-    opts = {
-        'bounds': [lower_bounds, upper_bounds],
-        'popsize': popsize,
-        'verb_log': 0,
-        'verbose': -9,  # suppress internal logs
-        'tolfun':1e-13,
-    }
-
-    es = CMAEvolutionStrategy(initial, sigma, opts)
-
-    best_solution = None
-    best_fitness = float("inf")
-
-    for generation in range(generations):
-        candidates = es.ask()
-        fitnesses = [objective_func(x, params) for x in candidates]
-        es.tell(candidates, fitnesses)
-        
-        if es.sigma < 0.1:
-            es.sigma = 0.1
-        
-        elif es.sigma > 0.7:
-            es.sigma = 0.7
-
-        min_fit = min(fitnesses)
-        if min_fit < best_fitness:
-            best_fitness = min_fit
-            best_solution = candidates[fitnesses.index(min_fit)]
-
-        # ログ出力（任意）
-        if generation % 50 == 0 or generation == generations - 1:
-            print(f"Gen {generation}: sigma = {es.sigma:.4f}, best_fitness = {best_fitness:.6f}")
-
-        if es.stop():
-            print(f"Optimization stopped at generation {generation}.")
-            print(f"Stop conditions met: {es.stop()}")
-            break # ループを抜ける
 
 
-    return best_solution, best_fitness
-    
-def optimize_K(
-    eta: float,
-    number_of_rings: int,
-    rng: np.random.Generator,
-    params: OptimizeKParams,
-    num_start: int = 10
-) -> tuple[npt.NDArray[np.float_], float]:
-
-    os.environ["OMP_NUM_THREADS"] = "1"
-    os.environ["OPENBLAS_NUM_THREADS"] = "1"
-    os.environ["MKL_NUM_THREADS"] = "1"
-    bounds = [(1e-12, eta) for _ in range(number_of_rings + 1)]
-    bounds_array=np.array(bounds) 
-    popsize = 4 + math.floor(3 * math.log(number_of_rings+1)) + 8
-    sigma = 0.7
-    generations = 500
-    num_starts = 6
-    initials = [rng.uniform(1e-12, eta, size=(number_of_rings + 1,))
-                for _ in range(num_starts)]
-
-    with ProcessPoolExecutor(max_workers=20) as executor:
-        futures = [executor.submit(cma_run, initial, bounds_array, popsize, sigma, generations, params)
-                   for initial in initials]
-
-        results = [f.result() for f in futures]
-        print(results)
-    print(len(results))
-
-    # 一番良かったやつを選ぶ
-    best_solution, best_fitness = min(results, key=lambda x: x[1])
-    E: float = -best_fitness
-    K: npt.NDArray[np.float_] = best_solution
-    return K,E
-"""
 def cma_run(initial, bounds_array, popsize, sigma, generations, params,objective_func):
     # bounds_array: shape (N, 2)
     lower_bounds = bounds_array[:, 0]
@@ -206,8 +130,57 @@ def cma_run(initial, bounds_array, popsize, sigma, generations, params,objective
 
     return best_solution, best_fitness  
     
+def normalize_K(K_physical: np.ndarray, eta_max: float) -> np.ndarray:
+    """物理スケール [1e-12, eta] から [0, 1] に正規化する"""
+    K_min = 1e-12
+    K_range = eta_max - K_min
+    K_normalized = (K_physical - K_min) / K_range
+    return np.clip(K_normalized, 0.0, 1.0)
 
+def denormalize_K(K_normalized: np.ndarray, eta_max: float) -> np.ndarray:
+    """正規化スケール [0, 1] から物理スケール [1e-12, eta] に戻す"""
+    K_min = 1e-12
+    K_range = eta_max - K_min
+    K_physical = K_normalized * K_range + K_min
+    return np.clip(K_physical, K_min, eta_max)
+
+
+# --- 【ANNアンサンブル予測関数】 ---
+def predict_ensemble(K_2d: np.ndarray, ensemble_models: List[MLPRegressor]) -> Tuple[float, float]:
+    """複数のANNモデルで予測を行い、平均(mu)と標準偏差(sigma)を計算する"""
     
+    # 各モデルで予測
+    predictions = np.array([model.predict(K_2d)[0] for model in ensemble_models])
+    
+    # 予測の平均を mu に、標準偏差を sigma に設定
+    mu = np.mean(predictions)
+    sigma = np.std(predictions)
+    
+    return mu, sigma 
+
+
+# --- 【獲得関数 (Acquisition Function) - ANNベースに修正】 ---
+def acquisition_function_ann(K: npt.NDArray[np.float_], ensemble_models: List[MLPRegressor], best_so_far: float) -> float:
+    """ANNアンサンブルの予測値と不確実性を利用した獲得関数"""
+    K_2d = K.reshape(1, -1)
+    
+    # ANNアンサンブルから mu と sigma を取得
+    mu, sigma = predict_ensemble(K_2d, ensemble_models)
+    
+    # 探索と活用のバランスを取るロジック (LCB形式)
+    # betaは探索（不確実性）をどれだけ重視するかのパラメータ (FSR 35nmでは高めに設定)
+    beta = 15.0 # 探索を強制するため、以前より高い値を推奨
+    
+    # GPRと同様、μは最小化したい値(-E)を予測
+    acquisition_value = mu - beta * sigma 
+    
+    # CMA-ESに渡すために最小化形式のまま返す
+    return acquisition_value
+
+
+# --- 【既存の cma_run 関数 (SAO内部探索用) の修正】 ---
+# CMA-ESが獲得関数を最適化する際に、途中で停止しないように修正
+"""
 def acquisition_function(K: npt.NDArray[np.float_], gpr_model: GaussianProcessRegressor, best_so_far: float) -> float:
     """
     サロゲートモデルの予測値と不確実性を利用して、次に評価すべき点のスコアを計算する。
@@ -235,7 +208,7 @@ def acquisition_function(K: npt.NDArray[np.float_], gpr_model: GaussianProcessRe
     
     # CMA-ESに渡すために最小化形式に戻す
     return acquisition_value
-
+"""
 def optimize_K(
     eta: float,
     number_of_rings: int,
@@ -325,7 +298,7 @@ def optimize_K(
     K: npt.NDArray[np.float_] = best_K
     
     return K, E
-"""
+
 
 
 
