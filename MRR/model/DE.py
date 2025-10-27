@@ -256,7 +256,7 @@ def optimize_K(
     for iteration in range (MAX_SAO_ITERATIONS):
         X_arr = np.array(X_train)
         Y_arr = np.array(Y_train)
-        gpr_model.fit(X_arr, Y_arr)
+        model.fit(X_arr, Y_arr)
         print(f"STEP 3: SAO Iteration {iteration+1}. モデル訓練完了。")
         
         # 5. 獲得関数 (Acquisition Function) の最適化
