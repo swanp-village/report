@@ -182,11 +182,11 @@ def acquisition_function_ann(K: npt.NDArray[np.float_], ensemble_models: List[ML
 # CMA-ESが獲得関数を最適化する際に、途中で停止しないように修正
 """
 def acquisition_function(K: npt.NDArray[np.float_], gpr_model: GaussianProcessRegressor, best_so_far: float) -> float:
-    """
-    サロゲートモデルの予測値と不確実性を利用して、次に評価すべき点のスコアを計算する。
     
-    ここでは、単純な「予測値 + 探索ボーナス」で局所解脱出を促す例を示す。
-    """
+    #サロゲートモデルの予測値と不確実性を利用して、次に評価すべき点のスコアを計算する。
+    
+    #ここでは、単純な「予測値 + 探索ボーナス」で局所解脱出を促す例を示す。
+    
     K_2d = K.reshape(1, -1)
     
     # 予測の平均値 (mu) と標準偏差 (sigma/不確実性) を取得
