@@ -31,6 +31,7 @@ from sklearn.gaussian_process.kernels import RBF, ConstantKernel as C
 from sklearn.gaussian_process.kernels import WhiteKernel
 from sklearn.neural_network import MLPRegressor
 from sklearn.base import clone
+from typing import Tuple,List
 # ----------------------------------------------------
 
 def optimize_L(
