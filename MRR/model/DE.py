@@ -229,7 +229,7 @@ def optimize_K(
             return acquisition_function_ann(K_candidate, ensemble_models, best_fitness)
         acq_best_K, _ = cma_run(
             initial=X_arr[np.argmin(Y_arr)], 
-            bounds_array=bounds_array,
+            bounds_array=bounds_normalized,
             popsize=20, 
             sigma=0.7, 
             generations=50, 
