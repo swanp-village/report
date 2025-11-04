@@ -204,11 +204,12 @@ def optimize_K(
     #-----データ収集-----
     print("データ収集開始")
     lhs = LatinHypercube(d=number_of_rings + 1, seed=rng)
-    initial_K_samples = lhs.random(n=initial_samples) * (eta - 1e-12) + 1e-12
+    initial_K_samples = lhs.random(n = initial_samples)
     for K_sample in initial_K_samples:
         #評価関数で計算
+        K_samples_phy = denormalize_K(K_sample,params.eta)
         train_fitness = optimize_K_func(K_sample,params)
-        X_train.append(K_sample)
+        X_train.append(K_sample_phy)
         Y_train.append(train_fitness)
 
         if train_fitness < best_fitness:
