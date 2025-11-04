@@ -139,11 +139,17 @@ def normalize_K(K_physical: np.ndarray, eta_max: float) -> np.ndarray:
     return np.clip(K_normalized, 0.0, 1.0)
 
 def denormalize_K(K_normalized: np.ndarray, eta_max: float) -> np.ndarray:
-    """正規化スケール [0, 1] から物理スケール [1e-12, eta] に戻す"""
     K_min = 1e-12
     K_range = eta_max - K_min
     K_physical = K_normalized * K_range + K_min
-    return np.clip(K_physical, K_min, eta_max)
+    
+    # 【代替クリッピング処理】
+    # 物理的な上限 eta_max を超えないように制限
+    K_physical = np.minimum(K_physical, eta_max) 
+    # 下限 K_min (1e-12) より小さくならないように制限
+    K_physical = np.maximum(K_physical, K_min)
+    
+    return K_physical
 
 
 # --- 【ANNアンサンブル予測関数】 ---
@@ -479,6 +485,15 @@ def optimize(
 
 
 def optimize_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams) -> np.float_:
+    # K_minとK_maxを定義
+    K_min = 1e-12
+    K_max = params.eta
+    
+    # --- 【代替クリッピング処理の再適用】 ---
+    # Kが浮動小数点誤差でわずかに eta_max を超えるのを防ぐ
+    K_clamped = np.minimum(K, K_max)
+    K_clamped = np.maximum(K_clamped, K_min)
+    # ----------------------------------------
 
     
 
@@ -486,7 +501,7 @@ def optimize_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams) -> np.fl
     y = simulate_transfer_function(
         wavelength=x,
         L=params.L,
-        K=K,
+        K=K_clamped,
         alpha=params.alpha,
         eta=params.eta,
         n_eff=params.n_eff,
