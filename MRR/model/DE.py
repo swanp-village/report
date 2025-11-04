@@ -175,7 +175,7 @@ def acquisition_function_ann(K: np.ndarray, ensemble_models: List[MLPRegressor],
     # CMA-ESに渡すため、最小化形式で返す
     return acquisition_value
 
-def optimize_K_SAO(
+def optimize_K(
     eta: float,
     number_of_rings: int,
     rng: np.random.Generator,
