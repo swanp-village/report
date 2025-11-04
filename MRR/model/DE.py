@@ -192,7 +192,7 @@ def optimize_K(
 
     #ANNアンサンブルの定義
     NUM_ENSEMBLE = 8 # アンサンブルの数
-    hidden_layer_sizes = (50, 50) 
+    hidden_layer_sizes = (100, 50, 50) 
     base_ann_model = MLPRegressor(
         hidden_layer_sizes=hidden_layer_sizes, max_iter=3000, activation='relu', solver='adam', random_state=42
     )
@@ -215,7 +215,7 @@ def optimize_K(
         #評価関数で計算
         K_sample_phy = denormalize_K(K_sample,params.eta)
         train_fitness = optimize_K_func(K_sample,params)
-        X_train.append(K_sample_phy)
+        X_train.append(K_sample)
         Y_train.append(train_fitness)
 
         if train_fitness < best_fitness:
@@ -246,10 +246,11 @@ def optimize_K(
         
     #-----真値の再評価とデータの更新-----
         # 獲得関数が提案した点 (acq_best_K) を元の評価関数で確認
-        true_fitness_new = optimize_K_func(acq_best_K, params)
+        acq_best_K_phy = denormalize_K(acq_best_K,params.eta)
+        true_fitness_new = optimize_K_func(acq_best_K_phy, params)
         
         # データセットを更新
-        X_train.append(acq_best_K)
+        X_train.append(acq_best_K_phy)
         Y_train.append(true_fitness_new)
         
         # 全体の最良解を更新
@@ -261,7 +262,7 @@ def optimize_K(
     
     # ----- [最終結果] -----
     E: float = -best_fitness
-    K: npt.NDArray[np.float_] = best_K
+    K: npt.NDArray[np.float_] = denormalize_K(best_K_norm if best_K_norm is not None else np.zeros(N_dim), params.eta)
     
     return K, E
 
