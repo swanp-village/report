@@ -191,7 +191,7 @@ def optimize_K(
     N_dim = number_of_rings + 1
 
     #ANNアンサンブルの定義
-    NUM_ENSEMBLE = 8 # アンサンブルの数
+    NUM_ENSEMBLE = 12 # アンサンブルの数
     hidden_layer_sizes = (100, 50, 50) 
     base_ann_model = MLPRegressor(
         hidden_layer_sizes=hidden_layer_sizes, max_iter=3000, activation='relu', solver='adam', random_state=42
