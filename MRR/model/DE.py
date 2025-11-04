@@ -147,7 +147,7 @@ def denormalize_K(K_normalized: np.ndarray, eta_max: float) -> np.ndarray:
 
 
 # --- 【ANNアンサンブル予測関数】 ---
-def predict_ensemble(K_2d: np.ndarray,ann_model: List[MLPRegressor])-> float:
+def predict_ensemble(K_2d: np.ndarray,ensemble_models: List[MLPRegressor])-> float:
     predictions = np.array([model.predict(K_2d)[0] for model in ensemble_models])
     
     # 予測の平均を mu に、標準偏差を sigma に設定
