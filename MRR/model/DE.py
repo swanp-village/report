@@ -221,7 +221,7 @@ def optimize_K(
         Y_arr = np.array(Y_train)
         for model in ensemble_models:
                 model.fit(X_arr,Y_arr.ravel())
-        print(f"STEP 3: SAO Iteration {iteration+1}. モデル訓練完了。")
+        #print(f"STEP 3: SAO Iteration {iteration+1}. モデル訓練完了。")
         
     #-----獲得関数の最適化-----
         
