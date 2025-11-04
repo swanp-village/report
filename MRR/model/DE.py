@@ -236,7 +236,7 @@ def optimize_K(
             return acquisition_function_ann(K_candidate, ensemble_models, best_fitness)
         lower_bounds = bounds_normalized[:, 0]
         upper_bounds = bounds_normalized[:, 1]
-        initial_random_norm = rng.uniform(low=lower_bounds, high=upper_bounds, size=(N_dim+1,))
+        initial_random_norm = rng.uniform(low=lower_bounds, high=upper_bounds, size=(number_of_rings+1,))
         acq_best_K, _ = cma_run(
             initial=initial_random_norm, 
             bounds_array=bounds_normalized,
