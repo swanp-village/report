@@ -479,14 +479,14 @@ def optimize(
 
 
 def optimize_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams) -> np.float_:
-    
+    K_clamped = np.clip(K, 1e-12, params.eta)
     
 
     x = calculate_x(center_wavelength=params.center_wavelength, FSR=params.FSR)
     y = simulate_transfer_function(
         wavelength=x,
         L=params.L,
-        K=K,
+        K=K.clamped,
         alpha=params.alpha,
         eta=params.eta,
         n_eff=params.n_eff,
