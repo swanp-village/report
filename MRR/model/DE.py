@@ -188,7 +188,7 @@ def optimize_K(
     params: OptimizeKParams,
 ) -> tuple[npt.NDArray[np.float_], float]:
     #-----初期設定-----
-    N_dim = number_of_rings
+    N_dim = number_of_rings + 1
 
     #ANNアンサンブルの定義
     NUM_ENSEMBLE = 8 # アンサンブルの数
@@ -209,7 +209,7 @@ def optimize_K(
     
     #-----データ収集-----
     print("データ収集開始")
-    lhs = LatinHypercube(d=number_of_rings + 1, seed=rng)
+    lhs = LatinHypercube(d=N_dim, seed=rng)
     initial_K_samples = lhs.random(n = initial_samples)
     for K_sample in initial_K_samples:
         #評価関数で計算
@@ -236,7 +236,7 @@ def optimize_K(
             return acquisition_function_ann(K_candidate, ensemble_models, best_fitness)
         lower_bounds = bounds_normalized[:, 0]
         upper_bounds = bounds_normalized[:, 1]
-        initial_random_norm = rng.uniform(low=lower_bounds, high=upper_bounds, size=(number_of_rings+1,))
+        initial_random_norm = rng.uniform(low=lower_bounds, high=upper_bounds, size=(N_dim,))
         acq_best_K, _ = cma_run(
             initial=initial_random_norm, 
             bounds_array=bounds_normalized,
