@@ -193,7 +193,7 @@ def optimize_K(
     ensemble_models = [clone(base_ann_model) for _ in range(NUM_ENSEMBLE)]
     #変数
     initial_samples = N_dim * 10 # 凹凸対策として10Nに増やす
-    MAX_SAO_ITERATIONS = 200 # 探索予算を増やす
+    MAX_SAO_ITERATIONS = 2 # 探索予算を増やす
     #データセット
     X_train = []
     Y_train = []
