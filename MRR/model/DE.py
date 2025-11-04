@@ -147,102 +147,64 @@ def denormalize_K(K_normalized: np.ndarray, eta_max: float) -> np.ndarray:
 
 
 # --- 【ANNアンサンブル予測関数】 ---
-def predict_ensemble(K_2d: np.ndarray, ensemble_models: List[MLPRegressor]) -> Tuple[float, float]:
-    """複数のANNモデルで予測を行い、平均(mu)と標準偏差(sigma)を計算する"""
-    
-    # 各モデルで予測
+def predict_ensemble(K_2d: np.ndarray,ann_model: List[MLPRegressor])-> float:
     predictions = np.array([model.predict(K_2d)[0] for model in ensemble_models])
     
     # 予測の平均を mu に、標準偏差を sigma に設定
     mu = np.mean(predictions)
     sigma = np.std(predictions)
     
-    return mu, sigma 
+    return mu, sigma
 
 
-# --- 【獲得関数 (Acquisition Function) - ANNベースに修正】 ---
-def acquisition_function(K: npt.NDArray[np.float_], ensemble_models: List[MLPRegressor], best_so_far: float) -> float:
-    """ANNアンサンブルの予測値と不確実性を利用した獲得関数"""
+# predict_ensemble 関数は、別途定義したANNモデルのリストを使って予測します。
+def acquisition_function_ann(K: np.ndarray, ensemble_models: List[MLPRegressor], best_so_far: float) -> float:
+    """ANNアンサンブルの予測値と不確実性を利用した獲得関数（LCB形式）。"""
     K_2d = K.reshape(1, -1)
     
-    # ANNアンサンブルから mu と sigma を取得
+    # 1. 予測と不確実性の取得 (ANNアンサンブルの平均と標準偏差)
     mu, sigma = predict_ensemble(K_2d, ensemble_models)
     
-    # 探索と活用のバランスを取るロジック (LCB形式)
-    # betaは探索（不確実性）をどれだけ重視するかのパラメータ (FSR 35nmでは高めに設定)
-    beta = 15.0 # 探索を強制するため、以前より高い値を推奨
+    # 2. 探索の強度を制御するパラメータ (探索を強制するため、高めに設定)
+    beta = 15.0 
     
-    # GPRと同様、μは最小化したい値(-E)を予測
+    # 3. 獲得関数の計算: mu - beta * sigma (最小化したい)
+    # sigmaが高い点（不確実な点）を優先的に最小化させることで、探索を促進する。
     acquisition_value = mu - beta * sigma 
     
-    # CMA-ESに渡すために最小化形式のまま返す
+    # CMA-ESに渡すため、最小化形式で返す
     return acquisition_value
 
-
-# --- 【既存の cma_run 関数 (SAO内部探索用) の修正】 ---
-# CMA-ESが獲得関数を最適化する際に、途中で停止しないように修正
-"""
-def acquisition_function(K: npt.NDArray[np.float_], gpr_model: GaussianProcessRegressor, best_so_far: float) -> float:
-    
-    #サロゲートモデルの予測値と不確実性を利用して、次に評価すべき点のスコアを計算する。
-    
-    #ここでは、単純な「予測値 + 探索ボーナス」で局所解脱出を促す例を示す。
-    
-    K_2d = K.reshape(1, -1)
-    
-    # 予測の平均値 (mu) と標準偏差 (sigma/不確実性) を取得
-    mu, sigma = gpr_model.predict(K_2d, return_std=True)
-    
-    # [局所解脱出のためのロジック]
-    # 不確実性(sigma)が大きいほどスコアが高くなるようにする（探索を促す）。
-    # CMA-ESは minimize を行うため、評価値 E = -F で定義されていると仮定し、
-    # 獲得関数は最大化したいので、マイナスをつけて返す。
-    
-    # 探索と活用のバランスを取るロジックの例 (Upper Confidence Bound的なもの)
-    # betaは探索（不確実性）をどれだけ重視するかのパラメータ (FSR 35nmでは高めに設定)
-    beta = 10
-    
-    # GPRの予測値 (mu) を活用しつつ、不確実性 (sigma) を探索ボーナスとして加算
-    # 注: optimize_K_funcは -E を返すため、muも最小化したい値のマイナスであると仮定
-    
-    acquisition_value = mu[0] - beta * sigma[0] 
-    
-    # CMA-ESに渡すために最小化形式に戻す
-    return acquisition_value
-"""
-def optimize_K(
+def optimize_K_SAO(
     eta: float,
     number_of_rings: int,
     rng: np.random.Generator,
     params: OptimizeKParams,
 ) -> tuple[npt.NDArray[np.float_], float]:
     #-----初期設定-----
-    #model
-    N_dim = number_of_rings + 1
+    N_dim = number_of_rings
 
-    num_ann = 8
-    hidden_layer_sizes = (100,50,20)
+    #ANNアンサンブルの定義
+    NUM_ENSEMBLE = 8 # アンサンブルの数
+    hidden_layer_sizes = (50, 50) 
     base_ann_model = MLPRegressor(
-        hidden_layer_sizes=hidden_layer_sizes,
-        max_iter=500,
-        activation='relu',
-        solver='adam',
-        random_state=42,
-        learning_rate_init=0.01 
+        hidden_layer_sizes=hidden_layer_sizes, max_iter=500, activation='relu', solver='adam', random_state=42
     )
-    ensemble_models = [clone(base_ann_model) for _ in range(num_ann)]
-    initial_samples = N_dim * 10 # 初期サンプル数を10Nに増やす
-    MAX_SAO_ITERATIONS = 200 # SAOの総予算
-    X_train = [] 
+    ensemble_models = [clone(base_ann_model) for _ in range(NUM_ENSEMBLE)]
+    #変数
+    initial_samples = N_dim * 10 # 凹凸対策として10Nに増やす
+    MAX_SAO_ITERATIONS = 200 # 探索予算を増やす
+    #データセット
+    X_train = []
     Y_train = []
-    best_K_norm = None
+    best_K_norm: Optional[np.ndarray] = None
     best_fitness = float("inf")
+    bounds_normalized = np.array([(0.0, 1.0) for _ in range(N_dim)])
+    
     #-----データ収集-----
     print("データ収集開始")
-    bounds_normalized = np.array([(0.0, 1.0) for _ in range(N_dim)])
     lhs = LatinHypercube(d=number_of_rings + 1, seed=rng)
-    #[0, 1]の空間で初期サンプルを生成
-    initial_K_samples =  lhs.random(n=initial_samples) 
+    initial_K_samples = lhs.random(n=initial_samples) * (eta - 1e-12) + 1e-12
     for K_sample in initial_K_samples:
         #評価関数で計算
         train_fitness = optimize_K_func(K_sample,params)
@@ -252,41 +214,29 @@ def optimize_K(
         if train_fitness < best_fitness:
             best_fitness = train_fitness
             best_K = K_sample
-    print("finish")
-    for iteration in range (MAX_SAO_ITERATIONS):
+
+
+    for interation in range (MAX_SAO_ITERATIONS):
         X_arr = np.array(X_train)
         Y_arr = np.array(Y_train)
-        model.fit(X_arr, Y_arr)
+        gpr_model.fit(X_arr, Y_arr)
         print(f"STEP 3: SAO Iteration {iteration+1}. モデル訓練完了。")
         
-        # 5. 獲得関数 (Acquisition Function) の最適化
-        # CMA-ESを呼び出し、獲得関数を最大化（最小化形式のためマイナス）
+    #-----獲得関数の最適化-----
         
         def acquisition_wrapper(K_candidate):
-            # acquisition_function が最大化したい値を返すため、最小化のためにマイナスを付ける
-            return -acquisition_function(K_candidate, gpr_model, best_fitness)
-
-        # CMA-ESを使って、獲得関数が最大になるKの候補を探す
-        # ここでは既存の cma_run を Acquisition Function の最適化に再利用
-        # 注意: generations は短く設定し、高速なサロゲートモデル上での探索に専念させる
-
-        # 2. 初期解をランダムに生成する（フリーズ対策）
-        # 以前の「最良点から開始」を止め、ランダムな初期解を生成します。
-        initial_random_norm = rng.uniform(1e-12, eta, size=(number_of_rings + 1,))
-
+            return acquisition_function_ann(K_candidate, ensemble_models, best_fitness)
         acq_best_K, _ = cma_run(
-            initial=initial_random_norm, # 最良解の近傍から開始
+            initial=X_arr[np.argmin(Y_arr)], 
             bounds_array=bounds_array,
-            popsize=10, 
+            popsize=20, 
             sigma=0.7, 
-            generations=300, 
+            generations=50, 
             params=params,
-            objective_func=acquisition_wrapper # 目的関数を獲得関数に置き換え
+            objective_func=acquisition_wrapper 
         )
         
-        # 6. 真値の再評価とデータの更新 (モデルの検証)
-
-        
+    #-----真値の再評価とデータの更新-----
         # 獲得関数が提案した点 (acq_best_K) を元の評価関数で確認
         true_fitness_new = optimize_K_func(acq_best_K, params)
         
@@ -301,11 +251,12 @@ def optimize_K(
             
         print(f"STEP 4: 真値再評価完了。Best Fitness (True) = {best_fitness:.6f}")
     
-    # --- [最終結果] ----------------------------------------------------
+    # ----- [最終結果] -----
     E: float = -best_fitness
     K: npt.NDArray[np.float_] = best_K
     
     return K, E
+
 
 
 
