@@ -246,13 +246,13 @@ def optimize_K(
             best_K = K_sample
 
 
-    for interation in range (MAX_SAO_ITERATIONS):
+    for iteration in range (MAX_SAO_ITERATIONS):
         current_beta = get_beta_schedule(iteration, MAX_SAO_ITERATIONS)
         X_arr = np.array(X_train)
         Y_arr = np.array(Y_train)
         for model in ensemble_models:
                 model.fit(X_arr,Y_arr.ravel())
-        #print(f"STEP 3: SAO Iteration {iteration+1}. モデル訓練完了。")
+        print(f"STEP 3: SAO Iteration {iteration+1}. モデル訓練完了。")
         
     #-----獲得関数の最適化-----
         
