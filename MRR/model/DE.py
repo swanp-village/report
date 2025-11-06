@@ -260,9 +260,17 @@ def optimize_K(
             return acquisition_function_ann(K_candidate, ensemble_models, best_fitness, current_beta)
         lower_bounds = bounds_normalized[:, 0]
         upper_bounds = bounds_normalized[:, 1]
-        
+
+        if best_K_norm is None:
+            # データ収集がまだ成功していない場合、ランダムな初期解を使う
+            lower_bounds = bounds_normalized[:, 0]
+            upper_bounds = bounds_normalized[:, 1]
+            initial_start_norm = rng.uniform(low=lower_bounds, high=upper_bounds, size=(N_dim,))
+        else:
+            # 最良解が観測済みの場合、その近傍からスタートする
+            initial_start_norm = best_K_norm
         acq_best_K, _ = cma_run(
-            initial=best_K_norm, 
+            initial=initial_start_norm, 
             bounds_array=bounds_normalized,
             popsize=4 + math.floor(3 * math.log(number_of_rings+1)) + 8, 
             sigma=0.3, 
