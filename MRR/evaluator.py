@@ -36,7 +36,7 @@ def evaluate_band(
         # 2. 指数関数的に減少するペナルティ E_penalty を計算
         # distanceが0のとき: E_penalty = -1 * e^0 = -1.0 (理想値)
         # distanceが1のとき: E_penalty = -1 * e^-5 = -0.0067 (最悪値に近い)
-        E_penalty = np.float_(-1.0 * np.exp(-c * distance))
+        E_penalty = np.float_(1.0 * np.exp(-c * distance))
         return E_penalty # <--- ここで戻ることで、start/endを使う次の行をスキップ
 
 
