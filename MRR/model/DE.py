@@ -221,7 +221,7 @@ def optimize_K(
     )
     ensemble_models = [clone(base_ann_model) for _ in range(NUM_ENSEMBLE)]
     #変数
-    initial_samples = N_dim * 10 # 凹凸対策として10Nに増やす
+    initial_samples = 150 # 凹凸対策として10Nに増やす
     MAX_SAO_ITERATIONS = 200 # 探索予算を増やす
     #データセット
     X_train = []
@@ -265,8 +265,8 @@ def optimize_K(
             initial=initial_random_norm, 
             bounds_array=bounds_normalized,
             popsize=4 + math.floor(3 * math.log(number_of_rings+1)) + 8, 
-            sigma=0.7, 
-            generations=200, 
+            sigma=0.3, 
+            generations=50, 
             params=params,
             objective_func=acquisition_wrapper 
         )
