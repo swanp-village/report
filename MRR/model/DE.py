@@ -187,7 +187,7 @@ def predict_ensemble(K_2d: np.ndarray,ensemble_models: List[MLPRegressor])-> flo
 
 
 # predict_ensemble 関数は、別途定義したANNモデルのリストを使って予測します。
-def acquisition_function_ann(K: np.ndarray, ensemble_models: List[MLPRegressor], best_so_far: float, current_bata: float) -> float:
+def acquisition_function_ann(K: np.ndarray, ensemble_models: List[MLPRegressor], best_so_far: float, current_beta: float) -> float:
     """ANNアンサンブルの予測値と不確実性を利用した獲得関数（LCB形式）。"""
     K_2d = K.reshape(1, -1)
     
