@@ -19,12 +19,20 @@ def evaluate_band(
     ignore_binary_evaluation: bool = False,
 ) -> np.float_:
     pass_band, cross_talk = _get_pass_band(x=x, y=y, H_p=H_p, center_wavelength=center_wavelength)
-    #if pass_band.shape[0] == 1:
-    start = pass_band[0][0]
-    end = pass_band[0][1]
+    if pass_band.shape[0] == 1:
+        start = pass_band[0][0]
+        end = pass_band[0][1]
 
-    #else:
-        #return np.float_(0)
+    else:
+        num_pass_bands = pass_band.shape[0] 
+        distance_penalty = np.abs(num_pass_bands - 1)
+        
+        # 2. SAOが学習できる、負の方向に変化する連続的なスコアを返す
+        # 例: E = -50 - 20 * (距離)
+        E_penalty = np.float_(-50.0 - 20.0 * distance_penalty)
+        
+        return E_penalty # <--- ここで戻ることで、start/endを使う次の行をスキップ
+
 
     result = [
         _evaluate_pass_band(x=x, y=y, H_p=H_p, start=start, end=end),
