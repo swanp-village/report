@@ -241,7 +241,7 @@ def optimize_K(
         X_train.append(K_sample)
         Y_train.append(train_fitness)
 
-        if train_fitness < best_fitness:
+        if train_fitness > best_fitness:
             best_fitness = train_fitness
             best_K_norm = K_sample
 
