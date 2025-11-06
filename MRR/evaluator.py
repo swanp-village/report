@@ -24,13 +24,19 @@ def evaluate_band(
         end = pass_band[0][1]
 
     else:
-        num_pass_bands = pass_band.shape[0] 
-        distance_penalty = np.abs(num_pass_bands - 1)
+        num_pass_bands = pass_band.shape[0]
         
-        # 2. SAOが学習できる、負の方向に変化する連続的なスコアを返す
-        # 例: E = -50 - 20 * (距離)
-        E_penalty = np.float_(-50.0 - 20.0 * distance_penalty)
+        # 理想値(1)からの距離
+        distance = np.abs(num_pass_bands - 1)
         
+        # 【連続ペナルティの計算】
+        # 1. 勾配の減衰率 (c): 5.0 を設定 (この値は調整可能)
+        c = 5.0
+        
+        # 2. 指数関数的に減少するペナルティ E_penalty を計算
+        # distanceが0のとき: E_penalty = -1 * e^0 = -1.0 (理想値)
+        # distanceが1のとき: E_penalty = -1 * e^-5 = -0.0067 (最悪値に近い)
+        E_penalty = np.float_(-1.0 * np.exp(-c * distance))
         return E_penalty # <--- ここで戻ることで、start/endを使う次の行をスキップ
 
 
