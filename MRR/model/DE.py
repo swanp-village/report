@@ -151,7 +151,30 @@ def denormalize_K(K_normalized: np.ndarray, eta_max: float) -> np.ndarray:
     
     return K_physical
 
+def get_beta_schedule(iteration: int, max_iterations: int) -> float:
+    """
+    SAOの反復回数に応じてβの値を動的に決定する。
+    初期は探索を優先し、後半は活用を優先する。
+    """
+    # 初期値 (探索優先): 50.0 
+    beta_start = 50.0 
+    
+    # 最終値 (活用優先): 10.0
+    beta_end = 10.0 
+    
+    # 全体の約80%まで徐々に減少させる
+    decay_ratio = 0.8
+    decay_iterations = int(max_iterations * decay_ratio)
 
+    if iteration >= decay_iterations:
+        # 後半20%は最終値に固定
+        beta = beta_end
+    else:
+        # 線形に減少させる
+        beta = beta_start - (beta_start - beta_end) * (iteration / decay_iterations)
+
+    return beta
+    
 # --- 【ANNアンサンブル予測関数】 ---
 def predict_ensemble(K_2d: np.ndarray,ensemble_models: List[MLPRegressor])-> float:
     predictions = np.array([model.predict(K_2d)[0] for model in ensemble_models])
@@ -164,7 +187,7 @@ def predict_ensemble(K_2d: np.ndarray,ensemble_models: List[MLPRegressor])-> flo
 
 
 # predict_ensemble 関数は、別途定義したANNモデルのリストを使って予測します。
-def acquisition_function_ann(K: np.ndarray, ensemble_models: List[MLPRegressor], best_so_far: float) -> float:
+def acquisition_function_ann(K: np.ndarray, ensemble_models: List[MLPRegressor], best_so_far: float, current_bata: float) -> float:
     """ANNアンサンブルの予測値と不確実性を利用した獲得関数（LCB形式）。"""
     K_2d = K.reshape(1, -1)
     
@@ -172,7 +195,7 @@ def acquisition_function_ann(K: np.ndarray, ensemble_models: List[MLPRegressor],
     mu, sigma = predict_ensemble(K_2d, ensemble_models)
     
     # 2. 探索の強度を制御するパラメータ (探索を強制するため、高めに設定)
-    beta = 15.0 
+    beta = current_bata
     
     # 3. 獲得関数の計算: mu - beta * sigma (最小化したい)
     # sigmaが高い点（不確実な点）を優先的に最小化させることで、探索を促進する。
@@ -224,6 +247,7 @@ def optimize_K(
 
 
     for interation in range (MAX_SAO_ITERATIONS):
+        current_beta = get_beta_schedule(iteration, MAX_SAO_ITERATIONS)
         X_arr = np.array(X_train)
         Y_arr = np.array(Y_train)
         for model in ensemble_models:
@@ -233,7 +257,7 @@ def optimize_K(
     #-----獲得関数の最適化-----
         
         def acquisition_wrapper(K_candidate):
-            return acquisition_function_ann(K_candidate, ensemble_models, best_fitness)
+            return acquisition_function_ann(K_candidate, ensemble_models, best_fitness, current_bata)
         lower_bounds = bounds_normalized[:, 0]
         upper_bounds = bounds_normalized[:, 1]
         initial_random_norm = rng.uniform(low=lower_bounds, high=upper_bounds, size=(N_dim,))
