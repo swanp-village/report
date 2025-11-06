@@ -214,7 +214,7 @@ def optimize_K(
     for K_sample in initial_K_samples:
         #評価関数で計算
         K_sample_phy = denormalize_K(K_sample,params.eta)
-        train_fitness = optimize_K_func(K_sample,params)
+        train_fitness = optimize_K_func(K_sample_phy,params)
         X_train.append(K_sample)
         Y_train.append(train_fitness)
 
