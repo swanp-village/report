@@ -19,9 +19,9 @@ def evaluate_band(
     ignore_binary_evaluation: bool = False,
 ) -> np.float_:
     pass_band, cross_talk = _get_pass_band(x=x, y=y, H_p=H_p, center_wavelength=center_wavelength)
-    if pass_band.shape[0] == 1:
-        start = pass_band[0][0]
-        end = pass_band[0][1]
+    #if pass_band.shape[0] == 1:
+    start = pass_band[0][0]
+    end = pass_band[0][1]
 
     #else:
         #return np.float_(0)
