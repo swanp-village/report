@@ -125,8 +125,8 @@ def cma_run(initial, bounds_array, popsize, sigma, generations, params,objective
             best_solution = candidates[fitnesses.index(min_fit)]
 
         # ログ出力（任意）
-        if generation % 50 == 0 or generation == generations - 1:
-            print(f"Gen {generation}: sigma = {es.sigma:.4f}, best_fitness = {best_fitness:.6f}")
+        #if generation % 50 == 0 or generation == generations - 1:
+            #print(f"Gen {generation}: sigma = {es.sigma:.4f}, best_fitness = {best_fitness:.6f}")
 
 
     return best_solution, best_fitness  
@@ -199,7 +199,7 @@ def optimize_K(
     ensemble_models = [clone(base_ann_model) for _ in range(NUM_ENSEMBLE)]
     #変数
     initial_samples = N_dim * 10 # 凹凸対策として10Nに増やす
-    MAX_SAO_ITERATIONS = 2 # 探索予算を増やす
+    MAX_SAO_ITERATIONS = 200 # 探索予算を増やす
     #データセット
     X_train = []
     Y_train = []
@@ -240,9 +240,9 @@ def optimize_K(
         acq_best_K, _ = cma_run(
             initial=initial_random_norm, 
             bounds_array=bounds_normalized,
-            popsize=20, 
+            popsize=4 + math.floor(3 * math.log(number_of_rings+1)) + 8, 
             sigma=0.7, 
-            generations=50, 
+            generations=200, 
             params=params,
             objective_func=acquisition_wrapper 
         )
@@ -253,7 +253,7 @@ def optimize_K(
         true_fitness_new = optimize_K_func(acq_best_K_phy, params)
         
         # データセットを更新
-        X_train.append(acq_best_K_phy)
+        X_train.append(acq_best_K)
         Y_train.append(true_fitness_new)
         
         # 全体の最良解を更新
