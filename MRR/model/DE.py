@@ -157,10 +157,10 @@ def get_beta_schedule(iteration: int, max_iterations: int) -> float:
     初期は探索を優先し、後半は活用を優先する。
     """
     # 初期値 (探索優先): 50.0 
-    beta_start = 50.0 
+    beta_start = 10
     
     # 最終値 (活用優先): 10.0
-    beta_end = 10.0 
+    beta_end = 1
     
     # 全体の約80%まで徐々に減少させる
     decay_ratio = 0.8
@@ -221,8 +221,8 @@ def optimize_K(
     )
     ensemble_models = [clone(base_ann_model) for _ in range(NUM_ENSEMBLE)]
     #変数
-    initial_samples = 150 # 凹凸対策として10Nに増やす
-    MAX_SAO_ITERATIONS = 200 # 探索予算を増やす
+    initial_samples = 70 # 凹凸対策として10Nに増やす
+    MAX_SAO_ITERATIONS = 100 # 探索予算を増やす
     #データセット
     X_train = []
     Y_train = []
@@ -260,9 +260,9 @@ def optimize_K(
             return acquisition_function_ann(K_candidate, ensemble_models, best_fitness, current_beta)
         lower_bounds = bounds_normalized[:, 0]
         upper_bounds = bounds_normalized[:, 1]
-        initial_random_norm = rng.uniform(low=lower_bounds, high=upper_bounds, size=(N_dim,))
+        
         acq_best_K, _ = cma_run(
-            initial=initial_random_norm, 
+            initial=best_K_norm, 
             bounds_array=bounds_normalized,
             popsize=4 + math.floor(3 * math.log(number_of_rings+1)) + 8, 
             sigma=0.3, 
