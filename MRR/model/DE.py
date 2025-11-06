@@ -195,7 +195,7 @@ def acquisition_function_ann(K: np.ndarray, ensemble_models: List[MLPRegressor],
     mu, sigma = predict_ensemble(K_2d, ensemble_models)
     
     # 2. 探索の強度を制御するパラメータ (探索を強制するため、高めに設定)
-    beta = current_bata
+    beta = current_beta
     
     # 3. 獲得関数の計算: mu - beta * sigma (最小化したい)
     # sigmaが高い点（不確実な点）を優先的に最小化させることで、探索を促進する。
@@ -257,7 +257,7 @@ def optimize_K(
     #-----獲得関数の最適化-----
         
         def acquisition_wrapper(K_candidate):
-            return acquisition_function_ann(K_candidate, ensemble_models, best_fitness, current_bata)
+            return acquisition_function_ann(K_candidate, ensemble_models, best_fitness, current_beta)
         lower_bounds = bounds_normalized[:, 0]
         upper_bounds = bounds_normalized[:, 1]
         initial_random_norm = rng.uniform(low=lower_bounds, high=upper_bounds, size=(N_dim,))
