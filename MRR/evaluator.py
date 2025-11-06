@@ -23,9 +23,7 @@ def evaluate_band(
         start = pass_band[0][0]
         end = pass_band[0][1]
 
-    else:
-        start = pass_band[0][0]
-        end = pass_band[0][1]
+    #else:
         #return np.float_(0)
 
     result = [
