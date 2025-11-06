@@ -243,7 +243,7 @@ def optimize_K(
 
         if train_fitness < best_fitness:
             best_fitness = train_fitness
-            best_K = K_sample
+            best_K_norm = K_sample
 
 
     for iteration in range (MAX_SAO_ITERATIONS):
@@ -283,7 +283,7 @@ def optimize_K(
         # 全体の最良解を更新
         if true_fitness_new < best_fitness:
             best_fitness = true_fitness_new
-            best_K = acq_best_K
+            best_K_norm = acq_best_K
             
         print(f"STEP 4: 真値再評価完了。Best Fitness (True) = {best_fitness:.6f}")
     
