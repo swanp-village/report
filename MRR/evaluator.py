@@ -217,22 +217,7 @@ def _evaluate_ripple(
         three_db_band = pass_band[central_index]
     else:
         three_db_band = pass_band[index]  # 点数少ない時はそのまま使う
-    """
-    band = pass_band[index]    
-    lo, hi = np.percentile(band, [5, 95])
-    band = band[(band >= lo) & (band <= hi)]
-    if band.size == 0:  # 万が一全部落ちた場合の保険
-        return (np.float_(0), False)
-    
-    peaks, _ = signal.find_peaks(band)
-    valleys, _ = signal.find_peaks(-band)
-
-    if peaks.size == 0 or valleys.size == 0:
-        # 極大極小が取れなかった場合は従来通り max-min
-        range_ripple = band.max() - band.min()
-    else:
-        range_ripple = band[peaks].max() - band[valleys].min()
-    """
+   
     std_ripple = np.std(three_db_band)
     range_ripple = three_db_band.max() - three_db_band.min()
     r_max1 = 1.0
@@ -244,34 +229,6 @@ def _evaluate_ripple(
 
     return (np.float_(E), True)
 
-"""
-def _evaluate_cross_talk(  y: npt.NDArray[np.float_], max_crosstalk: float, pass_band_start: int, pass_band_end: int
-) -> tuple[np.float_, bool]:
-    overall_peak = np.max(y)
-    start = y[:pass_band_start]
-    end = y[pass_band_end:]
-    maxid_start = np.append(0, argrelmax(start))
-    maxid_end = np.append(argrelmax(end), -1)
-    start_peak = start[maxid_start]
-    end_peak = end[maxid_end]
-    start_peak_db = np.max(start_peak)
-    end_peak_db = np.max(end_peak)
-    excess_start = overall_peak - start_peak_db
-    excess_end = overall_peak - end_peak_db
-    score = np.sum(excess_start) + np.sum(excess_end)
-    #print(score)
-    a = np.any(start_peak > max_crosstalk)
-    b = np.any(end_peak > max_crosstalk)
-    if a or b :
-        if score <= 0 :
-            E = 0
-        else:
-            normalized_score = np.log(score + 1)
-            E = 1 - np.exp(-normalized_score/4)
-        return(E,False)
-    else:
-        return(1,True)
-"""
 
 def _evaluate_cross_talk(  y: npt.NDArray[np.float_], max_crosstalk: float, pass_band_start: int, pass_band_end: int
 ) -> tuple[np.float_, bool]:
