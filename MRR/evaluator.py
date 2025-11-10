@@ -25,7 +25,7 @@ def evaluate_band(
 
     else:
         y_max = y.max()
-        E_penalty = np.exp(1 / 1 + (y_max - H_p))
+        E_penalty = np.float_(1 / 1 + (H_p - y_max))
         
         return E_penalty
 
