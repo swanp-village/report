@@ -28,7 +28,7 @@ def evaluate_band(
         
         # 理想値(1)からの距離
         distance = np.abs(num_pass_bands - 1)
-        
+        print(num_pass_bands)
         # 【連続ペナルティの計算】
         # 1. 勾配の減衰率 (c): 5.0 を設定 (この値は調整可能)
         c = 1.0
