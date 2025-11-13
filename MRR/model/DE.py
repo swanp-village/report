@@ -293,6 +293,7 @@ def optimize_K(
         X_train.append(acq_best_K)
         Y_train.append(true_fitness_new)
         print(f"今回の評価値",true_fitness_new)
+        print(best_fitness)
         # 全体の最良解を更新
         if true_fitness_new < best_fitness:
             best_fitness = true_fitness_new
