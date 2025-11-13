@@ -185,6 +185,81 @@ def predict_ensemble(K_2d: np.ndarray,ensemble_models: List[MLPRegressor])-> flo
     
     return mu, sigma
 
+import numpy as np
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+from typing import List, Tuple
+# from sklearn.neural_network import MLPRegressor, etc. がインポートされている前提
+# NOTE: predict_ensemble 関数は別途定義されているものとします。
+
+def visualize_ann_landscape(ensemble_models: List, params: 'OptimizeKParams', N_rings: int):
+    """
+    訓練済みのANNアンサンブルモデルの予測平均（μ）を3Dで可視化する。
+    
+    Args:
+        ensemble_models: 訓練済みのANNモデルのリスト。
+        params: OptimizeKParamsオブジェクト（etaなどの情報を含む）。
+        N_rings: リングの数 (次元数 N_dim = N_rings + 1)。
+    """
+    
+    # --- 1. 設定と初期化 ---
+    N_dim = N_rings + 1
+    index1, index2 = 0, 1  # 動かす結合率のインデックス (K[0] と K[1] を動かす)
+    
+    k_min, k_max = 0.0, 1.0  # 正規化された [0, 1] 空間
+    resolution = 50 
+    
+    # 残りの変数の固定値 (全て正規化された 0.5 に固定)
+    fixed_K_value_norm = 0.5 
+    fixed_K_array_norm = np.full(N_dim, fixed_K_value_norm)
+    
+    # --- 2. グリッドの生成 ---
+    k1_range = np.linspace(k_min, k_max, resolution)
+    k2_range = np.linspace(k_min, k_max, resolution)
+    
+    K1_norm, K2_norm = np.meshgrid(k1_range, k2_range)
+    Z_mu = np.zeros(K1_norm.shape)  # 予測平均 (μ) を格納する配列
+    
+    # --- 3. グリッドの評価（ANN予測） ---
+    print(f"評価開始: {resolution * resolution} 回のANN予測を実行中...")
+    
+    for i in range(resolution):
+        for j in range(resolution):
+            # 探索点の作成 (K[0], K[1] だけを動かし、残りは固定)
+            K_candidate_norm = fixed_K_array_norm.copy()
+            K_candidate_norm[index1] = K1_norm[i, j]
+            K_candidate_norm[index2] = K2_norm[i, j]
+            
+            # ANNアンサンブルで予測を実行
+            # predict_ensemble は (mu, sigma) のタプルを返す
+            mu, sigma = predict_ensemble(K_candidate_norm.reshape(1, -1), ensemble_models)
+            
+            # 予測平均 (μ) を格納。これが滑らかな探索地形となる。
+            Z_mu[i, j] = mu
+            
+    print("ANN予測完了。")
+    
+    # --- 4. 3D描画 ---
+    fig = plt.figure(figsize=(12, 10))
+    ax = fig.add_subplot(111, projection='3d')
+    
+    # サーフェスプロットの作成 (cmap='viridis'で滑らかさを強調)
+    surf = ax.plot_surface(K1_norm, K2_norm, Z_mu, 
+                           cmap='viridis', 
+                           edgecolor='none', 
+                           alpha=0.8,
+                           rstride=1, cstride=1)
+    
+    # 軸ラベルの設定
+    ax.set_xlabel(f'Normalized Coupling K[{index1}]')
+    ax.set_ylabel(f'Normalized Coupling K[{index2}]')
+    ax.set_zlabel('Predicted Fitness (μ = F)')
+    ax.set_title('ANN Surrogate Model Landscape (Smoothed)')
+    
+    # カラーバーの追加
+    fig.colorbar(surf, shrink=0.5, aspect=5, label='Predicted Fitness')
+    
+    plt.show()
 
 # predict_ensemble 関数は、別途定義したANNモデルのリストを使って予測します。
 def acquisition_function_ann(K: np.ndarray, ensemble_models: List[MLPRegressor], best_so_far: float, current_beta: float) -> float:
@@ -257,6 +332,10 @@ def optimize_K(
         Y_arr = np.array(Y_train)
         for model in ensemble_models:
                 model.fit(X_arr,Y_arr.ravel())
+        if iteration == 0:
+            print(">>> 3D SAOモデルの地形を可視化中...")
+            # 訓練済みのモデルを可視化関数に渡す
+            visualize_ann_landscape(ensemble_models, params, number_of_rings)
         print(f"STEP 3: SAO Iteration {iteration+1}. モデル訓練完了。")
         
     #-----獲得関数の最適化-----
