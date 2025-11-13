@@ -457,6 +457,7 @@ def optimize(
                 if analyze_result > 0.5:
                     analyze_score += 1
             analyze_score_list[m] = analyze_score
+        """
         best_index = np.argmax(E_list)
         best_N = N_list[best_index]
         best_L = L_list[best_index]
@@ -472,7 +473,7 @@ def optimize(
         )
         
         print("================")
-        """
+        
         method_list[m] = method
         best_E_list[m] = best_E
 
