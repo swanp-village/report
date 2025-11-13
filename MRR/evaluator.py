@@ -22,6 +22,7 @@ def evaluate_band(
     if pass_band.shape[0] == 1:
         start = pass_band[0][0]
         end = pass_band[0][1]
+        print("good")
 
     else:
         print("個数",pass_band.shape[0])
