@@ -27,10 +27,10 @@ def evaluate_band(
     else:
         print("個数",pass_band.shape[0])
         y_max = y.max()
-        E = np.float_(-1 / (1 + (H_p - y_max)))
-        print("penalty",E)
+        E_penalty = np.float_(-1 / (1 + (H_p - y_max)))
+        print("penalty",E_penalty)
         
-        return E
+        return E_penalty
 
 
     result = [
