@@ -249,7 +249,7 @@ def optimize_K(
         if train_fitness < best_fitness:
             best_fitness = train_fitness
             best_K_norm = K_sample
-
+#ここまではマイナス
 
     for iteration in range (MAX_SAO_ITERATIONS):
         current_beta = get_beta_schedule(iteration, MAX_SAO_ITERATIONS)
