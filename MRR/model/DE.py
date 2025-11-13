@@ -253,7 +253,7 @@ def visualize_ann_landscape(ensemble_models: List, params: 'OptimizeKParams', N_
     # 軸ラベルの設定
     ax.set_xlabel(f'Normalized Coupling K[{index1}]')
     ax.set_ylabel(f'Normalized Coupling K[{index2}]')
-    ax.set_zlabel('Predicted Fitness (μ = F)')
+    ax.set_zlabel('Predicted Fitness ($\mu$ = F)')
     ax.set_title('ANN Surrogate Model Landscape (Smoothed)')
     
     # カラーバーの追加
