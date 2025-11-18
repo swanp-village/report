@@ -119,10 +119,10 @@ def cma_run(initial, bounds_array, popsize, sigma, generations, params,objective
             es.sigma = 0.7
        
 
-        min_fit = min(fitnesses)
-        if min_fit < best_fitness:
-            best_fitness = min_fit
-            best_solution = candidates[fitnesses.index(min_fit)]
+        max_fit = max(fitnesses)
+        if min_fit > best_fitness:
+            best_fitness = max_fit
+            best_solution = candidates[fitnesses.index(max_fit)]
 
         # ログ出力（任意）
         #if generation % 50 == 0 or generation == generations - 1:
