@@ -365,6 +365,7 @@ def optimize_K(
         
     #-----真値の再評価とデータの更新-----
         # 獲得関数が提案した点 (acq_best_K) を元の評価関数で確認
+        print(acq_best_K)
         acq_best_K_phy = denormalize_K(acq_best_K,params.eta)
         true_fitness_new = optimize_K_func(acq_best_K_phy, params)
         
