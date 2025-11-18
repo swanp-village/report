@@ -25,6 +25,8 @@ def evaluate_band(
         print("good")
 
     else:
+        return(np.float_(0))
+        """
         print("個数",pass_band.shape[0])
         y_max = y.max()
         if y_max > H_p:
@@ -34,7 +36,7 @@ def evaluate_band(
         print("penalty",E_penalty)
         
         return E_penalty
-
+        """
 
     result = [
         _evaluate_pass_band(x=x, y=y, H_p=H_p, start=start, end=end),
