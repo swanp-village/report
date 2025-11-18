@@ -338,7 +338,7 @@ def optimize_K(
     #-----獲得関数の最適化-----
         
         def acquisition_wrapper(K_candidate):
-            return acquisition_function_ann(K_candidate, ensemble_models, best_fitness, current_beta)
+            return -acquisition_function_ann(K_candidate, ensemble_models, best_fitness, current_beta)
         lower_bounds = bounds_normalized[:, 0]
         upper_bounds = bounds_normalized[:, 1]
 
