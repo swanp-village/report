@@ -119,10 +119,13 @@ def cma_run(initial, bounds_array, popsize, sigma, generations, params,objective
             es.sigma = 0.7
        
 
-        max_fit = max(fitnesses)
-        if max_fit > best_fitness:
-            best_fitness = max_fit
-            best_solution = candidates[fitnesses.index(max_fit)]
+        min_fit = min(fitnesses)
+        if min_fit > best_fitness:
+            print("best_fitness",best_fitness)
+            print("min_fitness",min_fit)
+            best_fitness = min_fit
+            print("new_best",best_fitness)
+            best_solution = candidates[fitnesses.index(min_fit)]
 
         # ログ出力（任意）
         #if generation % 50 == 0 or generation == generations - 1:
@@ -368,8 +371,8 @@ def optimize_K(
         # データセットを更新
         X_train.append(acq_best_K)
         Y_train.append(true_fitness_new)
-        print(f"今回の評価値",true_fitness_new)
-        print(best_fitness)
+        #print(f"今回の評価値",true_fitness_new)
+        #print(best_fitness)
         # 全体の最良解を更新
         if true_fitness_new < best_fitness:
             best_fitness = true_fitness_new
