@@ -290,7 +290,7 @@ def optimize_K(
 
     #ANNアンサンブルの定義
     NUM_ENSEMBLE = 12 # アンサンブルの数
-    hidden_layer_sizes = (100, 50, 50) 
+    hidden_layer_sizes = (500, 150, 50) 
     base_ann_model = MLPRegressor(
         hidden_layer_sizes=hidden_layer_sizes, 
         max_iter=10000, 
@@ -302,7 +302,7 @@ def optimize_K(
     ensemble_models = [clone(base_ann_model) for _ in range(NUM_ENSEMBLE)]
     #変数
     initial_samples = 70 # 凹凸対策として10Nに増やす
-    MAX_SAO_ITERATIONS = 1 # 探索予算を増やす
+    MAX_SAO_ITERATIONS = 100 # 探索予算を増やす
     #データセット
     X_train = []
     Y_train = []
@@ -332,10 +332,7 @@ def optimize_K(
         Y_arr = np.array(Y_train)
         for model in ensemble_models:
                 model.fit(X_arr,Y_arr.ravel())
-        if iteration == 0:
-            print(">>> 3D SAOモデルの地形を可視化中...")
-            # 訓練済みのモデルを可視化関数に渡す
-            visualize_ann_landscape(ensemble_models, params, number_of_rings)
+       
         print(f"STEP 3: SAO Iteration {iteration+1}. モデル訓練完了。")
         
     #-----獲得関数の最適化-----
@@ -379,7 +376,10 @@ def optimize_K(
             best_K_norm = acq_best_K
             
         print(f"STEP 4: 真値再評価完了。Best Fitness (True) = {best_fitness:.6f}")
-    
+
+    print(">>> 3D SAOモデルの地形を可視化中...")
+            # 訓練済みのモデルを可視化関数に渡す
+    visualize_ann_landscape(ensemble_models, params, number_of_rings)
     # ----- [最終結果] -----
     E: float = -best_fitness
     K: npt.NDArray[np.float_] = denormalize_K(best_K_norm if best_K_norm is not None else np.zeros(N_dim), params.eta)
