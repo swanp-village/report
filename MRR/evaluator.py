@@ -25,18 +25,15 @@ def evaluate_band(
         print("good")
 
     else:
-        return(np.float_(0))
-        """
         print("個数",pass_band.shape[0])
         y_max = y.max()
         if y_max > H_p:
-            E_penalty = -1/(y_max - H_p)
+            E_penalty = 1 - (H_p / y_max)
         if y_max < H_p:
-            E_penalty = -1/(H_p - y_max)
+            E_penalty = 1 - (y_max / H_p)
         print("penalty",E_penalty)
-        
-        return E_penalty
-        """
+
+        return(E_penalty)
 
     result = [
         _evaluate_pass_band(x=x, y=y, H_p=H_p, start=start, end=end),
