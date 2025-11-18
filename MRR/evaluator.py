@@ -29,7 +29,7 @@ def evaluate_band(
         y_max = y.max()
         if y_max < H_p:
             E_penalty = 1 - (H_p / y_max)
-        if y_max > H_p:
+        elif:
             E_penalty = 1 - (y_max / H_p)
         print("penalty",E_penalty)
 
