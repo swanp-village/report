@@ -290,10 +290,10 @@ def optimize_K(
 
     #ANNアンサンブルの定義
     NUM_ENSEMBLE = 12 # アンサンブルの数
-    hidden_layer_sizes = (500, 150, 50) 
+    hidden_layer_sizes = (200, 150, 50) 
     base_ann_model = MLPRegressor(
         hidden_layer_sizes=hidden_layer_sizes, 
-        max_iter=10000, 
+        max_iter=5000, 
         learning_rate_init = 0.0001,
         activation='relu', 
         solver='adam', 
@@ -301,7 +301,7 @@ def optimize_K(
     )
     ensemble_models = [clone(base_ann_model) for _ in range(NUM_ENSEMBLE)]
     #変数
-    initial_samples = 70 # 凹凸対策として10Nに増やす
+    initial_samples = 300 # 凹凸対策として10Nに増やす
     MAX_SAO_ITERATIONS = 100 # 探索予算を増やす
     #データセット
     X_train = []
