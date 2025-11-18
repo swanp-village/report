@@ -120,7 +120,7 @@ def cma_run(initial, bounds_array, popsize, sigma, generations, params,objective
        
 
         min_fit = min(fitnesses)
-        if min_fit > best_fitness:
+        if min_fit < best_fitness:
             print("best_fitness",best_fitness)
             print("min_fitness",min_fit)
             best_fitness = min_fit
