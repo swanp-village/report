@@ -120,7 +120,7 @@ def cma_run(initial, bounds_array, popsize, sigma, generations, params,objective
        
 
         max_fit = max(fitnesses)
-        if min_fit > best_fitness:
+        if max_fit > best_fitness:
             best_fitness = max_fit
             best_solution = candidates[fitnesses.index(max_fit)]
 
