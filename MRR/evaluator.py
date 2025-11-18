@@ -33,7 +33,7 @@ def evaluate_band(
             E_penalty = 1 - (y_max / H_p)
         print("penalty",E_penalty)
 
-        return(E_penalty)
+        return E_penalty
 
     result = [
         _evaluate_pass_band(x=x, y=y, H_p=H_p, start=start, end=end),
