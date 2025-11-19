@@ -139,7 +139,7 @@ def cma_run(initial, bounds_array, popsize, sigma, generations, params,objective
     return best_solution, best_fitness  
 
 # --- 必須: CMA-ESを初期データ収集用として実行するヘルパー関数 ---
-
+"""
 def normalize_K(K_physical: np.ndarray, eta_max: float) -> np.ndarray:
     """物理スケール [1e-12, eta] から [0, 1] に正規化する"""
     K_min = 1e-12
@@ -159,7 +159,7 @@ def denormalize_K(K_normalized: np.ndarray, eta_max: float) -> np.ndarray:
     K_physical = np.maximum(K_physical, K_min)
     
     return K_physical
-
+"""
 def get_beta_schedule(iteration: int, max_iterations: int) -> float:
     """
     SAOの反復回数に応じてβの値を動的に決定する。
@@ -614,6 +614,7 @@ def optimize(
 
 
 def optimize_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams) -> np.float_:
+    """
     # K_minとK_maxを定義
     K_min = 1e-12
     K_max = params.eta
@@ -623,7 +624,7 @@ def optimize_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams) -> np.fl
     K_clamped = np.minimum(K, K_max)
     K_clamped = np.maximum(K_clamped, K_min)
     # ----------------------------------------
-
+    """
     
 
     x = calculate_x(center_wavelength=params.center_wavelength, FSR=params.FSR)
