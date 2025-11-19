@@ -141,7 +141,7 @@ def cma_run(initial, bounds_array, popsize, sigma, generations, params,objective
 # --- 必須: CMA-ESを初期データ収集用として実行するヘルパー関数 ---
 """
 def normalize_K(K_physical: np.ndarray, eta_max: float) -> np.ndarray:
-    """物理スケール [1e-12, eta] から [0, 1] に正規化する"""
+    #物理スケール [1e-12, eta] から [0, 1] に正規化する
     K_min = 1e-12
     K_range = eta_max - K_min
     K_normalized = (K_physical - K_min) / K_range
