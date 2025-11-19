@@ -194,7 +194,7 @@ def _evaluate_3db_band(
     distance: np.float_ = x[1] - x[0]
     index = _get_3db_band(x=x, y=y, start=start, end=end)
     if index.size <= 1:
-        # ペナルティ計算を追加
+        
         return (np.float_(0), False)
 
     practical_length_of_3db_band = distance * (index[-1] - index[0])
