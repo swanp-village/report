@@ -139,7 +139,7 @@ def cma_run(initial, bounds_array, popsize, sigma, generations, params,objective
     return best_solution, best_fitness  
 
 # --- 必須: CMA-ESを初期データ収集用として実行するヘルパー関数 ---
-"""
+
 def normalize_K(K_physical: np.ndarray, eta_max: float) -> np.ndarray:
     #物理スケール [1e-12, eta] から [0, 1] に正規化する
     K_min = 1e-12
@@ -159,7 +159,7 @@ def denormalize_K(K_normalized: np.ndarray, eta_max: float) -> np.ndarray:
     K_physical = np.maximum(K_physical, K_min)
     
     return K_physical
-"""
+
 def get_beta_schedule(iteration: int, max_iterations: int) -> float:
     """
     SAOの反復回数に応じてβの値を動的に決定する。
@@ -319,9 +319,8 @@ def optimize_K(
     initial_K_samples = lhs.random(n = initial_samples)
     for K_sample in initial_K_samples:
         #評価関数で計算
-        #K_sample_phy = denormalize_K(K_sample,params.eta)
-        #train_fitness = optimize_K_func(K_sample_phy,params)
-        train_fitness = optimize_K_func(K_sample,params)
+        K_sample_phy = denormalize_K(K_sample,params.eta)
+        train_fitness = optimize_K_func(K_sample_phy,params)
         X_train.append(K_sample)
         Y_train.append(train_fitness)
 
@@ -367,9 +366,9 @@ def optimize_K(
     #-----真値の再評価とデータの更新-----
         # 獲得関数が提案した点 (acq_best_K) を元の評価関数で確認
         print(acq_best_K)
-        #acq_best_K_phy = denormalize_K(acq_best_K,params.eta)
-        #true_fitness_new = optimize_K_func(acq_best_K_phy, params)
-        true_fitness_new = optimize_K_func(acq_best_K,params)
+        acq_best_K_phy = denormalize_K(acq_best_K,params.eta)
+        true_fitness_new = optimize_K_func(acq_best_K_phy, params)
+        
         
         # データセットを更新
         X_train.append(acq_best_K)
@@ -388,8 +387,8 @@ def optimize_K(
     visualize_ann_landscape(ensemble_models, params, number_of_rings)
     # ----- [最終結果] -----
     E: float = -best_fitness
-    #K: npt.NDArray[np.float_] = denormalize_K(best_K_norm if best_K_norm is not None else np.zeros(N_dim), params.eta)
-    K: npt.NDArray[np.float_] = best_K_norm
+    K: npt.NDArray[np.float_] = denormalize_K(best_K_norm if best_K_norm is not None else np.zeros(N_dim), params.eta)
+
     return K, E
 
 
