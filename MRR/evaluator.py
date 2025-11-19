@@ -57,6 +57,8 @@ def evaluate_band(
         return E_c
     E = E_c * E_b
     # 各評価関数の結果を表示
+    for i in range(n_eval):
+        print("E_c",result[i][0])
 
     
     return E
