@@ -139,61 +139,6 @@ def cma_run(initial, bounds_array, popsize, sigma, generations, params,objective
     return best_solution, best_fitness  
 
 # --- 必須: CMA-ESを初期データ収集用として実行するヘルパー関数 ---
-def _initial_cma_run(initial, bounds_array, popsize, sigma, generations, params):
-    """初期データ収集のために、CMA-ESを短時間実行し、すべての評価点を収集する。"""
-    
-    collected_X = []
-    collected_Y = []
-    best_fitness_local = float("inf")
-    best_solution_local = None
-
-    def objective_wrapper(K_candidate_norm):
-        """ CMA-ESに渡される目的関数。結果を収集リストに追加する。"""
-        # K_candidate_norm は正規化された値 ([0, 1]) なので、物理スケールに戻す
-        K_phy = denormalize_K(K_candidate_norm, params.eta)
-        
-        # 元の評価関数で真値を計算
-        fitness_val = optimize_K_func(K_phy, params)
-        
-        # データを収集リストに追加 (正規化されたKを格納)
-        collected_X.append(K_candidate_norm.copy())
-        collected_Y.append(fitness_val)
-        
-        return fitness_val
-
-    # CMA-ESのインスタンス化 (短時間の実行)
-    lower_bounds = bounds_array[:, 0]
-    upper_bounds = bounds_array[:, 1]
-    opts = {
-        'bounds': [lower_bounds, upper_bounds],
-        'popsize': popsize,
-        'verb_log': 0,
-        'verbose': -9,
-        # 内部停止条件をすべて無効化し、データ収集を強制
-        'tolfun': 0, 'tolx': 0, 'tolfunhist': 0, 'tolflatfitness': 0, 
-    }
-    
-    es = CMAEvolutionStrategy(initial, sigma, opts)
-    
-    # 短い世代数の実行
-    for generation in range(generations):
-        candidates_norm = es.ask()
-        # objective_wrapperを呼び出すことで、データがcollected_X, collected_Yに格納される
-        fitnesses = [objective_wrapper(x) for x in candidates_norm] 
-        es.tell(candidates_norm, fitnesses)
-        
-        # 最良解の追跡（収集したデータの中の最良値ではなく、CMA-ESの世代ごとの最良値）
-        min_fit = min(fitnesses)
-        if min_fit < best_fitness_local:
-            best_fitness_local = min_fit
-            best_solution_local = candidates_norm[fitnesses.index(min_fit)]
-        
-        if es.stop():
-            break
-            
-    # 収集した全データと最終的な最良解を返す
-    return collected_X, collected_Y, best_solution_local, best_fitness_local
-
 
 def normalize_K(K_physical: np.ndarray, eta_max: float) -> np.ndarray:
     """物理スケール [1e-12, eta] から [0, 1] に正規化する"""
@@ -370,35 +315,20 @@ def optimize_K(
     
     #-----データ収集-----
     print("データ収集開始")
-    initial_sigma = 0.5         # 探索の幅は広く
-    initial_popsize = 40        # 1世代で多くのデータを収集
-    initial_generations = 5     # 短時間の実行 (5世代)
-    
-    # 2. ランダムな初期解を生成 (正規化された空間 [0, 1])
-    lower_bounds_norm = bounds_normalized[:, 0]
-    upper_bounds_norm = bounds_normalized[:, 1]
-    initial_start_norm = rng.uniform(low=lower_bounds_norm, high=upper_bounds_norm, size=(N_dim,))
-    
-    # 3. Pre-Searchの実行
-    all_X_pre, all_Y_pre, kbest_pre, fbest_pre = _initial_cma_run(
-        initial=initial_start_norm,
-        bounds_array=bounds_normalized,
-        popsize=initial_popsize,
-        sigma=initial_sigma,
-        generations=initial_generations,
-        params=params,
-    )
+    lhs = LatinHypercube(d=N_dim, seed=rng)
+    initial_K_samples = lhs.random(n = initial_samples)
+    for K_sample in initial_K_samples:
+        #評価関数で計算
+        #K_sample_phy = denormalize_K(K_sample,params.eta)
+        #train_fitness = optimize_K_func(K_sample_phy,params)
+        train_fitness = optimize_K_func(K_sample,params)
+        X_train.append(K_sample)
+        Y_train.append(train_fitness)
 
-    # 4. 収集した全データを初期データセットとして格納
-    X_train.extend(all_X_pre)
-    Y_train.extend(all_Y_pre)
 
-    # 5. 最良解の初期化
-    if fbest_pre < best_fitness:
-        best_fitness = fbest_pre
-        best_K_norm = kbest_pre
-        
-    print(f"Pre-Search完了。総初期データ点数: {len(X_train)}。初期最良フィットネス: {best_fitness:.6f}")
+        if train_fitness < best_fitness:
+            best_fitness = train_fitness
+            best_K_norm = K_sample
 
     for iteration in range (MAX_SAO_ITERATIONS):
         current_beta = get_beta_schedule(iteration, MAX_SAO_ITERATIONS)
@@ -437,8 +367,9 @@ def optimize_K(
     #-----真値の再評価とデータの更新-----
         # 獲得関数が提案した点 (acq_best_K) を元の評価関数で確認
         print(acq_best_K)
-        acq_best_K_phy = denormalize_K(acq_best_K,params.eta)
-        true_fitness_new = optimize_K_func(acq_best_K_phy, params)
+        #acq_best_K_phy = denormalize_K(acq_best_K,params.eta)
+        #true_fitness_new = optimize_K_func(acq_best_K_phy, params)
+        true_fitness_new = optimize_K_func(acq_best_K,params)
         
         # データセットを更新
         X_train.append(acq_best_K)
@@ -457,8 +388,8 @@ def optimize_K(
     visualize_ann_landscape(ensemble_models, params, number_of_rings)
     # ----- [最終結果] -----
     E: float = -best_fitness
-    K: npt.NDArray[np.float_] = denormalize_K(best_K_norm if best_K_norm is not None else np.zeros(N_dim), params.eta)
-    
+    #K: npt.NDArray[np.float_] = denormalize_K(best_K_norm if best_K_norm is not None else np.zeros(N_dim), params.eta)
+    K: npt.NDArray[np.float_] = best_K_norm
     return K, E
 
 
