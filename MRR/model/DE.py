@@ -358,7 +358,7 @@ def optimize_K(
             bounds_array=bounds_normalized,
             popsize=4 + math.floor(3 * math.log(number_of_rings+1)) + 8, 
             sigma=0.3, 
-            generations=50, 
+            generations=200, 
             params=params,
             objective_func=acquisition_wrapper 
         )
