@@ -613,7 +613,6 @@ def optimize(
 
 
 def optimize_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams) -> np.float_:
-    """
     # K_minとK_maxを定義
     K_min = 1e-12
     K_max = params.eta
@@ -623,14 +622,14 @@ def optimize_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams) -> np.fl
     K_clamped = np.minimum(K, K_max)
     K_clamped = np.maximum(K_clamped, K_min)
     # ----------------------------------------
-    """
+    
     
 
     x = calculate_x(center_wavelength=params.center_wavelength, FSR=params.FSR)
     y = simulate_transfer_function(
         wavelength=x,
         L=params.L,
-        K=K,
+        K=K_clamped,
         alpha=params.alpha,
         eta=params.eta,
         n_eff=params.n_eff,
