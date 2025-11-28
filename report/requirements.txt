@@ -1,0 +1,12 @@
+flake8
+graphviz
+jupyter
+matplotlib
+mypy
+numpy
+scipy
+cmaes
+scikit-learn
+black
+isort
+jinja2
