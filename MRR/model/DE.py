@@ -322,7 +322,7 @@ def optimize_K(
     #-----初期設定-----
     N_dim = number_of_rings + 1
     ensemble_models, X_train, Y_train, best_K_norm, best_fitness, loaded = load_sao_state()
-    
+    bounds_normalized = np.array([(0.0, 1.0) for _ in range(N_dim)])
 
     if not loaded:
         hidden_layer_sizes = (512,256,128) 
@@ -343,7 +343,7 @@ def optimize_K(
         Y_train = []
         best_K_norm: Optional[np.ndarray] = None
         best_fitness = float("inf")
-        bounds_normalized = np.array([(0.0, 1.0) for _ in range(N_dim)])
+        
     
     #-----データ収集-----
         print("データ収集開始")
