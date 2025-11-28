@@ -382,38 +382,40 @@ def optimize_K(
             return denormalize_K(best_K_norm, eta), -best_fitness
             
     #-----獲得関数の最適化-----
-    def final_optimization_wrapper(K_candidate):
-        return acquisition_function_ann(K_candidate, ensemble_models)
+    if build_model_only:
+        
+        def final_optimization_wrapper(K_candidate):
+            return acquisition_function_ann(K_candidate, ensemble_models)
         
     # 最適化の初期スタート点: 初期データで見つけた最良点からスタート
-    initial_start_norm = best_K_norm if best_K_norm is not None else np.full(N_dim, 0.5)
+        initial_start_norm = best_K_norm if best_K_norm is not None else np.full(N_dim, 0.5)
     
     # CMA-ESの最終実行 (獲得関数なし、直接μを最小化)
-    final_K_norm, final_fitness = cma_run(
-        initial=initial_start_norm, 
-        bounds_array=bounds_normalized,
-        popsize=4 + math.floor(3 * math.log(number_of_rings+1)) + 8,
-        sigma=0.5, # モデルベースでは0.3~0.5程度の安定した値で良い
-        generations=500, # 収束するまで十分な世代数を確保
-        params=params,
-        objective_func=final_optimization_wrapper 
-    )
+        final_K_norm, final_fitness = cma_run(
+            initial=initial_start_norm, 
+            bounds_array=bounds_normalized,
+            popsize=4 + math.floor(3 * math.log(number_of_rings+1)) + 8,
+            sigma=0.5, # モデルベースでは0.3~0.5程度の安定した値で良い
+            generations=500, # 収束するまで十分な世代数を確保
+            params=params,
+            objective_func=final_optimization_wrapper 
+        )
     
     #-----【最終検証】-----
     # CMA-ESが見つけた最適解を、最後に一度だけ真の評価関数で検証する
-    final_K_phy = denormalize_K(final_K_norm, params.eta)
-    true_final_fitness = optimize_K_func(final_K_phy, params)
+        final_K_phy = denormalize_K(final_K_norm, params.eta)
+        true_final_fitness = optimize_K_func(final_K_phy, params)
     
-    print(f"最終検証: CMA-ES予測={final_fitness:.6f}, 真の評価値={true_final_fitness:.6f}")
+        print(f"最終検証: CMA-ES予測={final_fitness:.6f}, 真の評価値={true_final_fitness:.6f}")
     
     # --- 可視化は残すが、元のコードには含まれていないため関数呼び出しのみ残す ---
-    visualize_ann_landscape(ensemble_models, params, number_of_rings)
+        visualize_ann_landscape(ensemble_models, params, number_of_rings)
     
     # ----- [最終結果] -----
-    E: float = -true_final_fitness
-    K: npt.NDArray[np.float_] = final_K_phy # 非正規化されたKを返す
+        E: float = -true_final_fitness
+        K: npt.NDArray[np.float_] = final_K_phy # 非正規化されたKを返す
 
-    return K, E
+        return K, E
     """
         def acquisition_wrapper(K_candidate):
             return acquisition_function_ann(K_candidate, ensemble_models)
