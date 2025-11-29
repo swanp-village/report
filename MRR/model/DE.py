@@ -407,7 +407,7 @@ def optimize_K(
             return denormalize_K(best_K_norm, eta), -best_fitness
             
     #-----獲得関数の最適化-----
-    if build_model_only:
+    if not build_model_only:
         
         def final_optimization_wrapper(K_candidate):
             return acquisition_function_ann(K_candidate, ensemble_models)
