@@ -420,7 +420,7 @@ def optimize_K(
             initial=initial_start_norm, 
             bounds_array=bounds_normalized,
             popsize=4 + math.floor(3 * math.log(number_of_rings+1)) + 8,
-            sigma=0.5, # モデルベースでは0.3~0.5程度の安定した値で良い
+            sigma=0.3, # モデルベースでは0.3~0.5程度の安定した値で良い
             generations=500, # 収束するまで十分な世代数を確保
             params=params,
             objective_func=final_optimization_wrapper 
