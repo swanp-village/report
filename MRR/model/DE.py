@@ -363,7 +363,7 @@ def optimize_K(
         )
         ensemble_models = [clone(base_ann_model) for _ in range(NUM_ENSEMBLE)]
     #変数
-        initial_samples = 250 # 凹凸対策として10Nに増やす
+        initial_samples = 10 # 凹凸対策として10Nに増やす
     #データセット
         X_train = []
         Y_train = []
@@ -407,7 +407,7 @@ def optimize_K(
             return denormalize_K(best_K_norm, eta), -best_fitness
             
     #-----獲得関数の最適化-----
-    if build_model_only:
+    if not build_model_only:
         
         def final_optimization_wrapper(K_candidate):
             return acquisition_function_ann(K_candidate, ensemble_models)
