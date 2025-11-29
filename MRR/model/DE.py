@@ -246,7 +246,7 @@ def visualize_ann_landscape(ensemble_models: List, params: 'OptimizeKParams', N_
     # カラーバーの追加
     fig.colorbar(surf, shrink=0.5, aspect=5, label='Predicted Fitness')
     
-    plt.show()
+    #plt.show()
 
 """
 def acquisition_function_ann(K: np.ndarray, ensemble_models: List[MLPRegressor], best_so_far: float, current_beta: float) -> float:
