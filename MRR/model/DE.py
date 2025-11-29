@@ -343,7 +343,7 @@ def optimize_K(
     number_of_rings: int,
     rng: np.random.Generator,
     params: OptimizeKParams,
-    build_model_only: bool = True,
+    build_model_only: bool = False,
 ) -> tuple[npt.NDArray[np.float_], float]:
     #-----初期設定-----
     N_dim = number_of_rings + 1
@@ -363,7 +363,7 @@ def optimize_K(
         )
         ensemble_models = [clone(base_ann_model) for _ in range(NUM_ENSEMBLE)]
     #変数
-        initial_samples = 10 # 凹凸対策として10Nに増やす
+        initial_samples = 100000 # 凹凸対策として10Nに増やす
     #データセット
         X_train = []
         Y_train = []
