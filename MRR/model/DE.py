@@ -359,7 +359,9 @@ def optimize_K(
             learning_rate_init = 0.0004,
             activation='relu', 
             solver='adam', 
-            random_state=42
+            random_state=42,
+            verbose = True,
+            early_stopping = True
         )
         ensemble_models = [clone(base_ann_model) for _ in range(NUM_ENSEMBLE)]
     #変数
