@@ -343,7 +343,7 @@ def optimize_K(
     number_of_rings: int,
     rng: np.random.Generator,
     params: OptimizeKParams,
-    build_model_only: bool = False,
+    build_model_only: bool = True,
 ) -> tuple[npt.NDArray[np.float_], float]:
     #-----初期設定-----
     N_dim = number_of_rings + 1
@@ -356,7 +356,7 @@ def optimize_K(
         base_ann_model = MLPRegressor(
             hidden_layer_sizes=hidden_layer_sizes, 
             max_iter=30000, 
-            learning_rate_init = 0.0005,
+            learning_rate_init = 0.00025,
             activation='relu', 
             solver='adam', 
             random_state=42
