@@ -351,7 +351,7 @@ def optimize_K(
     bounds_normalized = np.array([(0.0, 1.0) for _ in range(N_dim)])
 
     if not loaded:
-        hidden_layer_sizes = (512,256,128) 
+        hidden_layer_sizes = (512,256,128,128) 
         NUM_ENSEMBLE = 1
         base_ann_model = MLPRegressor(
             hidden_layer_sizes=hidden_layer_sizes, 
@@ -361,11 +361,10 @@ def optimize_K(
             solver='adam', 
             random_state=42,
             verbose = True,
-            early_stopping = True
         )
         ensemble_models = [clone(base_ann_model) for _ in range(NUM_ENSEMBLE)]
     #変数
-        initial_samples = 100000 # 凹凸対策として10Nに増やす
+        initial_samples = 50000 # 凹凸対策として10Nに増やす
     #データセット
         X_train = []
         Y_train = []
