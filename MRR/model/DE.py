@@ -361,7 +361,7 @@ def optimize_K(
             solver='adam', 
             random_state=42
         )
-        ensemble_models = 12
+        ensemble_models = [clone(base_ann_model) for _ in range(NUM_ENSEMBLE)]
     #変数
         initial_samples = 100000 # 凹凸対策として10Nに増やす
     #データセット
