@@ -356,12 +356,12 @@ def optimize_K(
         base_ann_model = MLPRegressor(
             hidden_layer_sizes=hidden_layer_sizes, 
             max_iter=30000, 
-            learning_rate_init = 0.00025,
+            learning_rate_init = 0.0004,
             activation='relu', 
             solver='adam', 
             random_state=42
         )
-        ensemble_models = [clone(base_ann_model) for _ in range(NUM_ENSEMBLE)]
+        ensemble_models = 12
     #変数
         initial_samples = 100000 # 凹凸対策として10Nに増やす
     #データセット
