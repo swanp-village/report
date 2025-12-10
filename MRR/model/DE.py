@@ -436,7 +436,7 @@ def optimize_K(
         print(f"最終検証: CMA-ES予測={final_fitness:.6f}, 真の評価値={true_final_fitness:.6f}")
     
     # --- 可視化は残すが、元のコードには含まれていないため関数呼び出しのみ残す ---
-        #visualize_ann_landscape(ensemble_models, params, number_of_rings)
+        visualize_ann_landscape(ensemble_models, params, number_of_rings)
     
     # ----- [最終結果] -----
         E: float = -true_final_fitness
