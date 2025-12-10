@@ -343,7 +343,7 @@ def optimize_K(
     number_of_rings: int,
     rng: np.random.Generator,
     params: OptimizeKParams,
-    build_model_only: bool = False,
+    build_model_only: bool = True,
 ) -> tuple[npt.NDArray[np.float_], float]:
     #-----初期設定-----
     N_dim = number_of_rings + 1
