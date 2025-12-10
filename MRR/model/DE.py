@@ -290,11 +290,11 @@ FILENAME_PREFIX = "mrr_sao_model"
 def save_sao_state(ensemble_models, X_train, Y_train, best_K_norm, best_fitness):
     """ANNアンサンブルモデルとデータをファイルに保存する。"""
     try:
-        joblib.dump(ensemble_models, f'{FILENAME_PREFIX}_20ensemble.pkl')
-        np.save(f'{FILENAME_PREFIX}_20X_train.npy', np.array(X_train))
-        np.save(f'{FILENAME_PREFIX}_20Y_train.npy', np.array(Y_train))
+        joblib.dump(ensemble_models, f'{FILENAME_PREFIX}_20_2ensemble.pkl')
+        np.save(f'{FILENAME_PREFIX}_20X_2_train.npy', np.array(X_train))
+        np.save(f'{FILENAME_PREFIX}_20Y__2train.npy', np.array(Y_train))
         metadata = {'best_K_norm': best_K_norm, 'best_fitness': best_fitness}
-        joblib.dump(metadata, f'{FILENAME_PREFIX}_20metadata.pkl')
+        joblib.dump(metadata, f'{FILENAME_PREFIX}_20_2metadata.pkl')
         print(f"✅ モデルとデータ ({len(X_train)}点) を正常に保存しました。")
     except Exception as e:
         print(f"モデル保存中にエラーが発生しました: {e}")
@@ -302,10 +302,10 @@ def save_sao_state(ensemble_models, X_train, Y_train, best_K_norm, best_fitness)
 def load_sao_state():
     """保存されたモデルとデータをファイルから読み込む。"""
     try:
-        ensemble_models = joblib.load(f'{FILENAME_PREFIX}_20ensemble.pkl')
-        X_train = np.load(f'{FILENAME_PREFIX}_20X_train.npy').tolist()
-        Y_train = np.load(f'{FILENAME_PREFIX}_20Y_train.npy').tolist()
-        metadata = joblib.load(f'{FILENAME_PREFIX}_20metadata.pkl')
+        ensemble_models = joblib.load(f'{FILENAME_PREFIX}_20_2ensemble.pkl')
+        X_train = np.load(f'{FILENAME_PREFIX}_20X_2_train.npy').tolist()
+        Y_train = np.load(f'{FILENAME_PREFIX}_20Y_2_train.npy').tolist()
+        metadata = joblib.load(f'{FILENAME_PREFIX}_20_2metadata.pkl')
         print("✅ 訓練済みモデルとデータを正常に読み込みました。")
         return ensemble_models, X_train, Y_train, metadata['best_K_norm'], metadata['best_fitness'], True
     except FileNotFoundError:
@@ -356,11 +356,12 @@ def optimize_K(
         base_ann_model = MLPRegressor(
             hidden_layer_sizes=hidden_layer_sizes, 
             max_iter=30000, 
-            learning_rate_init = 0.0004,
+            learning_rate_init = 0.0005,
             activation='relu', 
             solver='adam', 
             random_state=42,
             verbose = True,
+            n_iter_no_change = 100
         )
         ensemble_models = [clone(base_ann_model) for _ in range(NUM_ENSEMBLE)]
     #変数
