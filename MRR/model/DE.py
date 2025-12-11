@@ -315,6 +315,19 @@ def acquisition_function_ann(K: np.ndarray, ensemble_models: List[MLPRegressor],
 def acquisition_function_ann(K_candidate, ensemble_models):
     mu, _ = predict_ensemble(K_candidate.reshape(1, -1), ensemble_models)
     return mu # CMA-ESはこの mu を最小化する
+    
+#R^2計算用bulk
+def predict_ensemble_mu_bulk(X_data: np.ndarray, ensemble_models: List[MLPRegressor]) -> np.ndarray:
+    """
+    複数点（バルク）の入力データ X_data に対し、アンサンブルモデルの予測平均(μ)を計算する。
+    """
+    # X_data がリストで来る可能性に備え、ここでndarrayに変換（念のため）
+    if isinstance(X_data, list):
+        X_data = np.array(X_data)
+        
+    predictions = np.array([model.predict(X_data).flatten() for model in ensemble_models])
+    mu = np.mean(predictions, axis=0)
+    return mu
 
 FILENAME_PREFIX = "mrr_sao_model"
 #FSR=20nm
@@ -440,8 +453,8 @@ def optimize_K(
             return denormalize_K(best_K_norm, eta), -best_fitness
 
     
-    Y_train_pred = acquisition_function_ann(X_train, ensemble_models)
-    Y_test_pred = acquisition_function_ann(X_test, ensemble_models)
+    Y_train_pred = predict_ensemble_mu_bulk(X_train, ensemble_models)
+    Y_test_pred = predict_ensemble_mu_bulk(X_test, ensemble_models)
 
     r2_train = r2_score(Y_train, Y_train_pred)
     r2_test = r2_score(Y_test, Y_test_pred)
