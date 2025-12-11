@@ -468,7 +468,7 @@ def optimize_K(
     
     # --- 可視化は残すが、元のコードには含まれていないため関数呼び出しのみ残す ---
         visualize_ann_landscape(ensemble_models, params, number_of_rings)
-        r2_train, r2_test = check_overfitting(base_ann_model, X_train, Y_train, X_test, Y_test)
+        r2_train, r2_test = check_overfitting(ensemble_model, X_train, Y_train, X_test, Y_test)
         
     
     # ----- [最終結果] -----
