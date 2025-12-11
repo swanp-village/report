@@ -332,7 +332,8 @@ def optimize_K(
             solver='adam', 
             random_state=42,
             verbose = True,
-            n_iter_no_change = 100
+            n_iter_no_change = 100,
+            alpha = 0.001
         )
         ensemble_models = [clone(base_ann_model) for _ in range(NUM_ENSEMBLE)]
     #変数
