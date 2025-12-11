@@ -134,38 +134,7 @@ def cma_run(initial, bounds_array, popsize, sigma, generations, params,objective
     return best_solution, best_fitness  
 
 # --- 必須: CMA-ESを初期データ収集用として実行するヘルパー関数 ---
-def check_overfitting(model, X_train, Y_train, X_test, Y_test):
-    """
-    訓練データとテストデータに対する R^2 スコアを計算し、過学習を判断する。
-    
-    Args:
-        model: 訓練済みの MLPRegressor モデル
-    """
-    
-    # 訓練データに対する予測
-    Y_train_pred = model.predict(X_train)
-    # テストデータに対する予測
-    Y_test_pred = model.predict(X_test)
 
-    # R^2 スコアの計算
-    r2_train = r2_score(Y_train, Y_train_pred)
-    r2_test = r2_score(Y_test, Y_test_pred)
-    
-    print("--- R^2 スコアによる過学習診断 ---")
-    print(f"訓練データ R^2: {r2_train:.4f}")
-    print(f"テストデータ R^2: {r2_test:.4f}")
-    
-    if r2_train > 0.99 and r2_test < 0.90:
-        print("\n🚨 診断結果: 重大な過学習が発生しています。")
-        print("モデルは訓練データのノイズに過剰に適合しています。")
-        print("▶︎ 解決策: 'alpha' (正則化) パラメータを増やして再訓練してください。")
-    elif r2_train < 0.90:
-        print("\n⚠️ 診断結果: モデルがアンダーフィッティング（学習不足）です。")
-    else:
-        print("\n✅ 診断結果: 汎化性能は良好です。最適化の問題は探索戦略にある可能性があります。")
-        
-    return r2_train, r2_test
-    
 def normalize_K(K_physical: np.ndarray, eta_max: float) -> np.ndarray:
     #物理スケール [1e-12, eta] から [0, 1] に正規化する
     K_min = 1e-12
@@ -286,18 +255,6 @@ def acquisition_function_ann(K_candidate, ensemble_models):
     mu, _ = predict_ensemble(K_candidate.reshape(1, -1), ensemble_models)
     return mu # CMA-ESはこの mu を最小化する
     
-#R^2計算用bulk
-def predict_ensemble_mu_bulk(X_data: np.ndarray, ensemble_models: List[MLPRegressor]) -> np.ndarray:
-    """
-    複数点（バルク）の入力データ X_data に対し、アンサンブルモデルの予測平均(μ)を計算する。
-    """
-    # X_data がリストで来る可能性に備え、ここでndarrayに変換（念のため）
-    if isinstance(X_data, list):
-        X_data = np.array(X_data)
-        
-    predictions = np.array([model.predict(X_data).flatten() for model in ensemble_models])
-    mu = np.mean(predictions, axis=0)
-    return mu
 
 FILENAME_PREFIX = "mrr_sao_model"
 #FSR=20nm
@@ -416,47 +373,7 @@ def optimize_K(
             # モデル構築のみを目的とする場合、ここで終了
         return denormalize_K(best_K_norm, eta), -best_fitness
     
-    X_full_arr = np.array(X_train)
-    Y_full_arr = np.array(Y_train).ravel() # Y_trainは平坦化
-
-    # 全データ (X_train, Y_train) を訓練用とテスト用に分割
-    # X_train_split: 訓練に使用するデータ (90%)
-    # X_test: 診断に使用するデータ (10%)
-    X_train_split, X_test, Y_train_split, Y_test = train_test_split(
-        X_full_arr, 
-        Y_full_arr, 
-        test_size=0.1, 
-        random_state=42 # 再現性の確保
-    )
-    print(f"データセットを分割しました: 訓練点数={len(X_train_split)}, テスト点数={len(X_test)}")
     
-    
-    # 🚨 【修正 2】: モデル訓練に分割後の訓練データを使用
-    # X_arr = np.array(X_train)  <-- 元々この行があった場合、削除/置換
-    # Y_arr = np.array(Y_train)  <-- 元々この行があった場合、削除/置換
-    X_arr = X_train_split # 分割後の訓練データ
-    Y_arr = Y_train_split # 分割後の訓練データ
-
-    
-    Y_train_pred = predict_ensemble_mu_bulk(X_train_split, ensemble_models)
-    Y_test_pred = predict_ensemble_mu_bulk(X_test, ensemble_models)
-
-    r2_train = r2_score(Y_train_split, Y_train_pred)
-    r2_test = r2_score(Y_test, Y_test_pred)
-    
-    # check_overfittingの診断ロジックを直接ここに組み込む
-    print("--- R^2 スコアによる過学習診断 ---")
-    print(f"訓練データ R^2: {r2_train:.4f}")
-    print(f"テストデータ R^2: {r2_test:.4f}")
-    
-    if r2_train > 0.99 and r2_test < 0.90:
-        print("\n🚨 診断結果: 重大な過学習が発生しています。")
-        print("▶︎ 解決策: 'alpha' (正則化) パラメータを増やして再訓練してください。")
-    elif r2_train < 0.90:
-        print("\n⚠️ 診断結果: モデルがアンダーフィッティング（学習不足）です。")
-    else:
-        print("\n✅ 診断結果: 汎化性能は良好です。最適化の問題は探索戦略にある可能性があります。") 
-    #-----獲得関数の最適化-----
     if not build_model_only:
         
         def final_optimization_wrapper(K_candidate):
