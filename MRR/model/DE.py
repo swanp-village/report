@@ -363,15 +363,15 @@ def optimize_K(
 
         print(f"最大値 (最良の解): {Y_arr_initial.min():.6f}")
         #current_beta = get_beta_schedule(iteration, MAX_SAO_ITERATIONS)
-    X_arr = np.array(X_train)
-    Y_arr = np.array(Y_train)
-    for model in ensemble_models:
-        model.fit(X_arr,Y_arr.ravel())
-    save_sao_state(ensemble_models, X_train, Y_train, best_K_norm, best_fitness)
-    print(f"STEP 3: SAOモデル訓練完了。")
-    if build_model_only:
+        X_arr = np.array(X_train)
+        Y_arr = np.array(Y_train)
+        for model in ensemble_models:
+            model.fit(X_arr,Y_arr.ravel())
+        save_sao_state(ensemble_models, X_train, Y_train, best_K_norm, best_fitness)
+        print(f"STEP 3: SAOモデル訓練完了。")
+        if build_model_only:
             # モデル構築のみを目的とする場合、ここで終了
-        return denormalize_K(best_K_norm, eta), -best_fitness
+            return denormalize_K(best_K_norm, eta), -best_fitness
     
     
     if not build_model_only:
