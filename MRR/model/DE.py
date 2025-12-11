@@ -451,7 +451,7 @@ def optimize_K(
         if build_model_only:
             # モデル構築のみを目的とする場合、ここで終了
             return denormalize_K(best_K_norm, eta), -best_fitness
-　　X_full_arr = np.array(X_train)
+    X_full_arr = np.array(X_train)
     Y_full_arr = np.array(Y_train).ravel() # Y_trainは平坦化
 
     # 全データ (X_train, Y_train) を訓練用とテスト用に分割
