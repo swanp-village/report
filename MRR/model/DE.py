@@ -426,10 +426,10 @@ def optimize_K(
         Y_arr = Y_train_split # 分割後の訓練データ
     #for iteration in range (MAX_SAO_ITERATIONS):
         #current_beta = get_beta_schedule(iteration, MAX_SAO_ITERATIONS)
-        X_arr_1 = np.array(X_train)
-        Y_arr_1 = np.array(Y_train)
+        #X_arr_1 = np.array(X_train)
+        #Y_arr_1 = np.array(Y_train)
         for model in ensemble_models:
-                model.fit(X_arr_1,Y_arr_1.ravel())
+                model.fit(X_arr,Y_arr.ravel())
         save_sao_state(ensemble_models, X_train, Y_train, best_K_norm, best_fitness)
         print(f"STEP 3: SAOモデル訓練完了。")
         if build_model_only:
@@ -437,10 +437,10 @@ def optimize_K(
             return denormalize_K(best_K_norm, eta), -best_fitness
     
     
-    Y_train_pred = predict_ensemble_mu_bulk(X_train, ensemble_models)
+    Y_train_pred = predict_ensemble_mu_bulk(X_train_split, ensemble_models)
     Y_test_pred = predict_ensemble_mu_bulk(X_test, ensemble_models)
 
-    r2_train = r2_score(Y_train, Y_train_pred)
+    r2_train = r2_score(Y_train_split, Y_train_pred)
     r2_test = r2_score(Y_test, Y_test_pred)
     
     # check_overfittingの診断ロジックを直接ここに組み込む
