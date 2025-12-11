@@ -438,7 +438,26 @@ def optimize_K(
         if build_model_only:
             # モデル構築のみを目的とする場合、ここで終了
             return denormalize_K(best_K_norm, eta), -best_fitness
-            
+
+    
+    Y_train_pred = acquisition_function_ann(X_train, ensemble_models)
+    Y_test_pred = acquisition_function_ann(X_test, ensemble_models)
+
+    r2_train = r2_score(Y_train, Y_train_pred)
+    r2_test = r2_score(Y_test, Y_test_pred)
+    
+    # check_overfittingの診断ロジックを直接ここに組み込む
+    print("--- R^2 スコアによる過学習診断 ---")
+    print(f"訓練データ R^2: {r2_train:.4f}")
+    print(f"テストデータ R^2: {r2_test:.4f}")
+    
+    if r2_train > 0.99 and r2_test < 0.90:
+        print("\n🚨 診断結果: 重大な過学習が発生しています。")
+        print("▶︎ 解決策: 'alpha' (正則化) パラメータを増やして再訓練してください。")
+    elif r2_train < 0.90:
+        print("\n⚠️ 診断結果: モデルがアンダーフィッティング（学習不足）です。")
+    else:
+        print("\n✅ 診断結果: 汎化性能は良好です。最適化の問題は探索戦略にある可能性があります。") 
     #-----獲得関数の最適化-----
     if not build_model_only:
         
@@ -468,7 +487,7 @@ def optimize_K(
     
     # --- 可視化は残すが、元のコードには含まれていないため関数呼び出しのみ残す ---
         visualize_ann_landscape(ensemble_models, params, number_of_rings)
-        r2_train, r2_test = check_overfitting(ensemble_models, X_train, Y_train, X_test, Y_test)
+        #r2_train, r2_test = check_overfitting(ensemble_models, X_train, Y_train, X_test, Y_test)
         
     
     # ----- [最終結果] -----
