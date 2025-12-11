@@ -38,6 +38,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from typing import List, Tuple
 from scipy.stats import norm
+from sklearn.model_selection import train_test_split
 # ----------------------------------------------------
 
 def optimize_L(
