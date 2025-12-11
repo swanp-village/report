@@ -405,6 +405,17 @@ def optimize_K(
             Y_arr_initial = np.array(Y_train)
 
         print(f"最大値 (最良の解): {Y_arr_initial.min():.6f}")
+        #current_beta = get_beta_schedule(iteration, MAX_SAO_ITERATIONS)
+        #X_arr_1 = np.array(X_train)
+        #Y_arr_1 = np.array(Y_train)
+    for model in ensemble_models:
+            model.fit(X_arr,Y_arr.ravel())
+    save_sao_state(ensemble_models, X_train, Y_train, best_K_norm, best_fitness)
+    print(f"STEP 3: SAOモデル訓練完了。")
+    if build_model_only:
+            # モデル構築のみを目的とする場合、ここで終了
+        return denormalize_K(best_K_norm, eta), -best_fitness
+    
     X_full_arr = np.array(X_train)
     Y_full_arr = np.array(Y_train).ravel() # Y_trainは平坦化
 
@@ -425,18 +436,7 @@ def optimize_K(
     # Y_arr = np.array(Y_train)  <-- 元々この行があった場合、削除/置換
     X_arr = X_train_split # 分割後の訓練データ
     Y_arr = Y_train_split # 分割後の訓練データ
-    #for iteration in range (MAX_SAO_ITERATIONS):
-        #current_beta = get_beta_schedule(iteration, MAX_SAO_ITERATIONS)
-        #X_arr_1 = np.array(X_train)
-        #Y_arr_1 = np.array(Y_train)
-    for model in ensemble_models:
-            model.fit(X_arr,Y_arr.ravel())
-    save_sao_state(ensemble_models, X_train, Y_train, best_K_norm, best_fitness)
-    print(f"STEP 3: SAOモデル訓練完了。")
-    if build_model_only:
-            # モデル構築のみを目的とする場合、ここで終了
-        return denormalize_K(best_K_norm, eta), -best_fitness
-    
+
     
     Y_train_pred = predict_ensemble_mu_bulk(X_train_split, ensemble_models)
     Y_test_pred = predict_ensemble_mu_bulk(X_test, ensemble_models)
