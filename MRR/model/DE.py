@@ -404,37 +404,37 @@ def optimize_K(
             Y_arr_initial = np.array(Y_train)
 
         print(f"最大値 (最良の解): {Y_arr_initial.min():.6f}")
-        X_full_arr = np.array(X_train)
-        Y_full_arr = np.array(Y_train).ravel() # Y_trainは平坦化
+    X_full_arr = np.array(X_train)
+    Y_full_arr = np.array(Y_train).ravel() # Y_trainは平坦化
 
     # 全データ (X_train, Y_train) を訓練用とテスト用に分割
     # X_train_split: 訓練に使用するデータ (90%)
     # X_test: 診断に使用するデータ (10%)
-        X_train_split, X_test, Y_train_split, Y_test = train_test_split(
-            X_full_arr, 
-            Y_full_arr, 
-            test_size=0.1, 
-            random_state=42 # 再現性の確保
-        )
-        print(f"データセットを分割しました: 訓練点数={len(X_train_split)}, テスト点数={len(X_test)}")
+    X_train_split, X_test, Y_train_split, Y_test = train_test_split(
+        X_full_arr, 
+        Y_full_arr, 
+        test_size=0.1, 
+        random_state=42 # 再現性の確保
+    )
+    print(f"データセットを分割しました: 訓練点数={len(X_train_split)}, テスト点数={len(X_test)}")
     
     
     # 🚨 【修正 2】: モデル訓練に分割後の訓練データを使用
     # X_arr = np.array(X_train)  <-- 元々この行があった場合、削除/置換
     # Y_arr = np.array(Y_train)  <-- 元々この行があった場合、削除/置換
-        X_arr = X_train_split # 分割後の訓練データ
-        Y_arr = Y_train_split # 分割後の訓練データ
+    X_arr = X_train_split # 分割後の訓練データ
+    Y_arr = Y_train_split # 分割後の訓練データ
     #for iteration in range (MAX_SAO_ITERATIONS):
         #current_beta = get_beta_schedule(iteration, MAX_SAO_ITERATIONS)
         #X_arr_1 = np.array(X_train)
         #Y_arr_1 = np.array(Y_train)
-        for model in ensemble_models:
-                model.fit(X_arr,Y_arr.ravel())
-        save_sao_state(ensemble_models, X_train, Y_train, best_K_norm, best_fitness)
-        print(f"STEP 3: SAOモデル訓練完了。")
-        if build_model_only:
+    for model in ensemble_models:
+            model.fit(X_arr,Y_arr.ravel())
+    save_sao_state(ensemble_models, X_train, Y_train, best_K_norm, best_fitness)
+    print(f"STEP 3: SAOモデル訓練完了。")
+    if build_model_only:
             # モデル構築のみを目的とする場合、ここで終了
-            return denormalize_K(best_K_norm, eta), -best_fitness
+        return denormalize_K(best_K_norm, eta), -best_fitness
     
     
     Y_train_pred = predict_ensemble_mu_bulk(X_train_split, ensemble_models)
