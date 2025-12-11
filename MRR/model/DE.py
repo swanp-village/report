@@ -279,38 +279,7 @@ def visualize_ann_landscape(ensemble_models: List, params: 'OptimizeKParams', N_
     
     plt.show()
 
-"""
-def acquisition_function_ann(K: np.ndarray, ensemble_models: List[MLPRegressor], best_so_far: float, current_beta: float) -> float:
-    
-    K_2d = K.reshape(1, -1)
-    
-    # 1. 予測の平均 (mu) と標準偏差 (sigma) を取得
-    mu, sigma = predict_ensemble(K_2d, ensemble_models)
-    
-    # 2. 現在の最良値からの改善量 (Improvement) を計算
-    # 最小化問題なので、I = best_so_far - mu となり、I > 0 なら改善。
-    improvement = best_so_far - mu
-    
-    # 3. EIの計算に必要なパラメータ z を計算
-    # ゼロ除算を避けるために、sigmaが非常に小さい場合は直接EI=0とする
-    if sigma <= 1e-9:
-        # sigmaがゼロに近い場合、不確実性がないためEIはゼロ (改善の期待値なし)
-        return 0.0
-    
-    z = improvement / sigma
-    
-    # 4. EI (Expected Improvement) を計算
-    # EI = sigma * (z * Φ(z) + φ(z))
-    # Φ(z): 標準正規分布の累積分布関数 (CDF)
-    # φ(z): 標準正規分布の確率密度関数 (PDF)
-    ei_value = sigma * (z * norm.cdf(z) + norm.pdf(z))
-    
-    # 5. CMA-ESに渡すため、EIの負の値（最小化形式）を返す
-    # EIは最大化すべき関数なので、最小化を目指すCMA-ESには -EI を渡す
-    acquisition_value = -ei_value 
-    
-    return acquisition_value
-"""
+
 # 10万点モデルの予測平均を直接返す関数
 def acquisition_function_ann(K_candidate, ensemble_models):
     mu, _ = predict_ensemble(K_candidate.reshape(1, -1), ensemble_models)
@@ -433,44 +402,40 @@ def optimize_K(
                 best_K_norm = K_sample
         # データ収集ループの直後に追加
             Y_arr_initial = np.array(Y_train)
-        """
-        print("\n*** 初期データセット Y_train の確認 ***")
-        print(f"データ点数: {len(Y_train)}")
-        print(f"最小値 (最良の解): {Y_arr_initial.min():.6f}")
-        """
-        print(f"最大値 (最良の解): {Y_arr_initial.min():.6f}")
 
-    #for iteration in range (MAX_SAO_ITERATIONS):
-        #current_beta = get_beta_schedule(iteration, MAX_SAO_ITERATIONS)
-        X_arr = np.array(X_train)
-        Y_arr = np.array(Y_train)
-        for model in ensemble_models:
-                model.fit(X_arr,Y_arr.ravel())
-        save_sao_state(ensemble_models, X_train, Y_train, best_K_norm, best_fitness)
-        print(f"STEP 3: SAOモデル訓練完了。")
-        if build_model_only:
-            # モデル構築のみを目的とする場合、ここで終了
-            return denormalize_K(best_K_norm, eta), -best_fitness
-    X_full_arr = np.array(X_train)
-    Y_full_arr = np.array(Y_train).ravel() # Y_trainは平坦化
+        print(f"最大値 (最良の解): {Y_arr_initial.min():.6f}")
+        X_full_arr = np.array(X_train)
+        Y_full_arr = np.array(Y_train).ravel() # Y_trainは平坦化
 
     # 全データ (X_train, Y_train) を訓練用とテスト用に分割
     # X_train_split: 訓練に使用するデータ (90%)
     # X_test: 診断に使用するデータ (10%)
-    X_train_split, X_test, Y_train_split, Y_test = train_test_split(
-        X_full_arr, 
-        Y_full_arr, 
-        test_size=0.1, 
-        random_state=42 # 再現性の確保
-    )
-    print(f"データセットを分割しました: 訓練点数={len(X_train_split)}, テスト点数={len(X_test)}")
+        X_train_split, X_test, Y_train_split, Y_test = train_test_split(
+            X_full_arr, 
+            Y_full_arr, 
+            test_size=0.1, 
+            random_state=42 # 再現性の確保
+        )
+        print(f"データセットを分割しました: 訓練点数={len(X_train_split)}, テスト点数={len(X_test)}")
     
     
     # 🚨 【修正 2】: モデル訓練に分割後の訓練データを使用
     # X_arr = np.array(X_train)  <-- 元々この行があった場合、削除/置換
     # Y_arr = np.array(Y_train)  <-- 元々この行があった場合、削除/置換
-    X_arr = X_train_split # 分割後の訓練データ
-    Y_arr = Y_train_split # 分割後の訓練データ
+        X_arr = X_train_split # 分割後の訓練データ
+        Y_arr = Y_train_split # 分割後の訓練データ
+    #for iteration in range (MAX_SAO_ITERATIONS):
+        #current_beta = get_beta_schedule(iteration, MAX_SAO_ITERATIONS)
+        X_arr_1 = np.array(X_train)
+        Y_arr_1 = np.array(Y_train)
+        for model in ensemble_models:
+                model.fit(X_arr_1,Y_arr_1.ravel())
+        save_sao_state(ensemble_models, X_train, Y_train, best_K_norm, best_fitness)
+        print(f"STEP 3: SAOモデル訓練完了。")
+        if build_model_only:
+            # モデル構築のみを目的とする場合、ここで終了
+            return denormalize_K(best_K_norm, eta), -best_fitness
+    
     
     Y_train_pred = predict_ensemble_mu_bulk(X_train, ensemble_models)
     Y_test_pred = predict_ensemble_mu_bulk(X_test, ensemble_models)
