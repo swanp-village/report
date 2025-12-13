@@ -326,14 +326,14 @@ def optimize_K(
         NUM_ENSEMBLE = 1
         base_ann_model = MLPRegressor(
             hidden_layer_sizes=hidden_layer_sizes, 
-            max_iter=30000, 
+            max_iter=10000, 
             learning_rate_init = 0.0005,
             activation='relu', 
             solver='adam', 
             random_state=42,
             verbose = True,
             n_iter_no_change = 100,
-            alpha = 0.001
+            alpha = 0.01
         )
         ensemble_models = [clone(base_ann_model) for _ in range(NUM_ENSEMBLE)]
     #変数
