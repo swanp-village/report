@@ -261,11 +261,11 @@ FILENAME_PREFIX = "mrr_sao_model"
 def save_sao_state(ensemble_models, X_train, Y_train, best_K_norm, best_fitness):
     """ANNアンサンブルモデルとデータをファイルに保存する。"""
     try:
-        joblib.dump(ensemble_models, f'{FILENAME_PREFIX}_20_3ensemble.pkl')
-        np.save(f'{FILENAME_PREFIX}_20X_3_train.npy', np.array(X_train))
-        np.save(f'{FILENAME_PREFIX}_20Y_3_train.npy', np.array(Y_train))
+        joblib.dump(ensemble_models, f'{FILENAME_PREFIX}_20_4ensemble.pkl')
+        np.save(f'{FILENAME_PREFIX}_20X_4_train.npy', np.array(X_train))
+        np.save(f'{FILENAME_PREFIX}_20Y_4_train.npy', np.array(Y_train))
         metadata = {'best_K_norm': best_K_norm, 'best_fitness': best_fitness}
-        joblib.dump(metadata, f'{FILENAME_PREFIX}_20_3metadata.pkl')
+        joblib.dump(metadata, f'{FILENAME_PREFIX}_20_4metadata.pkl')
         print(f"✅ モデルとデータ ({len(X_train)}点) を正常に保存しました。")
     except Exception as e:
         print(f"モデル保存中にエラーが発生しました: {e}")
@@ -273,10 +273,10 @@ def save_sao_state(ensemble_models, X_train, Y_train, best_K_norm, best_fitness)
 def load_sao_state():
     """保存されたモデルとデータをファイルから読み込む。"""
     try:
-        ensemble_models = joblib.load(f'{FILENAME_PREFIX}_20_3ensemble.pkl')
-        X_train = np.load(f'{FILENAME_PREFIX}_20X_3_train.npy').tolist()
-        Y_train = np.load(f'{FILENAME_PREFIX}_20Y_3_train.npy').tolist()
-        metadata = joblib.load(f'{FILENAME_PREFIX}_20_3metadata.pkl')
+        ensemble_models = joblib.load(f'{FILENAME_PREFIX}_20_4ensemble.pkl')
+        X_train = np.load(f'{FILENAME_PREFIX}_20X_4_train.npy').tolist()
+        Y_train = np.load(f'{FILENAME_PREFIX}_20Y_4_train.npy').tolist()
+        metadata = joblib.load(f'{FILENAME_PREFIX}_20_4metadata.pkl')
         print("✅ 訓練済みモデルとデータを正常に読み込みました。")
         return ensemble_models, X_train, Y_train, metadata['best_K_norm'], metadata['best_fitness'], True
     except FileNotFoundError:
