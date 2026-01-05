@@ -333,7 +333,7 @@ def optimize_K(
             random_state=42,
             verbose = True,
             n_iter_no_change = 100,
-            alpha = 0.01
+            alpha = 0.005
         )
         ensemble_models = [clone(base_ann_model) for _ in range(NUM_ENSEMBLE)]
     #変数
