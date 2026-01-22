@@ -27,7 +27,7 @@ from typing import Tuple
 import numpy.typing as npt
 import os
 from scipy import stats
-rom collections import deque
+from collections import deque
 
 
 def optimize_L(
