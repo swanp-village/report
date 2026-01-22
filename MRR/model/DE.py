@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-import joblib
 import math
 import numpy as np
 import numpy.typing as npt
@@ -27,19 +26,9 @@ from cma import CMAEvolutionStrategy
 from typing import Tuple
 import numpy.typing as npt
 import os
-from sklearn.gaussian_process import GaussianProcessRegressor
-from sklearn.gaussian_process.kernels import RBF, ConstantKernel as C
-from sklearn.gaussian_process.kernels import WhiteKernel
-from sklearn.neural_network import MLPRegressor
-from sklearn.base import clone
-from typing import Tuple,List
-import numpy as np
-import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
-from typing import List, Tuple
-from scipy.stats import norm
-from sklearn.model_selection import train_test_split
-# ----------------------------------------------------
+from scipy import stats
+rom collections import deque
+
 
 def optimize_L(
     n_g: float,
@@ -90,379 +79,169 @@ class OptimizeKParams:
     H_i: float
     r_max: float
     weight: list[float]
+"""
+normal_evaluations = []
+perturbed_evaluations = []
+def combined_evaluation(K: npt.NDArray[np.float_], params: OptimizeKParams) -> float:
+    
+    #誤差の正負両方を考慮した総合評価値を計算。
+
+   # Parameters:
+    #- K: 結合率の配列
+    #- params: 最適化パラメータ
+
+    #Returns:
+    #- total_score: 総合評価値
+    
+    global normal_evaluations, perturbed_evaluations
+    
+
+    # 通常の評価値
+    E_optimal = optimize_K_func(K, params)
+
+    # 正負の誤差による評価値
+    E_positive, E_negative = optimize_perturbed_K_func(K, params)
+
+    # 評価値を記録
+    normal_evaluations.append(E_optimal)
+    perturbed_evaluations.append((E_positive, E_negative))
+
+    # 評価値の統合
+    delta_E_positive = abs(E_optimal - E_positive)
+    delta_E_negative = abs(E_optimal - E_negative)
+
+    # 総合評価値 (例: 平均変動量をペナルティとして加算)
+    total_score = E_optimal + (delta_E_positive + delta_E_negative) / 2
+
+    return total_score
+"""
 
 
-def cma_run(initial, bounds_array, popsize, sigma, generations, params,objective_func):
+#CMA-ES動作コード_pycma
+def SHACMA_run(initial, bounds_array, popsize, sigma, generations, params):
     # bounds_array: shape (N, 2)
     lower_bounds = bounds_array[:, 0]
     upper_bounds = bounds_array[:, 1]
+    xdim = len(initial)
+    init_ccov = 1.0 / (xdim**1.5)
+
+    H = 20 # メモリサイズ
+    mem_sigma = deque([sigma] * H, maxlen = H) # 探索範囲のメモリ
+    mem_ccov = deque([init_ccov] * H, maxlen = H) # 学習率のメモリ
+    archive = deque(maxlen = popsize * 2) # 外部アーカイブ
+    k = 0 # メモリ更新回数
 
     opts = {
         'bounds': [lower_bounds, upper_bounds],
         'popsize': popsize,
         'verb_log': 0,
-        'verbose': -9,
-        'tolfun': 0,        # 目的関数値の改善による停止を無効化
-        'tolx': 0,          # 探索空間の変化による停止を無効化
-        'tolfunhist': 0,    # 過去の履歴による停止を無効化
-        'tolflatfitness': 0, # フィットネスが平坦になったことによる停止を無効化
-        'maxiter': generations,  
+        'verbose': -9,  # suppress internal logs
+        'tolfun':1e-13,
     }
 
     es = CMAEvolutionStrategy(initial, sigma, opts)
 
     best_solution = None
     best_fitness = float("inf")
+    stagnation_counter = 0
 
-    for generation in range(generations):
+    for generation in range (generations):
+        #---成功履歴からパラメータを摘出---
+        m_idx = np.random.randint(0, H)
+        curr_sigma = stats.cauchy.rvs(loc = mem_sigma[m_idx], scale = 0.05)# sigmaに関して少しの揺れを加える
+        curr_ccov = stats.cauchy.rvs(loc = mem_ccov[m_idx], scale = 0.01)# ccovに関して少しの揺れを加える
+
+        #値が異常になるのを阻止
+        curr_sigma = max(curr_sigma, 0.01)
+        curr_ccov = np.clip(curr_ccov, 0.001, 0.5)
+
+        #パラメータの決定
+        es.sigma = curr_sigma
+        es.opts.set({'ccov1':curr_ccov, 'ccovmu':curr_ccov})
+
         candidates = es.ask()
-        fitnesses = [objective_func(x) for x in candidates]
-        es.tell(candidates, fitnesses)
-        min_fit = min(fitnesses)
-        if min_fit < best_fitness:
-            print("best_fitness",best_fitness)
-            print("min_fitness",min_fit)
-            best_fitness = min_fit
-            print("new_best",best_fitness)
-            best_solution = candidates[fitnesses.index(min_fit)]
+        fitness = [optimize_K_func(x,params) for x in candidates]
 
-        # ログ出力（任意）
-        #if generation % 50 == 0 or generation == generations - 1:
-            #print(f"Gen {generation}: sigma = {es.sigma:.4f}, best_fitness = {best_fitness:.6f}")
+        es.tell (candidates, fitness)
+
+        #---成功時のメモリを保存---
+        prev_best = best_fitness #最大値
 
 
-    return best_solution, best_fitness  
+        suc_sigma = [] #成功メモリ保存用
+        suc_ccov = []
+        delta_E = []
+        
+        for i, fit in enumerate(fitness):
+            if fit < prev_best:
+                #---各パラメータ保存---
+                delta_E.append(abs(prev_best - fit))
+                suc_sigma.append(curr_sigma)
+                suc_ccov.append(curr_ccov)
 
-# --- 必須: CMA-ESを初期データ収集用として実行するヘルパー関数 ---
+                if fit < best_fitness:
+                    best_fitness = fit 
+                    best_solution = candidates[i]
+                    stagnation_counter = 0
+                    archive.append(candidates[i])
+        
+        if len(suc_sigma) != 0 and len(suc_ccov) != 0:
+            mem_sigma[k] = np.average(suc_sigma * suc_sigma, weights = delta_E) / np.average(suc_sigma, weights = delta_E)
+            mem_ccov[k] = np.average(suc_ccov,weights = delta_E)
+            k = k + 1
+            if k > (H - 1):
+                k = 0
+        else:
+            stagnation_counter += 1
 
-def normalize_K(K_physical: np.ndarray, eta_max: float) -> np.ndarray:
-    #物理スケール [1e-12, eta] から [0, 1] に正規化する
-    K_min = 1e-12
-    K_range = eta_max - K_min
-    K_normalized = (K_physical - K_min) / K_range
-    return np.clip(K_normalized, 0.0, 1.0)
+        print("記録メモリ sigma = ",mem_sigma)
+        print("記録メモリ ccov = ",mem_ccov)
 
-def denormalize_K(K_normalized: np.ndarray, eta_max: float) -> np.ndarray:
-    K_min = 1e-12
-    K_range = eta_max - K_min
-    K_physical = K_normalized * K_range + K_min
-    
-    # 【代替クリッピング処理】
-    # 物理的な上限 eta_max を超えないように制限
-    K_physical = np.minimum(K_physical, eta_max) 
-    # 下限 K_min (1e-12) より小さくならないように制限
-    K_physical = np.maximum(K_physical, K_min)
-    
-    return K_physical
+        if stagnation_counter > 40:
+            if len(archive) > 0:
+                restart_point = np.random.choice(list(archive))
+                es.result_pretty()
+                es = CMAEvolutionStrategy(restart_point, np.random.choice(list(mem_sigma)) * 1.5, opts)
+            else:
+                es.sigma = np.random.choice(list(mem_sigma)) * 1.5
+            stagnation_counter = 0
 
-def get_beta_schedule(iteration: int, max_iterations: int) -> float:
-
-    # 初期値 (探索優先): 50.0 
-    beta_start = 2
+    return best_solution, best_fitness
     
-    # 最終値 (活用優先): 10.0
-    beta_end = 0.5
-    
-    # 全体の約80%まで徐々に減少させる
-    decay_ratio = 0.8
-    decay_iterations = int(max_iterations * decay_ratio)
-
-    if iteration >= decay_iterations:
-        # 後半20%は最終値に固定
-        beta = beta_end
-    else:
-        # 線形に減少させる
-        beta = beta_start - (beta_start - beta_end) * (iteration / decay_iterations)
-
-    return beta
- 
-# --- 【ANNアンサンブル予測関数】 ---
-def predict_ensemble(K_2d: np.ndarray,ensemble_models: List[MLPRegressor])-> float:
-    predictions = np.array([model.predict(K_2d)[0] for model in ensemble_models])
-    
-    # 予測の平均を mu に、標準偏差を sigma に設定
-    mu = np.mean(predictions)
-    sigma = np.std(predictions)
-    
-    return mu, sigma
-
-
-def visualize_ann_landscape(ensemble_models: List, params: 'OptimizeKParams', N_rings: int):
-
-    
-    # --- 1. 設定と初期化 ---
-    N_dim = N_rings + 1
-    index1, index2 = 0, 1  # 動かす結合率のインデックス (K[0] と K[1] を動かす)
-    
-    k_min, k_max = 0.0, 1.0  # 正規化された [0, 1] 空間
-    resolution = 50 
-    
-    # 残りの変数の固定値 (全て正規化された 0.5 に固定)
-    fixed_K_value_norm = 0.5 
-    fixed_K_array_norm = np.full(N_dim, fixed_K_value_norm)
-    
-    # --- 2. グリッドの生成 ---
-    k1_range = np.linspace(k_min, k_max, resolution)
-    k2_range = np.linspace(k_min, k_max, resolution)
-    
-    K1_norm, K2_norm = np.meshgrid(k1_range, k2_range)
-    Z_mu = np.zeros(K1_norm.shape)  # 予測平均 (μ) を格納する配列
-    
-    # --- 3. グリッドの評価（ANN予測） ---
-    print(f"評価開始: {resolution * resolution} 回のANN予測を実行中...")
-    
-    for i in range(resolution):
-        for j in range(resolution):
-            # 探索点の作成 (K[0], K[1] だけを動かし、残りは固定)
-            K_candidate_norm = fixed_K_array_norm.copy()
-            K_candidate_norm[index1] = K1_norm[i, j]
-            K_candidate_norm[index2] = K2_norm[i, j]
-            
-            # ANNアンサンブルで予測を実行
-            # predict_ensemble は (mu, sigma) のタプルを返す
-            mu, sigma = predict_ensemble(K_candidate_norm.reshape(1, -1), ensemble_models)
-            
-            # 予測平均 (μ) を格納。これが滑らかな探索地形となる。
-            Z_mu[i, j] = mu
-            
-    print("ANN予測完了。")
-    
-    # --- 4. 3D描画 ---
-    fig = plt.figure(figsize=(12, 10))
-    ax = fig.add_subplot(111, projection='3d')
-    
-    # サーフェスプロットの作成 (cmap='viridis'で滑らかさを強調)
-    surf = ax.plot_surface(K1_norm, K2_norm, Z_mu, 
-                           cmap='viridis', 
-                           edgecolor='none', 
-                           alpha=0.8,
-                           rstride=1, cstride=1)
-    
-    # 軸ラベルの設定
-    ax.set_xlabel(f'Normalized Coupling K[{index1}]')
-    ax.set_ylabel(f'Normalized Coupling K[{index2}]')
-    ax.set_zlabel('Predicted Fitness ($\mu$ = F)')
-    ax.set_title('ANN Surrogate Model Landscape (Smoothed)')
-    
-    # カラーバーの追加
-    fig.colorbar(surf, shrink=0.5, aspect=5, label='Predicted Fitness')
-    
-    plt.show()
-
-
-# 10万点モデルの予測平均を直接返す関数
-def acquisition_function_ann(K_candidate, ensemble_models):
-    mu, _ = predict_ensemble(K_candidate.reshape(1, -1), ensemble_models)
-    return mu # CMA-ESはこの mu を最小化する
-    
-
-FILENAME_PREFIX = "mrr_sao_model"
-#FSR=20nm
-def save_sao_state(ensemble_models, X_train, Y_train, best_K_norm, best_fitness):
-    """ANNアンサンブルモデルとデータをファイルに保存する。"""
-    try:
-        joblib.dump(ensemble_models, f'{FILENAME_PREFIX}_20_4ensemble.pkl')
-        np.save(f'{FILENAME_PREFIX}_20X_4_train.npy', np.array(X_train))
-        np.save(f'{FILENAME_PREFIX}_20Y_4_train.npy', np.array(Y_train))
-        metadata = {'best_K_norm': best_K_norm, 'best_fitness': best_fitness}
-        joblib.dump(metadata, f'{FILENAME_PREFIX}_20_4metadata.pkl')
-        print(f"✅ モデルとデータ ({len(X_train)}点) を正常に保存しました。")
-    except Exception as e:
-        print(f"モデル保存中にエラーが発生しました: {e}")
-
-def load_sao_state():
-    """保存されたモデルとデータをファイルから読み込む。"""
-    try:
-        ensemble_models = joblib.load(f'{FILENAME_PREFIX}_20_4ensemble.pkl')
-        X_train = np.load(f'{FILENAME_PREFIX}_20X_4_train.npy').tolist()
-        Y_train = np.load(f'{FILENAME_PREFIX}_20Y_4_train.npy').tolist()
-        metadata = joblib.load(f'{FILENAME_PREFIX}_20_4metadata.pkl')
-        print("✅ 訓練済みモデルとデータを正常に読み込みました。")
-        return ensemble_models, X_train, Y_train, metadata['best_K_norm'], metadata['best_fitness'], True
-    except FileNotFoundError:
-        print("🚨 保存ファイルが見つかりません。新規にSAOを構築します。")
-        return None, [], [], None, float("inf"), False
-#FSR=35
-"""
-def save_sao_state(ensemble_models, X_train, Y_train, best_K_norm, best_fitness):
-    #ANNアンサンブルモデルとデータをファイルに保存する。
-    try:
-        joblib.dump(ensemble_models, f'{FILENAME_PREFIX}_35ensemble.pkl')
-        np.save(f'{FILENAME_PREFIX}_35X_train.npy', np.array(X_train))
-        np.save(f'{FILENAME_PREFIX}_35Y_train.npy', np.array(Y_train))
-        metadata = {'best_K_norm': best_K_norm, 'best_fitness': best_fitness}
-        joblib.dump(metadata, f'{FILENAME_PREFIX}_35metadata.pkl')
-        print(f"✅ モデルとデータ ({len(X_train)}点) を正常に保存しました。")
-    except Exception as e:
-        print(f"モデル保存中にエラーが発生しました: {e}")
-
-def load_sao_state():
-    #保存されたモデルとデータをファイルから読み込む。
-    try:
-        ensemble_models = joblib.load(f'{FILENAME_PREFIX}_35ensemble.pkl')
-        X_train = np.load(f'{FILENAME_PREFIX}_35X_train.npy').tolist()
-        Y_train = np.load(f'{FILENAME_PREFIX}_35Y_train.npy').tolist()
-        metadata = joblib.load(f'{FILENAME_PREFIX}_35metadata.pkl')
-        print("✅ 訓練済みモデルとデータを正常に読み込みました。")
-        return ensemble_models, X_train, Y_train, metadata['best_K_norm'], metadata['best_fitness'], True
-    except FileNotFoundError:
-        print("🚨 保存ファイルが見つかりません。新規にSAOを構築します。")
-        return None, [], [], None, float("inf"), False
-"""
 def optimize_K(
     eta: float,
     number_of_rings: int,
     rng: np.random.Generator,
     params: OptimizeKParams,
-    build_model_only: bool = False,
+    num_start: int = 10
 ) -> tuple[npt.NDArray[np.float_], float]:
-    #-----初期設定-----
-    N_dim = number_of_rings + 1
-    ensemble_models, X_train, Y_train, best_K_norm, best_fitness, loaded = load_sao_state()
-    bounds_normalized = np.array([(0.0, 1.0) for _ in range(N_dim)])
 
-    if not loaded:
-        hidden_layer_sizes = (512,256,128,128) 
-        NUM_ENSEMBLE = 1
-        base_ann_model = MLPRegressor(
-            hidden_layer_sizes=hidden_layer_sizes, 
-            max_iter=10000, 
-            learning_rate_init = 0.0005,
-            activation='relu', 
-            solver='adam', 
-            random_state=42,
-            verbose = True,
-            n_iter_no_change = 100,
-            alpha = 0.005
-        )
-        ensemble_models = [clone(base_ann_model) for _ in range(NUM_ENSEMBLE)]
-    #変数
-        initial_samples = 50000 # 凹凸対策として10Nに増やす
-    #データセット
-        X_train = []
-        Y_train = []
-        best_K_norm: Optional[np.ndarray] = None
-        best_fitness = float("inf")
-        
-    
-    #-----データ収集-----
-        print("データ収集開始")
-        lhs = LatinHypercube(d=N_dim, seed=rng)
-        initial_K_samples = lhs.random(n = initial_samples)
-        for K_sample in initial_K_samples:
-        #評価関数で計算
-            K_sample_phy = denormalize_K(K_sample,params.eta)
-            train_fitness = optimize_K_func(K_sample_phy,params)
-            X_train.append(K_sample)
-            Y_train.append(train_fitness)
+    os.environ["OMP_NUM_THREADS"] = "1"
+    os.environ["OPENBLAS_NUM_THREADS"] = "1"
+    os.environ["MKL_NUM_THREADS"] = "1"
+    bounds = [(1e-12, eta) for _ in range(number_of_rings + 1)]
+    bounds_array=np.array(bounds) 
+    popsize = 4 + math.floor(3 * math.log(number_of_rings+1)) + 8
+    sigma = 0.7
+    generations = 500
+    num_starts = 1
+    initials = [rng.uniform(1e-12, eta, size=(number_of_rings + 1,))
+                for _ in range(num_starts)]
 
-            if train_fitness < best_fitness:
-                best_fitness = train_fitness
-                best_K_norm = K_sample
-        # データ収集ループの直後に追加
-            Y_arr_initial = np.array(Y_train)
+    with ProcessPoolExecutor(max_workers=20) as executor:
+        futures = [executor.submit(SHACMA_run, initial, bounds_array, popsize, sigma, generations, params)
+                   for initial in initials]
 
-        print(f"最大値 (最良の解): {Y_arr_initial.min():.6f}")
-        #current_beta = get_beta_schedule(iteration, MAX_SAO_ITERATIONS)
-        X_arr = np.array(X_train)
-        Y_arr = np.array(Y_train)
-        for model in ensemble_models:
-            model.fit(X_arr,Y_arr.ravel())
-        save_sao_state(ensemble_models, X_train, Y_train, best_K_norm, best_fitness)
-        print(f"STEP 3: SAOモデル訓練完了。")
-        if build_model_only:
-            # モデル構築のみを目的とする場合、ここで終了
-            return denormalize_K(best_K_norm, eta), -best_fitness
-    
-    
-    if not build_model_only:
-        
-        def final_optimization_wrapper(K_candidate):
-            return acquisition_function_ann(K_candidate, ensemble_models)
-        
-    # 最適化の初期スタート点: 初期データで見つけた最良点からスタート
-        initial_start_norm = best_K_norm if best_K_norm is not None else np.full(N_dim, 0.5)
-    
-    # CMA-ESの最終実行 (獲得関数なし、直接μを最小化)
-        final_K_norm, final_fitness = cma_run(
-            initial=initial_start_norm, 
-            bounds_array=bounds_normalized,
-            popsize=4 + math.floor(3 * math.log(number_of_rings+1)) + 8,
-            sigma=0.3, # モデルベースでは0.3~0.5程度の安定した値で良い
-            generations=500, # 収束するまで十分な世代数を確保
-            params=params,
-            objective_func=final_optimization_wrapper 
-        )
-    
-    #-----【最終検証】-----
-    # CMA-ESが見つけた最適解を、最後に一度だけ真の評価関数で検証する
-        final_K_phy = denormalize_K(final_K_norm, params.eta)
-        true_final_fitness = optimize_K_func(final_K_phy, params)
-    
-        print(f"最終検証: CMA-ES予測={final_fitness:.6f}, 真の評価値={true_final_fitness:.6f}")
-    
-    # --- 可視化は残すが、元のコードには含まれていないため関数呼び出しのみ残す ---
-        visualize_ann_landscape(ensemble_models, params, number_of_rings)
-        #r2_train, r2_test = check_overfitting(ensemble_models, X_train, Y_train, X_test, Y_test)
-        
-    
-    # ----- [最終結果] -----
-        E: float = -true_final_fitness
-        K: npt.NDArray[np.float_] = final_K_phy # 非正規化されたKを返す
+        results = [f.result() for f in futures]
+        print(results)
+    print(len(results))
 
-        return K, E
-    """
-        def acquisition_wrapper(K_candidate):
-            return acquisition_function_ann(K_candidate, ensemble_models)
-        lower_bounds = bounds_normalized[:, 0]
-        upper_bounds = bounds_normalized[:, 1]
-
-        if best_K_norm is None or rng.uniform(0, 1) < 0.9: 
-    # データ収集がまだ成功していない場合、または探索を強制する場合
-            lower_bounds = bounds_normalized[:, 0]
-            upper_bounds = bounds_normalized[:, 1]
-            initial_start_norm = rng.uniform(low=lower_bounds, high=upper_bounds, size=(N_dim,))
-        else:
-    # 最良解の近傍からスタートする (活用)
-            initial_start_norm = best_K_norm
-        acq_best_K, _ = cma_run(
-            initial=initial_start_norm, 
-            bounds_array=bounds_normalized,
-            popsize=4 + math.floor(3 * math.log(number_of_rings+1)) + 8, 
-            sigma=1.0, 
-            generations=200, 
-            params=params,
-            objective_func=acquisition_wrapper 
-        )
-        
-    #-----真値の再評価とデータの更新-----
-        # 獲得関数が提案した点 (acq_best_K) を元の評価関数で確認
-        print(acq_best_K)
-        acq_best_K_phy = denormalize_K(acq_best_K,params.eta)
-        true_fitness_new = optimize_K_func(acq_best_K_phy, params)
-        
-        
-        # データセットを更新
-        X_train.append(acq_best_K)
-        Y_train.append(true_fitness_new)
-        print(f"今回の評価値",true_fitness_new)
-        #print(best_fitness)
-        # 全体の最良解を更新
-        if true_fitness_new < best_fitness:
-            best_fitness = true_fitness_new
-            best_K_norm = acq_best_K
-            
-        print(f"STEP 4: 真値再評価完了。Best Fitness (True) = {best_fitness:.6f}")
-
-    print(">>> 3D SAOモデルの地形を可視化中...")
-            # 訓練済みのモデルを可視化関数に渡す
-    visualize_ann_landscape(ensemble_models, params, number_of_rings)
-    # ----- [最終結果] -----
+    # 一番良かったやつを選ぶ
+    best_solution, best_fitness = min(results, key=lambda x: x[1])
     E: float = -best_fitness
-    K: npt.NDArray[np.float_] = denormalize_K(best_K_norm if best_K_norm is not None else np.zeros(N_dim), params.eta)
-
-    return K, E
-    """
+    K: npt.NDArray[np.float_] = best_solution
+    return K,E
+    
 def optimize(
     n_g: float,
     n_eff: float,
