@@ -186,7 +186,7 @@ def SHACMA_run(initial, bounds_array, popsize, sigma, generations, params):
                     archive.append(candidates[i])
         
         if len(suc_sigma) != 0 and len(suc_ccov) != 0:
-            s_sig = np.array(suc_sigma)
+            s_sigma = np.array(suc_sigma)
             s_ccov = np.array(suc_ccov)
             w = np.array(delta_E)
             mem_sigma[k] = np.average(s_sigma * s_sigma, weights = w) / np.average(s_sigma, weights = w)
