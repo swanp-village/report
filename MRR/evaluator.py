@@ -22,7 +22,7 @@ def evaluate_band(
     if pass_band.shape[0] == 1:
         start = pass_band[0][0]
         end = pass_band[0][1]
-        print("good")
+        #print("good")
 
     else:
         """
@@ -57,7 +57,7 @@ def evaluate_band(
     if ignore_binary_evaluation:
         return E_c
     E = E_c * E_b
-    print("評価値",E)
+    #print("評価値",E)
     # 各評価関数の結果を表示
     #for i in range(n_eval):
         #print("E_c",result[i][0])
