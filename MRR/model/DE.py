@@ -115,7 +115,7 @@ def combined_evaluation(K: npt.NDArray[np.float_], params: OptimizeKParams) -> f
 
     return total_score
 """
-def cma_run(initial, bounds_array, popsize, sigma, generations, params,optimize_K_func):
+def cma_run(initial, bounds_array, popsize, sigma, generations, params):
     # bounds_array: shape (N, 2)
     lower_bounds = bounds_array[:, 0]
     upper_bounds = bounds_array[:, 1]
