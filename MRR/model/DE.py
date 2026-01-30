@@ -143,10 +143,10 @@ def cma_run(initial, bounds_array, popsize, sigma, generations, params):
         es.tell(candidates, fitnesses)
         min_fit = min(fitnesses)
         if min_fit < best_fitness:
-            print("best_fitness",best_fitness)
-            print("min_fitness",min_fit)
+            #print("best_fitness",best_fitness)
+            #print("min_fitness",min_fit)
             best_fitness = min_fit
-            print("new_best",best_fitness)
+            #print("new_best",best_fitness)
             best_solution = candidates[fitnesses.index(min_fit)]
 
         # ログ出力（任意）
