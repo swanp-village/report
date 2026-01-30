@@ -115,8 +115,46 @@ def combined_evaluation(K: npt.NDArray[np.float_], params: OptimizeKParams) -> f
 
     return total_score
 """
+def cma_run(initial, bounds_array, popsize, sigma, generations, params,objective_func):
+    # bounds_array: shape (N, 2)
+    lower_bounds = bounds_array[:, 0]
+    upper_bounds = bounds_array[:, 1]
+
+    opts = {
+        'bounds': [lower_bounds, upper_bounds],
+        'popsize': popsize,
+        'verb_log': 0,
+        'verbose': -9,
+        'tolfun': 0,        # 目的関数値の改善による停止を無効化
+        'tolx': 0,          # 探索空間の変化による停止を無効化
+        'tolfunhist': 0,    # 過去の履歴による停止を無効化
+        'tolflatfitness': 0, # フィットネスが平坦になったことによる停止を無効化
+        'maxiter': generations,  
+    }
+
+    es = CMAEvolutionStrategy(initial, sigma, opts)
+
+    best_solution = None
+    best_fitness = float("inf")
+
+    for generation in range(generations):
+        candidates = es.ask()
+        fitnesses = [objective_func(x) for x in candidates]
+        es.tell(candidates, fitnesses)
+        min_fit = min(fitnesses)
+        if min_fit < best_fitness:
+            print("best_fitness",best_fitness)
+            print("min_fitness",min_fit)
+            best_fitness = min_fit
+            print("new_best",best_fitness)
+            best_solution = candidates[fitnesses.index(min_fit)]
+
+        # ログ出力（任意）
+        #if generation % 50 == 0 or generation == generations - 1:
+            #print(f"Gen {generation}: sigma = {es.sigma:.4f}, best_fitness = {best_fitness:.6f}")
 
 
+    return best_solution, best_fitness  
 #CMA-ES動作コード_pycma
 def SHACMA_run(initial, bounds_array, popsize, sigma, generations, params):
     # bounds_array: shape (N, 2)
@@ -225,14 +263,14 @@ def optimize_K(
     bounds = [(1e-12, eta) for _ in range(number_of_rings + 1)]
     bounds_array=np.array(bounds) 
     popsize = 4 + math.floor(3 * math.log(number_of_rings+1)) + 8
-    sigma = 0.7
+    sigma = 0.5
     generations = 500
-    num_starts = 1
+    num_starts = 6
     initials = [rng.uniform(1e-12, eta, size=(number_of_rings + 1,))
                 for _ in range(num_starts)]
 
     with ProcessPoolExecutor(max_workers=20) as executor:
-        futures = [executor.submit(SHACMA_run, initial, bounds_array, popsize, sigma, generations, params)
+        futures = [executor.submit(cma_run, initial, bounds_array, popsize, sigma, generations, params)
                    for initial in initials]
 
         results = [f.result() for f in futures]
@@ -322,8 +360,8 @@ def optimize(
                 number_of_rings=number_of_rings,
                 rng=rng,
             )
-        N = [78,78,78,117,117,117] #6th
-       # N = [88,88,110,110,110,110]
+       # N = [78,78,78,117,117,117] #6th
+         N = [88,88,88,110,110,110]
         #N = [110,110,88,88,88,88,110,110]
         #N = [78,78,78,468,468,117,117,117] #8th
         #N = [117,117,117,156,156,156,117,117,156,156] #10th
