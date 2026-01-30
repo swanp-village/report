@@ -143,7 +143,7 @@ def cma_run(initial, bounds_array, popsize, sigma, generations, params):
         es.tell(candidates, fitnesses)
         min_fit = min(fitnesses)
         if min_fit < best_fitness:
-            #print("best_fitness",best_fitness)
+            print("best_fitness",best_fitness)
             #print("min_fitness",min_fit)
             best_fitness = min_fit
             #print("new_best",best_fitness)
@@ -265,7 +265,7 @@ def optimize_K(
     popsize = 4 + math.floor(3 * math.log(number_of_rings+1)) + 8
     sigma = 0.3
     generations = 300
-    num_starts = 6
+    num_starts = 1
     initials = [rng.uniform(1e-12, eta, size=(number_of_rings + 1,))
                 for _ in range(num_starts)]
 
