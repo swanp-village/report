@@ -139,7 +139,7 @@ def cma_run(initial, bounds_array, popsize, sigma, generations, params,objective
 
     for generation in range(generations):
         candidates = es.ask()
-        fitnesses = [objective_func(x) for x in candidates]
+        fitnesses = [optimize_K__func(x) for x in candidates]
         es.tell(candidates, fitnesses)
         min_fit = min(fitnesses)
         if min_fit < best_fitness:
