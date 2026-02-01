@@ -181,7 +181,8 @@ def SHACMA_run(initial, bounds_array, popsize, sigma, generations, params):
     es = CMAEvolutionStrategy(initial, sigma, opts)
 
     best_solution = None
-    best_fitness = float("inf")
+    #best_fitness = float("inf")
+    best_fitness = 1.0
     stagnation_counter = 0
 
     for generation in range (generations):
