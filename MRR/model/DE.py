@@ -198,7 +198,7 @@ def SHACMA_run(initial, bounds_array, popsize, sigma, generations, params):
         print("sigma=",sigma)
 
         #パラメータの決定
-        es.sigma = curr_sigma
+        #es.sigma = curr_sigma
         es.opts.set({'ccov1':curr_ccov, 'ccovmu':curr_ccov})
 
         candidates = es.ask()
