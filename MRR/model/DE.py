@@ -244,16 +244,17 @@ def SHACMA_run(initial, bounds_array, popsize, sigma, generations, params):
 
         #print("記録メモリ sigma = ",mem_sigma)
         #print("記録メモリ ccov = ",mem_ccov)
-
-        if stagnation_counter > 20:
-            print("探索をやり直します")
-            if len(archive) > 0:
-                restart_point = random.choice(list(archive))
-                es.result_pretty()
-                es = CMAEvolutionStrategy(restart_point, np.random.choice(list(mem_sigma)) * 1.5, opts)
-            else:
-                es.sigma = np.random.choice(list(mem_sigma)) * 1.5
-            stagnation_counter = 0
+        if best_fitness > -11.0
+            if stagnation_counter > 30
+                print("探索をやり直します")
+                if len(archive) > 0:
+                    restart_point = random.choice(list(archive))
+                    noise = np.random.normal(0, 0.05, size = xdim)
+                    es.result_pretty()
+                    es = CMAEvolutionStrategy(restart_point + noise, np.random.choice(list(mem_sigma)) * 1.5, opts)
+                else:
+                    es.sigma = np.random.choice(list(mem_sigma)) * 1.5
+                stagnation_counter = 0
 
     return best_solution, best_fitness
     
