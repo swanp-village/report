@@ -189,7 +189,10 @@ def SHACMA_run(initial, bounds_array, popsize, sigma, generations, params):
     for generation in range (generations):
         #---成功履歴からパラメータを摘出---
         m_idx = np.random.randint(0, H)
-        curr_sigma = stats.cauchy.rvs(loc = mem_sigma[m_idx], scale = 0.05)# sigmaに関して少しの揺れを加える
+        if stagnation_counter < 10:
+            curr_simga = 0.7
+        else:
+            curr_sigma = stats.cauchy.rvs(loc = mem_sigma[m_idx], scale = 0.05)# sigmaに関して少しの揺れを加える
         curr_ccov = stats.cauchy.rvs(loc = mem_ccov[m_idx], scale = 0.01)# ccovに関して少しの揺れを加える
 
         #値が異常になるのを阻止
