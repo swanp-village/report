@@ -248,10 +248,11 @@ def SHACMA_run(initial, bounds_array, popsize, sigma, generations, params):
             if stagnation_counter > 30:
                 print("探索をやり直します")
                 if len(archive) > 0:
-                    restart_point = random.choice(list(archive))
+                    base_point = random.choice(list(archive))
                     noise = np.random.normal(0, 0.05, size = xdim)
-                    es.result_pretty()
-                    es = CMAEvolutionStrategy(restart_point + noise, 0.7 , opts)
+                    restart_point = np.clip(base_point + noise, lower_bounds, upper_bounds)
+                    new_sigma = 0.7
+                    es = CMAEvolutionStrategy(restart_point, new_sigma , opts)
                 else:
                     #es.sigma = np.random.choice(list(mem_sigma)) * 1.5
                     es.sigma = 0.7
