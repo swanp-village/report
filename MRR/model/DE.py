@@ -192,7 +192,7 @@ def SHACMA_run(initial, bounds_array, popsize, sigma, generations, params):
         curr_sigma = stats.cauchy.rvs(loc = mem_sigma[m_idx], scale = 0.05)# sigmaに関して少しの揺れを加える
         curr_ccov = stats.cauchy.rvs(loc = mem_ccov[m_idx], scale = 0.01)# ccovに関して少しの揺れを加える
         if stagnation_counter > 10:
-            curr_sigma - 0.7
+            curr_sigma = 0.7
 
         #値が異常になるのを阻止
         curr_sigma = max(curr_sigma, 0.01)
