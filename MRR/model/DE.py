@@ -262,6 +262,7 @@ def SHACMA_run(initial, bounds_array, popsize, sigma, generations, params):
                     #es.sigma = np.random.choice(list(mem_sigma)) * 1.5
                     es.sigma = 0.7
                 stagnation_counter = 0
+                counter = 0
 
     return best_solution, best_fitness
     
