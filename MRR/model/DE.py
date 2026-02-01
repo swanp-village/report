@@ -28,6 +28,7 @@ import numpy.typing as npt
 import os
 from scipy import stats
 from collections import deque
+import random
 
 
 def optimize_L(
@@ -242,7 +243,7 @@ def SHACMA_run(initial, bounds_array, popsize, sigma, generations, params):
 
         if stagnation_counter > 20:
             if len(archive) > 0:
-                restart_point = np.random.choice(list(archive))
+                restart_point = random.choice(list(archive))
                 es.result_pretty()
                 es = CMAEvolutionStrategy(restart_point, np.random.choice(list(mem_sigma)) * 1.5, opts)
             else:
