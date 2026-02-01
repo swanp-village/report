@@ -238,10 +238,13 @@ def SHACMA_run(initial, bounds_array, popsize, sigma, generations, params):
         else:
             stagnation_counter += 1
 
-        print("記録メモリ sigma = ",mem_sigma)
-        print("記録メモリ ccov = ",mem_ccov)
+        print(best_fitness)
+
+        #print("記録メモリ sigma = ",mem_sigma)
+        #print("記録メモリ ccov = ",mem_ccov)
 
         if stagnation_counter > 20:
+            print("探索をやり直します")
             if len(archive) > 0:
                 restart_point = random.choice(list(archive))
                 es.result_pretty()
