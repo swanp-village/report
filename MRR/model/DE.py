@@ -114,7 +114,7 @@ def combined_evaluation(K: npt.NDArray[np.float_], params: OptimizeKParams) -> f
     total_score = E_optimal + (delta_E_positive + delta_E_negative) / 2
 
     return total_score
-"""
+
 def cma_run(initial, bounds_array, popsize, sigma, generations, params):
     # bounds_array: shape (N, 2)
     lower_bounds = bounds_array[:, 0]
@@ -155,6 +155,7 @@ def cma_run(initial, bounds_array, popsize, sigma, generations, params):
 
 
     return best_solution, best_fitness  
+"""
 #CMA-ES動作コード_pycma
 def SHACMA_run(initial, bounds_array, popsize, sigma, generations, params):
     # bounds_array: shape (N, 2)
@@ -238,7 +239,7 @@ def SHACMA_run(initial, bounds_array, popsize, sigma, generations, params):
         print("記録メモリ sigma = ",mem_sigma)
         print("記録メモリ ccov = ",mem_ccov)
 
-        if stagnation_counter > 40:
+        if stagnation_counter > 20:
             if len(archive) > 0:
                 restart_point = np.random.choice(list(archive))
                 es.result_pretty()
@@ -263,14 +264,14 @@ def optimize_K(
     bounds = [(1e-12, eta) for _ in range(number_of_rings + 1)]
     bounds_array=np.array(bounds) 
     popsize = 4 + math.floor(3 * math.log(number_of_rings+1)) + 8
-    sigma = 0.3
-    generations = 300
+    sigma = 0.7
+    generations = 500
     num_starts = 1
     initials = [rng.uniform(1e-12, eta, size=(number_of_rings + 1,))
                 for _ in range(num_starts)]
 
     with ProcessPoolExecutor(max_workers=20) as executor:
-        futures = [executor.submit(cma_run, initial, bounds_array, popsize, sigma, generations, params)
+        futures = [executor.submit(SHACMA_run, initial, bounds_array, popsize, sigma, generations, params)
                    for initial in initials]
 
         results = [f.result() for f in futures]
