@@ -195,6 +195,7 @@ def SHACMA_run(initial, bounds_array, popsize, sigma, generations, params):
         #値が異常になるのを阻止
         curr_sigma = max(curr_sigma, 0.01)
         curr_ccov = np.clip(curr_ccov, 0.001, 0.5)
+        print("sigma=",sigma)
 
         #パラメータの決定
         es.sigma = curr_sigma
