@@ -192,7 +192,7 @@ def SHACMA_run(initial, bounds_array, popsize, sigma, generations, params):
         m_idx = np.random.randint(0, H)
         curr_sigma = stats.cauchy.rvs(loc = mem_sigma[m_idx], scale = 0.05)# sigmaに関して少しの揺れを加える
         curr_ccov = stats.cauchy.rvs(loc = mem_ccov[m_idx], scale = 0.01)# ccovに関して少しの揺れを加える
-        if counter < 10:
+        if counter < 5:
             curr_sigma = 0.7
             counter  += 1
 
