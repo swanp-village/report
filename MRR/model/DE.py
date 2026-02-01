@@ -252,6 +252,7 @@ def SHACMA_run(initial, bounds_array, popsize, sigma, generations, params):
                     noise = np.random.normal(0, 0.05, size = xdim)
                     restart_point = np.clip(base_point + noise, lower_bounds, upper_bounds)
                     new_sigma = 0.7
+                    es.result_pretty()
                     es = CMAEvolutionStrategy(restart_point, new_sigma , opts)
                 else:
                     #es.sigma = np.random.choice(list(mem_sigma)) * 1.5
