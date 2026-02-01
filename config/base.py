@@ -17,6 +17,6 @@ config = OptimizationConfig(
     weight=[1.0, 2.5, 3.5, 3.5, 3.5, 1.0 , 1.0, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5],
     #(通過域、阻止域、挿入損失、3㏈波長、リプル、クロストーク、形状）
     min_ring_length=50e-6,
-    number_of_generations=1,
+    number_of_generations=100,
     strategy=[0.03, 0.07, 0.2, 0.7],
 )
