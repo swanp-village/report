@@ -199,7 +199,7 @@ def SHACMA_run(initial, bounds_array, popsize, sigma, generations, params):
         print("ccov=",curr_ccov)
 
         #パラメータの決定
-        #es.sigma = curr_sigma
+        es.sigma = curr_sigma
         es.opts.set({'ccov1':curr_ccov, 'ccovmu':curr_ccov})
 
         candidates = es.ask()
@@ -219,7 +219,7 @@ def SHACMA_run(initial, bounds_array, popsize, sigma, generations, params):
             if fit < prev_best:
                 #---各パラメータ保存---
                 delta_E.append(abs(prev_best - fit))
-                suc_sigma.append(curr_sigma)
+                suc_sigma.append(es.sigma)
                 suc_ccov.append(curr_ccov)
 
                 if fit < best_fitness:
