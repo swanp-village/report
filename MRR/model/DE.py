@@ -169,7 +169,7 @@ def SHACMA_run(initial, bounds_array, popsize, sigma, generations, params):
 
     H = 20 # メモリサイズ
     mem_sigma = deque([sigma] * H, maxlen = H) # 探索範囲のメモリ
-    mem_ccov = deque([init_ccov1, init_ccovmu] * H, maxlen = H) # 学習率のメモリ
+    mem_ccov = deque([(init_ccov1, init_ccovmu)] * H, maxlen = H) # 学習率のメモリ
     archive = deque(maxlen = popsize * 2) # 外部アーカイブ
     k = 0 # メモリ更新回数
 
@@ -231,7 +231,7 @@ def SHACMA_run(initial, bounds_array, popsize, sigma, generations, params):
             if fit < prev_best:
                 #---各パラメータ保存---
                 delta_E.append(abs(prev_best - fit))
-                suc_sigma.append(es.sigma)
+                suc_sigma.append(curr_sigma)
                 suc_ccov1.append(curr_ccov1)
                 suc_ccovmu.append(curr_ccovmu)
 
