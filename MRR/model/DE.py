@@ -163,7 +163,7 @@ def SHACMA_run(initial, bounds_array, popsize, sigma, generations, params):
     lower_bounds = bounds_array[:, 0]
     upper_bounds = bounds_array[:, 1]
     xdim = len(initial)
-    init_ccov = 1.0 / (xdim**1.5)
+    init_ccov = 1.0 / (xdim**2)
 
     H = 20 # メモリサイズ
     mem_sigma = deque([sigma] * H, maxlen = H) # 探索範囲のメモリ
@@ -190,8 +190,8 @@ def SHACMA_run(initial, bounds_array, popsize, sigma, generations, params):
     for generation in range (generations):
         #---成功履歴からパラメータを摘出---
         m_idx = np.random.randint(0, H)
-        curr_sigma = stats.cauchy.rvs(loc = mem_sigma[m_idx], scale = 0.2)# sigmaに関して少しの揺れを加える
-        curr_ccov = stats.cauchy.rvs(loc = mem_ccov[m_idx], scale = 0.1)# ccovに関して少しの揺れを加える
+        curr_sigma = stats.cauchy.rvs(loc = mem_sigma[m_idx], scale = 0.15)# sigmaに関して少しの揺れを加える
+        curr_ccov = stats.cauchy.rvs(loc = mem_ccov[m_idx], scale = 0.05)# ccovに関して少しの揺れを加える
         if counter < 5:
             curr_sigma = 0.7
             counter  += 1
