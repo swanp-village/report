@@ -247,7 +247,7 @@ def SHACMA_run(initial, bounds_array, popsize, sigma, generations, params):
             w = np.array(delta_E)
             mem_sigma[k] = np.average(s_sigma * s_sigma, weights = w) / np.average(s_sigma, weights = w)
             mem_ccov1[k] = np.average(s_ccov1,weights = w)
-            mem_ccovmu[k] = np.average(s_ccovmu,weight - w)
+            mem_ccovmu[k] = np.average(s_ccovmu,weights = w)
             k = k + 1
             if k > (H - 1):
                 k = 0
