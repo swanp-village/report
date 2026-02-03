@@ -197,8 +197,10 @@ def SHACMA_run(initial, bounds_array, popsize, sigma, generations, params):
         curr_ccov1 = stats.cauchy.rvs(loc = base_c1, scale = 0.01)# ccovに関して少しの揺れを加える
         curr_ccovmu = stats.cauchy.rvs(loc = base_cmu, scale = 0.01)
      
-        if counter < 5:
-            curr_sigma = 0.7
+        if counter < 10:
+            curr_sigma = 0.996
+            curr_ccov1 =  1.0 / (xdim**1.5)
+            curr_ccovmu = 0.01 * curr_ccov1
             counter  += 1
 
         #値が異常になるのを阻止
