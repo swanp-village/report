@@ -163,11 +163,14 @@ def SHACMA_run(initial, bounds_array, popsize, sigma, generations, params):
     lower_bounds = bounds_array[:, 0]
     upper_bounds = bounds_array[:, 1]
     xdim = len(initial)
-    init_ccov = 1.0 / (xdim**1.5)
+    init_ccov1 = 1.0 / (xdim**1.5)
+    init_ccovmu = 1.0 / (xdim**1.5)
+
 
     H = 20 # メモリサイズ
     mem_sigma = deque([sigma] * H, maxlen = H) # 探索範囲のメモリ
-    mem_ccov = deque([init_ccov] * H, maxlen = H) # 学習率のメモリ
+    mem_ccov1 = deque([init_ccov1] * H, maxlen = H) # 学習率のメモリ
+    mem_ccovmu = deque([init_ccovmu] * H, maxlen = H)
     archive = deque(maxlen = popsize * 2) # 外部アーカイブ
     k = 0 # メモリ更新回数
 
@@ -191,20 +194,23 @@ def SHACMA_run(initial, bounds_array, popsize, sigma, generations, params):
         #---成功履歴からパラメータを摘出---
         m_idx = np.random.randint(0, H)
         curr_sigma = stats.cauchy.rvs(loc = mem_sigma[m_idx], scale = 0.2)# sigmaに関して少しの揺れを加える
-        curr_ccov = stats.cauchy.rvs(loc = mem_ccov[m_idx], scale = 0.01)# ccovに関して少しの揺れを加える
+        curr_ccov1 = stats.cauchy.rvs(loc = mem_ccov1[m_idx], scale = 0.01)# ccovに関して少しの揺れを加える
+        curr_ccovmu = stats.cauchy.rvs(loc = mem_ccovmu[m_idx], scale = 0.01)
         if counter < 5:
             curr_sigma = 0.7
             counter  += 1
 
         #値が異常になるのを阻止
         curr_sigma = np.clip(curr_sigma, 0.01, 0.996)
-        curr_ccov = np.clip(curr_ccov, 0.001, 0.5)
+        curr_ccov1 = np.clip(curr_ccov1, 0.001, 0.5)
+        curr_ccovmu = np.clip(curr_ccovmu, 0.001, 0.5)
         print("sigma=",curr_sigma)
-        print("ccov=",curr_ccov)
+        print("ccov=",curr_ccov1)
+        print("ccovmu=",curr_ccovmu)
 
         #パラメータの決定
         es.sigma = curr_sigma
-        es.opts.set({'ccov1':curr_ccov, 'ccovmu':curr_ccov})
+        es.opts.set({'ccov1':curr_ccov1, 'ccovmu':curr_ccovmu})
 
         candidates = es.ask()
         fitness = [optimize_K_func(x,params) for x in candidates]
@@ -216,7 +222,8 @@ def SHACMA_run(initial, bounds_array, popsize, sigma, generations, params):
 
 
         suc_sigma = [] #成功メモリ保存用
-        suc_ccov = []
+        suc_ccov1 = []
+        suc_ccovmu = []
         delta_E = []
         
         for i, fit in enumerate(fitness):
@@ -224,7 +231,8 @@ def SHACMA_run(initial, bounds_array, popsize, sigma, generations, params):
                 #---各パラメータ保存---
                 delta_E.append(abs(prev_best - fit))
                 suc_sigma.append(es.sigma)
-                suc_ccov.append(curr_ccov)
+                suc_ccov1.append(curr_ccov1)
+                suc_ccovmu.append(curr_ccovmu)
 
                 if fit < best_fitness:
                     best_fitness = fit 
@@ -232,12 +240,14 @@ def SHACMA_run(initial, bounds_array, popsize, sigma, generations, params):
                     stagnation_counter = 0
                     archive.append(candidates[i])
         
-        if len(suc_sigma) != 0 and len(suc_ccov) != 0:
+        if len(suc_sigma) != 0 and len(suc_ccov1) != 0 and len(suc_ccovmu) != 0:
             s_sigma = np.array(suc_sigma)
-            s_ccov = np.array(suc_ccov)
+            s_ccov1 = np.array(suc_ccov1)
+            s_ccovmu = np.array(suc_ccovmu)
             w = np.array(delta_E)
             mem_sigma[k] = np.average(s_sigma * s_sigma, weights = w) / np.average(s_sigma, weights = w)
-            mem_ccov[k] = np.average(s_ccov,weights = w)
+            mem_ccov1[k] = np.average(s_ccov1,weights = w)
+            mem_ccovmu[k] = np.avarage(s_ccovmu,weight - w)
             k = k + 1
             if k > (H - 1):
                 k = 0
