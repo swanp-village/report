@@ -169,8 +169,7 @@ def SHACMA_run(initial, bounds_array, popsize, sigma, generations, params):
 
     H = 20 # メモリサイズ
     mem_sigma = deque([sigma] * H, maxlen = H) # 探索範囲のメモリ
-    mem_ccov1 = deque([init_ccov1] * H, maxlen = H) # 学習率のメモリ
-    mem_ccovmu = deque([init_ccovmu] * H, maxlen = H)
+    mem_ccov = deque([init_ccov1, init_ccovmu] * H, maxlen = H) # 学習率のメモリ
     archive = deque(maxlen = popsize * 2) # 外部アーカイブ
     k = 0 # メモリ更新回数
 
@@ -193,9 +192,11 @@ def SHACMA_run(initial, bounds_array, popsize, sigma, generations, params):
     for generation in range (generations):
         #---成功履歴からパラメータを摘出---
         m_idx = np.random.randint(0, H)
+        base_c1,base_cmu = mem_ccov[m_idx]
         curr_sigma = stats.cauchy.rvs(loc = mem_sigma[m_idx], scale = 0.2)# sigmaに関して少しの揺れを加える
-        curr_ccov1 = stats.cauchy.rvs(loc = mem_ccov1[m_idx], scale = 0.01)# ccovに関して少しの揺れを加える
-        curr_ccovmu = stats.cauchy.rvs(loc = mem_ccovmu[m_idx], scale = 0.01)
+        curr_ccov1 = stats.cauchy.rvs(loc = base_c1, scale = 0.01)# ccovに関して少しの揺れを加える
+        curr_ccovmu = stats.cauchy.rvs(loc = base_cmu, scale = 0.01)
+     
         if counter < 5:
             curr_sigma = 0.7
             counter  += 1
@@ -246,8 +247,9 @@ def SHACMA_run(initial, bounds_array, popsize, sigma, generations, params):
             s_ccovmu = np.array(suc_ccovmu)
             w = np.array(delta_E)
             mem_sigma[k] = np.average(s_sigma * s_sigma, weights = w) / np.average(s_sigma, weights = w)
-            mem_ccov1[k] = np.average(s_ccov1,weights = w)
-            mem_ccovmu[k] = np.average(s_ccovmu,weights = w)
+            ave_c1 = np.average(s_ccov1,weights = w)
+            ave_cmu = np.average(s_ccovmu,weights = w)
+            mem_ccov[k] = (ave_c1,ave_cmu)
             k = k + 1
             if k > (H - 1):
                 k = 0
