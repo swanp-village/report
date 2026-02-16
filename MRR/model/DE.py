@@ -231,17 +231,18 @@ def SHACMA_run(initial, bounds_array, popsize, sigma, generations, params):
         
         for i, fit in enumerate(fitness):
             if fit < prev_best:
-                if(prev_best - fit) >= 0.005:
+                if(prev_best - fit) >= 0.01:
                 #---各パラメータ保存---
                     delta_E.append(abs(prev_best - fit))
                     suc_sigma.append(curr_sigma)
                     suc_ccov1.append(curr_ccov1)
                     suc_ccovmu.append(curr_ccovmu)
+                    stagnation_counter = 0
 
                 if fit < best_fitness:
                     best_fitness = fit 
                     best_solution = candidates[i]
-                    stagnation_counter = 0
+                    #stagnation_counter = 0
                     archive.append(candidates[i])
         
         if len(suc_sigma) != 0 and len(suc_ccov1) != 0 and len(suc_ccovmu) != 0:
