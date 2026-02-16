@@ -231,7 +231,7 @@ def SHACMA_run(initial, bounds_array, popsize, sigma, generations, params):
         
         for i, fit in enumerate(fitness):
             if fit < prev_best:
-                if(prev-best - fit) >= 0.005:
+                if(prev_best - fit) >= 0.005:
                 #---各パラメータ保存---
                     delta_E.append(abs(prev_best - fit))
                     suc_sigma.append(curr_sigma)
