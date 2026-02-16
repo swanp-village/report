@@ -229,7 +229,7 @@ def SHACMA_run(initial, bounds_array, popsize, sigma, generations, params):
         suc_ccovmu = []
         delta_E = []
 
-        print("今回の評価値", fit)
+        print("今回の評価値", fitness)
         for i, fit in enumerate(fitness):
             if fit < prev_best:
                 
