@@ -270,10 +270,11 @@ def SHACMA_run(initial, bounds_array, popsize, sigma, generations, params):
                 #mem_sigma = deque([sigma] * H,maxlen = H)
                 #mem_ccov = deque([(init_ccov1,init_ccovmu)] * H, maxlen = H)
                 if len(archive) > 0:
+                    junp_noise = 0.1
                     base_point = random.choice(list(archive))
-                    noise = np.random.normal(0, 0.05, size = xdim)
+                    noise = np.random.normal(0, junp_noise, size = xdim)
                     restart_point = np.clip(base_point + noise, lower_bounds, upper_bounds)
-                    new_sigma = 0.7
+                    new_sigma = np.random.choice(list(mem_sigma))
                     es.result_pretty()
                     es = CMAEvolutionStrategy(restart_point, new_sigma , opts)
                 else:
