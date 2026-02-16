@@ -266,8 +266,8 @@ def SHACMA_run(initial, bounds_array, popsize, sigma, generations, params):
         if best_fitness > -13.0:
             if stagnation_counter > 150:
                 print("探索をやり直します")
-                mem_sigma = deque([sigma] * H,maxlen = H)
-                mem_ccov = deque([(init_ccov1,init_ccovmu)] * H, maxlen = H)
+                #mem_sigma = deque([sigma] * H,maxlen = H)
+                #mem_ccov = deque([(init_ccov1,init_ccovmu)] * H, maxlen = H)
                 if len(archive) > 0:
                     base_point = random.choice(list(archive))
                     noise = np.random.normal(0, 0.05, size = xdim)
