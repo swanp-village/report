@@ -207,9 +207,9 @@ def SHACMA_run(initial, bounds_array, popsize, sigma, generations, params):
         curr_sigma = np.clip(curr_sigma, 0.01, 0.996)
         curr_ccov1 = np.clip(curr_ccov1, 0.001, 0.5)
         curr_ccovmu = np.clip(curr_ccovmu, 0.001, 0.5)
-        print("sigma=",curr_sigma)
-        print("ccov=",curr_ccov1)
-        print("ccovmu=",curr_ccovmu)
+        #print("sigma=",curr_sigma)
+        #print("ccov=",curr_ccov1)
+        #print("ccovmu=",curr_ccovmu)
 
         #パラメータの決定
         es.sigma = curr_sigma
@@ -231,6 +231,7 @@ def SHACMA_run(initial, bounds_array, popsize, sigma, generations, params):
         
         for i, fit in enumerate(fitness):
             if fit < prev_best:
+                print("今回の評価値",fit)
                 if(prev_best - fit) >= 0.01:
                 #---各パラメータ保存---
                     delta_E.append(abs(prev_best - fit))
@@ -260,7 +261,7 @@ def SHACMA_run(initial, bounds_array, popsize, sigma, generations, params):
         else:
             stagnation_counter += 1
 
-        print(best_fitness)
+        print("最高値",best_fitness)
 
         #print("記録メモリ sigma = ",mem_sigma)
         #print("記録メモリ ccov = ",mem_ccov)
