@@ -178,7 +178,8 @@ def SHACMA_run(initial, bounds_array, popsize, sigma, generations, params):
         'popsize': popsize,
         'verb_log': 0,
         'verbose': -9,  # suppress internal logs
-        'tolfun':1e-13,
+        'tolfun':1e-10,
+        'tolstagnation': 300,
     }
 
     es = CMAEvolutionStrategy(initial, sigma, opts)
@@ -190,6 +191,8 @@ def SHACMA_run(initial, bounds_array, popsize, sigma, generations, params):
     counter = 0
 
     for generation in range (generations):
+        if es.stop():
+            break
         #---成功履歴からパラメータを摘出---
         m_idx = np.random.randint(0, H)
         base_c1,base_cmu = mem_ccov[m_idx]
@@ -274,7 +277,7 @@ def SHACMA_run(initial, bounds_array, popsize, sigma, generations, params):
                 if len(archive) > 0:
                     junp_noise = 0.1
                     base_point = random.choice(list(archive))
-                    noise = np.random.normal(0, junp_noise, size = xdim)
+                    noise = stats.cauchy.rvs(0, junp_noise, size = xdim)
                     restart_point = np.clip(base_point + noise, lower_bounds, upper_bounds)
                     new_sigma = np.random.choice(list(mem_sigma))
                     es.result_pretty()
@@ -302,7 +305,7 @@ def optimize_K(
     bounds_array=np.array(bounds) 
     popsize = 4 + math.floor(3 * math.log(number_of_rings+1)) + 8
     sigma = 0.7
-    generations = 500
+    generations = 700
     num_starts = 1
     initials = [rng.uniform(1e-12, eta, size=(number_of_rings + 1,))
                 for _ in range(num_starts)]
