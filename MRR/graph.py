@@ -74,7 +74,7 @@ class Graph:
             
             
     
-        #plt.legend(loc="upper center", fontsize=12, frameon=False)
+        plt.legend(loc="upper center", fontsize=12, frameon=False)
     
     
         #plt.legend(loc="upper right",fontsize=15, ncol=2)
