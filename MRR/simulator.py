@@ -64,7 +64,7 @@ def simulate_MRR(
     ignore_binary_evaluation: bool = False,
 ) -> SimulatorResult:
     #N = calculate_N(center_wavelength=center_wavelength, n_eff=n_eff, L=L)
-    N = [78,78,78,117,117,117]
+    N = [88,88,88,100,100,100]
     practical_FSR = calculate_practical_FSR(center_wavelength=center_wavelength, n_eff=n_eff, n_g=n_g, N=N)
 
     if simulate_one_cycle:
