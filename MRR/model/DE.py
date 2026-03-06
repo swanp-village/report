@@ -635,7 +635,7 @@ def optimize_perturbed_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams
         ignore_binary_evaluation=False,
     )
 
-return E_positive
+    return E_positive
 """
     # 負の誤差での評価値
     y_negative = simulate_transfer_function(
