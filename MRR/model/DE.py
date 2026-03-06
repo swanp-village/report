@@ -80,7 +80,7 @@ class OptimizeKParams:
     H_i: float
     r_max: float
     weight: list[float]
-"""
+
 normal_evaluations = []
 perturbed_evaluations = []
 def combined_evaluation(K: npt.NDArray[np.float_], params: OptimizeKParams) -> float:
@@ -115,7 +115,7 @@ def combined_evaluation(K: npt.NDArray[np.float_], params: OptimizeKParams) -> f
     total_score = E_optimal + (delta_E_positive + delta_E_negative) / 2
 
     return total_score
-
+"""
 def cma_run(initial, bounds_array, popsize, sigma, generations, params):
     # bounds_array: shape (N, 2)
     lower_bounds = bounds_array[:, 0]
@@ -219,7 +219,7 @@ def SHACMA_run(initial, bounds_array, popsize, sigma, generations, params):
         es.opts.set({'ccov1':curr_ccov1, 'ccovmu':curr_ccovmu})
 
         candidates = es.ask()
-        fitness = [optimize_K_func(x,params) for x in candidates]
+        fitness = [optimize_perturbed_K_func(x,params) for x in candidates]
 
         es.tell (candidates, fitness)
 
@@ -540,7 +540,7 @@ def optimize(
         plt.grid(True)
         plt.show()
 
-
+"""
 def optimize_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams) -> np.float_:
     # K_minとK_maxを定義
 
@@ -662,5 +662,5 @@ def optimize_perturbed_K_func(K: npt.NDArray[np.float_], params: OptimizeKParams
  
 
     return E_positive, E_negative
-    """
+    
 
