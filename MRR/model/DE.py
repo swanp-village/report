@@ -219,7 +219,12 @@ def SHACMA_run(initial, bounds_array, popsize, sigma, generations, params):
         es.opts.set({'ccov1':curr_ccov1, 'ccovmu':curr_ccovmu})
 
         candidates = es.ask()
-        fitness = [optimize_perturbed_K_func(x,params) for x in candidates]
+        """
+        fitness = [optimize_K_func(x,params) for x in candidates]
+        """
+        #誤差評価の場合はこっちを使う
+        raw_fitness = [optimize_perturbed_K_func(x, params) for x in candidates]
+        fitness = [max(f) for f in raw_fitness]
 
         es.tell (candidates, fitness)
 
