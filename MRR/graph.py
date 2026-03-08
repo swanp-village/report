@@ -59,12 +59,12 @@ class Graph:
             
         else:
             
-            self.ax.set_xlim([1549, 1551])
+            self.ax.set_xlim([1545, 1555])
             self.ax.set_ylim([-30, 0])
             self.ax.xaxis.set_major_formatter(FormatStrFormatter("%.1f"))
             self.ax.xaxis.set_minor_formatter(FormatStrFormatter("%.1f"))
-            self.ax.xaxis.set_minor_locator(MultipleLocator(0.5))
-            self.ax.yaxis.set_major_locator(MultipleLocator(2))
+            self.ax.xaxis.set_minor_locator(MultipleLocator(5))
+            self.ax.yaxis.set_major_locator(MultipleLocator(5))
             """
             self.ax.set_xlim([1500, 1560])
             self.ax.xaxis.set_major_formatter(FormatStrFormatter("%d"))
