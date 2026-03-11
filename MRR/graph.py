@@ -60,7 +60,7 @@ class Graph:
         else:
             """
             self.ax.set_xlim([1545, 1555])
-            self.ax.set_ylim([-30, 0])
+            self.ax.set_ylim([-15, 0])
             self.ax.xaxis.set_major_formatter(FormatStrFormatter("%.1f"))
             self.ax.xaxis.set_minor_formatter(FormatStrFormatter("%.1f"))
             self.ax.xaxis.set_minor_locator(MultipleLocator(5))
